@@ -10,8 +10,9 @@
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/ivNewsArticleImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="117dp"
+            android:layout_height="117dp"
+            android:scaleType="centerInside"
             android:src="@drawable/newsarticleplaceholderimage" />
         <ProgressBar
             android:id="@+id/pbNewsArticleImageLoading"
@@ -38,6 +39,6 @@
             style="@style/NewsArticleContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam rutrum porta malesuada. Nam gravida mauris ac cursus mattis. Fusce venenatis cursus lorem at mattis. Morbi vitae lacus eget massa dictum malesuada vitae id metus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla tincidunt metus quis leo faucibus, at accumsan metus tincidunt. Duis at dignissim nulla, in dictum massa. Ut varius arcu at ligula fringilla, eget fermentum magna lobortis. Fusce ac dictum lorem. Aliquam blandit eu tortor egestas fermentum. Vivamus bibendum luctus accumsan. Aenean mauris turpis, posuere scelerisque faucibus nec, luctus sed lacus." />
+            android:text="Not loaded!" />
     </LinearLayout>
 </LinearLayout>

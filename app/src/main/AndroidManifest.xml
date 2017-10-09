@@ -3,7 +3,7 @@
     package="com.sofiaswing.sofiaswingdancefestival">
 
     <application
-        android:name="com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication"
+        android:name=".SofiaSwingDanceFestivalApplication"
         android:allowBackup="true"
         android:icon="@drawable/sofiaswinglogo"
         android:label="@string/app_name"
@@ -11,16 +11,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.sofiaswing.sofiaswingdancefestival.views.news.NewsActivity"
+            android:name=".views.news.NewsActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".views.newsArticle.NewsArticleActivity" />
+        <activity android:name=".views.instructors.InstructorsActivityActivity"></activity>
     </application>
 
 </manifest>

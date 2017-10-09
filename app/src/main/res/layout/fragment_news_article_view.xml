@@ -1,0 +1,57 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleView">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/ivNewsArticleImage"
+                        android:layout_width="117dp"
+                        android:layout_height="117dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/newsarticleplaceholderimage" />
+
+                    <ProgressBar
+                        android:id="@+id/pbNewsArticleImageLoading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:indeterminate="true" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvNewsArticleDate"
+                style="@style/NewsArticleDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2014-01-16 13:00" />
+
+            <TextView
+                android:id="@+id/tvNewsArticleText"
+                style="@style/NewsArticleContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Not loaded!" />
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

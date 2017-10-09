@@ -12,7 +12,7 @@ public class UiInterfaces {
         Fragment getNavigationFragment(final AppCompatActivity activity);
     }
 
-    public interface ITitleFragmentAttacher {
-        void attachTitleFragment(final AppCompatActivity activity, String title);
+    public interface ITitleFragmentFactory {
+        Fragment getTitleFragment(String title);
     }
 }

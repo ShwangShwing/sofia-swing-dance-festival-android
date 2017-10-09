@@ -31,10 +31,10 @@ public class NewsActivity extends AppCompatActivity {
                 .replace(R.id.container_drawer_navigation,
                         this.drawerNavigationFragmentAttacher.getNavigationFragment(this))
                 .commit();
-        this.titleFragmentAttacher.attachTitleFragment(this, this.getString(R.string.news));
         this.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container_fragment, (Fragment) this.presenter.getView())
+                .replace(R.id.container_title, this.titleFragmentAttacher.getTitleFragment(this.getString(R.string.news)))
                 .commit();
     }
 

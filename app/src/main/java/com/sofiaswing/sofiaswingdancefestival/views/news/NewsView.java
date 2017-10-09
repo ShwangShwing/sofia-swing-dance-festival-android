@@ -2,6 +2,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.news;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
+import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -31,6 +34,8 @@ import javax.inject.Inject;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+import static android.R.attr.name;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,9 +59,17 @@ public class NewsView extends Fragment
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_news_view, container, false);
 
+        this.setRetainInstance(true);
+
         ListView lvNewsArticles = root.findViewById(R.id.lvNewsArticles);
         this.lvNewsAdapter = new NewsArticlesAdapter(root.getContext(), android.R.layout.simple_list_item_1);
         lvNewsArticles.setAdapter(this.lvNewsAdapter);
+        lvNewsArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                presenter.selectNewsArticle(position);
+            }
+        });
 
         this.presenter.start();
 
@@ -81,7 +94,9 @@ public class NewsView extends Fragment
 
     @Override
     public void navigateToArticle(String articleId) {
-
+        Intent intent = new Intent(this.getContext(), NewsArticleActivity.class);
+        intent.putExtra(NewsArticleActivity.ARTICLE_ID_KEY, articleId);
+        startActivity(intent);
     }
 
     private class NewsArticlesAdapter extends ArrayAdapter<NewsArticleViewModel> {

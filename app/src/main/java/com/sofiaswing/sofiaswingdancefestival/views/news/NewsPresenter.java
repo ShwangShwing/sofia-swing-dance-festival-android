@@ -45,8 +45,9 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<List<NewsArticleModel>, List<NewsArticleViewModel>>() {
                     @Override
-                    public List<NewsArticleViewModel> apply(@NonNull List<NewsArticleModel> newsArticles) throws Exception {
-                        newsArticles = new ArrayList<NewsArticleModel>(newsArticles);
+                    public List<NewsArticleViewModel> apply(@NonNull List<NewsArticleModel> incomingNewsArticles) throws Exception {
+                        newsArticles = new ArrayList<NewsArticleModel>(incomingNewsArticles);
+                        Collections.reverse(newsArticles);
                         List<NewsArticleViewModel> newsArticlesForView = new ArrayList<NewsArticleViewModel>();
                         for (NewsArticleModel newsArticle : newsArticles) {
                             NewsArticleViewModel newsArticleForView =
@@ -57,7 +58,6 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
                             newsArticlesForView.add(newsArticleForView);
                         }
 
-                        Collections.reverse(newsArticlesForView);
                         return newsArticlesForView;
                     }
                 })
@@ -71,6 +71,7 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
 
     @Override
     public void selectNewsArticle(int index) {
-
+        String id = newsArticles.get(index).getId();
+        this.view.navigateToArticle(id);
     }
 }
