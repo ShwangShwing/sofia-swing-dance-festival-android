@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.httpsofiaswing.sofiaswingdancefestival", appContext.getPackageName());
+        assertEquals("com.sofiaswing.sofiaswingdancefestival", appContext.getPackageName());
     }
 }

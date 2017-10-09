@@ -1,6 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.ui;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 /**
@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
  */
 
 public class UiInterfaces {
-    public interface IDrawerNavigationFragmentAttacher {
-        void attachNavigationFragment(final AppCompatActivity activity);
+    public interface IDrawerNavigationFragmentFactory {
+        Fragment getNavigationFragment(final AppCompatActivity activity);
     }
 
     public interface ITitleFragmentAttacher {

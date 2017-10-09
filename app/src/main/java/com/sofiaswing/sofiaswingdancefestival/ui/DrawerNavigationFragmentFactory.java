@@ -21,12 +21,12 @@ import com.sofiaswing.sofiaswingdancefestival.commonFragments.DrawerNavigationFr
  * Created by shwangshwing on 10/8/17.
  */
 
-public class DrawerNavigationFragmentAttacher implements UiInterfaces.IDrawerNavigationFragmentAttacher {
+public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavigationFragmentFactory {
     @Inject
-    public DrawerNavigationFragmentAttacher() {
+    public DrawerNavigationFragmentFactory() {
     }
 
-    public void attachNavigationFragment(final AppCompatActivity activity) {
+    public Fragment getNavigationFragment(final AppCompatActivity activity) {
         ArrayList<DrawerItemInfo> items = new ArrayList<>();
 
         items.add(new DrawerItemInfo(1, activity.getString(R.string.news)));
@@ -47,10 +47,8 @@ public class DrawerNavigationFragmentAttacher implements UiInterfaces.IDrawerNav
             }
         });
 
-        activity.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container_drawer_navigation, drawerFragment)
-                .commit();
+        return drawerFragment;
+
     }
 
 

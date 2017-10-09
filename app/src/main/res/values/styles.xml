@@ -11,5 +11,17 @@
         <item name="android:textSize">32dp</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+    <style name="NewsArticle" parent="AppTheme">
+        <item name="android:padding">4dp</item>
+    </style>
+    <style name="NewsArticleImage" parent="AppTheme">
+        <item name="android:layout_marginRight">4dp</item>
+    </style>
+    <style name="NewsArticleDate" parent="AppTheme">
+        <item name="android:textSize">14dp</item>
+    </style>
+    <style name="NewsArticleContent" parent="AppTheme">
+        <item name="android:textSize">16dp</item>
+    </style>
 
 </resources>
