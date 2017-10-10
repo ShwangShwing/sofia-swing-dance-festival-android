@@ -1,5 +1,8 @@
 package com.sofiaswing.sofiaswingdancefestival.views.venues;
 
+import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
+import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -15,7 +18,11 @@ public class VenuesModule {
     }
 
     @Provides
-    VenuesInterfaces.IPresenter providePresenter() {
-        return new VenuesPresenter();
+    VenuesInterfaces.IPresenter providePresenter(
+            VenuesInterfaces.IView view,
+            DataInterfaces.IVenuesData venuesData,
+            ProvidersInterfaces.ILocationProvider locationProvider
+    ) {
+        return new VenuesPresenter(view, venuesData, locationProvider);
     }
 }

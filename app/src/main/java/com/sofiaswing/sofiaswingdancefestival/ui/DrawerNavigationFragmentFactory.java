@@ -1,5 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -66,6 +67,13 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
             }
         });
 
+        this.setDrawerSelectedElement(activity, drawerFragment);
+
+        return drawerFragment;
+
+    }
+
+    private void setDrawerSelectedElement(Activity activity, DrawerNavigationFragment drawerFragment) {
         if (activity instanceof NewsActivity) {
             drawerFragment.setSelectedItem(1);
         }
@@ -75,9 +83,6 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
         else if (activity instanceof VenuesActivity) {
             drawerFragment.setSelectedItem(6);
         }
-
-        return drawerFragment;
-
     }
 
 

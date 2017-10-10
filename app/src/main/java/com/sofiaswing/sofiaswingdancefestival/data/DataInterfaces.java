@@ -2,6 +2,7 @@ package com.sofiaswing.sofiaswingdancefestival.data;
 
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
 import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
+import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.util.List;
 
@@ -20,5 +21,9 @@ public class DataInterfaces {
     public interface IInstructorsData {
         Observable<List<InstructorModel>> getAll();
         Observable<InstructorModel> getById(String id);
+    }
+
+    public interface IVenuesData {
+        Observable<List<VenueModel>> getAll();
     }
 }

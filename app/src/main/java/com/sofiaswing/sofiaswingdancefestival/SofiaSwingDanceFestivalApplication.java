@@ -12,6 +12,8 @@ import com.sofiaswing.sofiaswingdancefestival.views.news.NewsActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.news.NewsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleModule;
+import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesModule;
 
 import dagger.Component;
 
@@ -40,6 +42,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
             NewsArticleModule.class,
             InstructorsModule.class,
             InstructorDetailsModule.class,
+            VenuesModule.class,
             FirebaseDataModule.class,
             ProvidersModule.class
     })
@@ -48,5 +51,6 @@ public class SofiaSwingDanceFestivalApplication extends Application {
         void inject(NewsArticleActivity newsArticleActivity);
         void inject(InstructorsActivity instructorsActivity);
         void inject(InstructorDetailsActivity instructorDetailsActivity);
+        void inject(VenuesActivity venuesActivity);
     }
 }

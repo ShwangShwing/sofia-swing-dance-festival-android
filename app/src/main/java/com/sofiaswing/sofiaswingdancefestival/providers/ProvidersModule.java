@@ -1,10 +1,13 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
+import android.location.LocationManager;
+
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -27,6 +30,11 @@ public class ProvidersModule {
     @Provides
     ProvidersInterfaces.IImageProvider provideImageProvider() {
         return new ImageProvider();
+    }
+
+    @Provides
+    ProvidersInterfaces.ILocationProvider provideLocationProvider() {
+        return new LocationProvider();
     }
 
     @Provides

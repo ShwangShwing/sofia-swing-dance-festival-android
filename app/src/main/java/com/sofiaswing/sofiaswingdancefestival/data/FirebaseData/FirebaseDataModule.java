@@ -27,4 +27,10 @@ public class FirebaseDataModule {
     DataInterfaces.IInstructorsData provideInstructorsFirebaseData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
         return new InstructorsFirebaseData(currentSsdfYearProvider);
     }
+
+    @Provides
+    DataInterfaces.IVenuesData provideVenuesFirebaseData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider)
+    {
+        return new VenuesFirebaseData(currentSsdfYearProvider);
+    }
 }
