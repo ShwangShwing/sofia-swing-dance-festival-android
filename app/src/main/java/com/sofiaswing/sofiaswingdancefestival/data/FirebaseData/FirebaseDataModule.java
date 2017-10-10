@@ -19,7 +19,12 @@ public class FirebaseDataModule {
     }
 
     @Provides
-    DataInterfaces.INewsArticlesData provideNewsArticlesMockData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
+    DataInterfaces.INewsArticlesData provideNewsArticlesFirebaseData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
         return new NewsArticlesFirebaseData(currentSsdfYearProvider);
+    }
+
+    @Provides
+    DataInterfaces.IInstructorsData provideInstructorsFirebaseData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
+        return new InstructorsFirebaseData(currentSsdfYearProvider);
     }
 }

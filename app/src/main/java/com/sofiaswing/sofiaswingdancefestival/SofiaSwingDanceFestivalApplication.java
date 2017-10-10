@@ -4,6 +4,10 @@ import android.app.Application;
 
 import com.sofiaswing.sofiaswingdancefestival.data.FirebaseData.FirebaseDataModule;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersModule;
+import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsModule;
+import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.news.NewsActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.news.NewsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
@@ -34,11 +38,15 @@ public class SofiaSwingDanceFestivalApplication extends Application {
     @Component(modules = {
             NewsModule.class,
             NewsArticleModule.class,
+            InstructorsModule.class,
+            InstructorDetailsModule.class,
             FirebaseDataModule.class,
             ProvidersModule.class
     })
     public interface ApplicationComponent {
         void inject(NewsActivity newsActivity);
         void inject(NewsArticleActivity newsArticleActivity);
+        void inject(InstructorsActivity instructorsActivity);
+        void inject(InstructorDetailsActivity instructorDetailsActivity);
     }
 }

@@ -20,8 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.newsArticle.NewsArticleActivity" />
-        <activity android:name=".views.instructors.InstructorsActivityActivity"></activity>
+        <activity
+            android:name=".views.newsArticle.NewsArticleActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".views.instructors.InstructorsActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".views.instructorDetails.InstructorDetailsActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".views.venues.VenuesActivity"></activity>
     </application>
 
 </manifest>

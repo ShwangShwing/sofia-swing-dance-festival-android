@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity">
+    tools:context="com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity">
 
     <FrameLayout
         android:id="@+id/container_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
+    
 </LinearLayout>

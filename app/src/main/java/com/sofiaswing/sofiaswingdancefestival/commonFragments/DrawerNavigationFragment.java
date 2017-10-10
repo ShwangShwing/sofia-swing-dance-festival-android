@@ -20,6 +20,7 @@ public class DrawerNavigationFragment extends Fragment {
     private Drawer.OnDrawerItemClickListener onDrawerItemClick;
     private ArrayList<DrawerItemInfo> drawerItems;
     private Drawer drawer;
+    private int selectedItem;
 
     public DrawerNavigationFragment() {
         // Required empty public constructor
@@ -48,6 +49,10 @@ public class DrawerNavigationFragment extends Fragment {
     public void onStart() {
         super.onStart();
         this.setupDrawer();
+    }
+
+    public void setSelectedItem(int selectedItem) {
+        this.selectedItem = selectedItem;
     }
 
     private void closeDrawer() {
@@ -87,6 +92,7 @@ public class DrawerNavigationFragment extends Fragment {
                 .withToolbar(toolbar)
                 .withDrawerItems(new ArrayList<IDrawerItem>(items))
                 .withOnDrawerItemClickListener(onClickListenerWithClose)
+                .withSelectedItem(this.selectedItem)
                 .build();
     }
 }

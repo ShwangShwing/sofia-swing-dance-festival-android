@@ -28,12 +28,10 @@ import io.reactivex.annotations.NonNull;
 
 public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesData {
     private ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
-    private List<NewsArticleModel> newsArticles;
 
     @Inject
     public NewsArticlesFirebaseData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
         this.currentSsdfYearProvider = currentSsdfYearProvider;
-        this.newsArticles = new ArrayList<>();
     }
 
     @Override
@@ -47,6 +45,8 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
             @Override
             public void subscribe(@NonNull final ObservableEmitter<List<NewsArticleModel>> e) throws Exception {
                 newsArticlesRef.orderByKey().addChildEventListener(new ChildEventListener() {
+                    private List<NewsArticleModel> newsArticles = new ArrayList<NewsArticleModel>();
+
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         String articleKey = dataSnapshot.getKey();

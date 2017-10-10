@@ -1,7 +1,6 @@
-package com.sofiaswing.sofiaswingdancefestival.views.newsArticle;
+package com.sofiaswing.sofiaswingdancefestival.views.instructorDetails;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,12 +14,7 @@ import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.views.news.NewsArticleViewModel;
-
-import org.w3c.dom.Text;
-
-import java.text.DateFormat;
-import java.util.Locale;
+import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorViewModel;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -29,13 +23,12 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewsArticleView extends Fragment
-    implements NewsArticleInterfaces.IView {
-
-    private NewsArticleInterfaces.IPresenter presenter;
+public class InstructorDetailsView extends Fragment
+    implements InstructorDetailsInterfaces.IView {
+    private InstructorDetailsInterfaces.IPresenter presenter;
     private ProvidersInterfaces.IImageProvider imageProvider;
 
-    public NewsArticleView() {
+    public InstructorDetailsView() {
         // Required empty public constructor
     }
 
@@ -44,7 +37,7 @@ public class NewsArticleView extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_news_article_view, container, false);
+        View root = inflater.inflate(R.layout.fragment_instructor_details_view, container, false);
 
         this.setRetainInstance(true);
 
@@ -59,7 +52,7 @@ public class NewsArticleView extends Fragment
     }
 
     @Override
-    public void setPresenter(NewsArticleInterfaces.IPresenter presenter) {
+    public void setPresenter(InstructorDetailsInterfaces.IPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -69,21 +62,32 @@ public class NewsArticleView extends Fragment
     }
 
     @Override
-    public void setNewsArticle(NewsArticleViewModel newsArticle) {
-        DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
-        ((TextView) this.getActivity().findViewById(R.id.tvNewsArticleDate))
-                .setText(dateFormatter.format(newsArticle.getPostedOn()));
-        ((TextView) this.getActivity().findViewById(R.id.tvNewsArticleText))
-                .setText(newsArticle.getText());
+    public void setInstructor(InstructorViewModel instructor) {
+        ((TextView) this.getActivity().findViewById(R.id.tvInstructorName))
+                .setText(instructor.getName());
 
-        final ImageView image = this.getActivity().findViewById(R.id.ivNewsArticleImage);
+        String instructorTypeString = instructor.getType();
+        if (instructor.getType().equals("main")) {
+            instructorTypeString = getString(R.string.instructor_type_main);
+        }
+        else if (instructor.getType().equals("taster")) {
+            instructorTypeString = getString(R.string.instructor_type_taster);
+        }
+
+        ((TextView) this.getActivity().findViewById(R.id.tvInstructorType))
+                .setText(instructorTypeString);
+
+        ((TextView) this.getActivity().findViewById(R.id.tvInstructorDescription))
+                    .setText(instructor.getDescription());
+
+        final ImageView image = this.getActivity().findViewById(R.id.ivInstructorImage);
         image.setImageResource(R.drawable.newsarticleplaceholderimage);
         image.setAlpha(0.5f);
 
-        final ProgressBar progressBar = this.getActivity().findViewById(R.id.pbNewsArticleImageLoading);
+        final ProgressBar progressBar = this.getActivity().findViewById(R.id.pbInstructorImageLoading);
         progressBar.setVisibility(View.VISIBLE);
 
-        imageProvider.getImageFromUrl(newsArticle.getImageUrl())
+        imageProvider.getImageFromUrl(instructor.getImageUrl())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Bitmap>() {

@@ -1,15 +1,15 @@
-package com.sofiaswing.sofiaswingdancefestival.views.instructors;
+package com.sofiaswing.sofiaswingdancefestival.views.venues;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 
-public class InstructorsActivityActivity extends AppCompatActivity {
+public class VenuesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_instructors_activity);
+        setContentView(R.layout.activity_venues);
     }
 }

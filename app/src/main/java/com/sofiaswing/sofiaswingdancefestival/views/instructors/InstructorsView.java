@@ -1,11 +1,10 @@
-package com.sofiaswing.sofiaswingdancefestival.views.news;
+package com.sofiaswing.sofiaswingdancefestival.views.instructors;
 
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,50 +22,42 @@ import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity;
 
-import java.text.DateFormat;
 import java.util.List;
-import java.util.Locale;
-
-import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.R.attr.name;
-
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewsView extends Fragment
-        implements NewsInterfaces.IView {
-    public ProvidersInterfaces.IImageProvider imageProvider;
+public class InstructorsView extends Fragment
+    implements InstructorsInterfaces.IView {
+    private InstructorsInterfaces.IPresenter presenter;
+    private ArrayAdapter<InstructorViewModel> instructorsAdapter;
+    private ProvidersInterfaces.IImageProvider imageProvider;
 
-    private NewsInterfaces.IPresenter presenter;
-
-    private ArrayAdapter<NewsArticleViewModel> lvNewsAdapter;
-
-    public NewsView() {
+    public InstructorsView() {
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_news_view, container, false);
-
+        View root = inflater.inflate(R.layout.fragment_instructors_view, container, false);
         this.setRetainInstance(true);
 
-        ListView lvNewsArticles = root.findViewById(R.id.lvNewsArticles);
-        this.lvNewsAdapter = new NewsArticlesAdapter(root.getContext(), android.R.layout.simple_list_item_1);
-        lvNewsArticles.setAdapter(this.lvNewsAdapter);
-        lvNewsArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView lvInstructors = root.findViewById(R.id.lvInstructors);
+        this.instructorsAdapter = new InstructorsAdapter(root.getContext(), android.R.layout.simple_list_item_1);
+        lvInstructors.setAdapter(this.instructorsAdapter);
+        lvInstructors.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                presenter.selectNewsArticle(position);
+                presenter.selectInstructor(position);
             }
         });
 
@@ -80,8 +71,7 @@ public class NewsView extends Fragment
         this.presenter.start();
     }
 
-    @Override
-    public void setPresenter(NewsInterfaces.IPresenter presenter) {
+    public void setPresenter(InstructorsInterfaces.IPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -91,53 +81,63 @@ public class NewsView extends Fragment
     }
 
     @Override
-    public void setNews(List<NewsArticleViewModel> newsArticles) {
-        this.lvNewsAdapter.clear();
-        this.lvNewsAdapter.addAll(newsArticles);
+    public void setInstructors(List<InstructorViewModel> instructors) {
+        this.instructorsAdapter.clear();
+        this.instructorsAdapter.addAll(instructors);
     }
 
     @Override
-    public void navigateToArticle(String articleId) {
-        Intent intent = new Intent(this.getContext(), NewsArticleActivity.class);
-        intent.putExtra(NewsArticleActivity.ARTICLE_ID_KEY, articleId);
-        startActivity(intent);
+    public void navigateToInstructor(String instructorId) {
+        Intent intent = new Intent(this.getContext(), InstructorDetailsActivity.class);
+        intent.putExtra(InstructorDetailsActivity.INSTRUCTOR_ID_KEY, instructorId);
+        this.startActivity(intent);
     }
 
-    private class NewsArticlesAdapter extends ArrayAdapter<NewsArticleViewModel> {
-
-        public NewsArticlesAdapter(@NonNull Context context, @LayoutRes int resource) {
+    private class InstructorsAdapter extends ArrayAdapter<InstructorViewModel>  {
+        public InstructorsAdapter(@NonNull Context context, @LayoutRes int resource) {
             super(context, resource);
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View newsArticleRow = convertView;
+            View instructorRow = convertView;
 
             // TODO: Remove the row below when the image loading race condition is fixed
-            newsArticleRow = null;
-            if (newsArticleRow == null) {
+            instructorRow = null;
+            if (instructorRow == null) {
                 LayoutInflater inflater;
                 inflater = LayoutInflater.from(this.getContext());
-                newsArticleRow = inflater.inflate(R.layout.layout_news_article_row, null);
+                instructorRow = inflater.inflate(R.layout.layout_instructor_row, null);
             }
 
-            NewsArticleViewModel article = this.getItem(position);
+            InstructorViewModel instructor = this.getItem(position);
 
-            DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
-            ((TextView) newsArticleRow.findViewById(R.id.tvNewsArticleDate))
-                    .setText(dateFormatter.format(article.getPostedOn()));
-            ((TextView) newsArticleRow.findViewById(R.id.tvNewsArticleText))
-                    .setText(article.getText());
+            ((TextView) instructorRow.findViewById(R.id.tvInstructorName))
+                    .setText(instructor.getName());
 
-            final ImageView image = newsArticleRow.findViewById(R.id.ivNewsArticleImage);
+            String instructorTypeString = instructor.getType();
+            if (instructor.getType().equals("main")) {
+                instructorTypeString = getString(R.string.instructor_type_main);
+            }
+            else if (instructor.getType().equals("taster")) {
+                instructorTypeString = getString(R.string.instructor_type_taster);
+            }
+
+            ((TextView) instructorRow.findViewById(R.id.tvInstructorType))
+                    .setText(instructorTypeString);
+
+//            ((TextView) instructorRow.findViewById(R.id.tvInstructorDescription))
+//                    .setText(instructor.getDescription());
+
+            final ImageView image = instructorRow.findViewById(R.id.ivInstructorImage);
             image.setImageResource(R.drawable.newsarticleplaceholderimage);
             image.setAlpha(0.5f);
 
-            final ProgressBar progressBar = newsArticleRow.findViewById(R.id.pbNewsArticleImageLoading);
+            final ProgressBar progressBar = instructorRow.findViewById(R.id.pbInstructorImageLoading);
             progressBar.setVisibility(View.VISIBLE);
 
-            imageProvider.getImageFromUrl(article.getImageUrl())
+            imageProvider.getImageFromUrl(instructor.getImageUrl())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<Bitmap>() {
@@ -161,7 +161,7 @@ public class NewsView extends Fragment
                         }
                     });
 
-            return newsArticleRow;
+            return instructorRow;
         }
     }
 }
