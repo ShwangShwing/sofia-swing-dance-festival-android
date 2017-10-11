@@ -72,6 +72,7 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
         private final List<ClassLevelModel> classLevels;
         private final String tasterTitle;
         private final ArrayList<Fragment> fragments;
+        private final Fragment tasterFramgent;
 
         public TabsNavigationAdapter(FragmentManager fm, List<ClassLevelModel> classLevels, String tasterTitle) {
             super(fm);
@@ -80,11 +81,11 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
 
             this.fragments = new ArrayList<>();
             for (ClassLevelModel classLevel : this.classLevels) {
-                Fragment fragment = ClassScheduleFragment.newInstance(presenter, classLevel.getId());
+                Fragment fragment = ClassScheduleFragment.newInstance(presenter, classLevel.getId(), false);
                 this.fragments.add(fragment);
             }
 
-
+            this.tasterFramgent = ClassScheduleFragment.newInstance(presenter, "", true);
         }
 
         @Override
@@ -93,7 +94,7 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
                 return this.fragments.get(position);
             }
             else {
-                return null;
+                return this.tasterFramgent;
             }
         }
 
@@ -109,7 +110,7 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
 
         @Override
         public int getCount() {
-            return classLevels.size();
+            return classLevels.size() + 1;
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.sofiaswing.sofiaswingdancefestival.data.FirebaseData.FirebaseDataModule;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersModule;
@@ -18,6 +19,8 @@ import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesModule;
 
 import dagger.Component;
+import dagger.Module;
+import dagger.Provides;
 
 /**
  * Created by shwangshwing on 10/8/17.
@@ -32,6 +35,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
 
         this.component = DaggerSofiaSwingDanceFestivalApplication_ApplicationComponent
                 .builder()
+                .applicationModule(new ApplicationModule(getApplicationContext()))
                 .build();
     }
 
@@ -40,6 +44,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
     }
 
     @Component(modules = {
+            ApplicationModule.class,
             NewsModule.class,
             NewsArticleModule.class,
             InstructorsModule.class,
@@ -56,5 +61,19 @@ public class SofiaSwingDanceFestivalApplication extends Application {
         void inject(InstructorDetailsActivity instructorDetailsActivity);
         void inject(VenuesActivity venuesActivity);
         void inject(ClassesActivity classesActivity);
+    }
+}
+
+@Module
+class ApplicationModule {
+    private final Context context;
+
+    public ApplicationModule(Context context) {
+        this.context = context;
+    }
+
+    @Provides
+    public Context provideContext() {
+        return this.context;
     }
 }

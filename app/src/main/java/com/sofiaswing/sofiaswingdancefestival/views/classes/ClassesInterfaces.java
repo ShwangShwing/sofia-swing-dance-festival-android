@@ -22,6 +22,14 @@ public class ClassesInterfaces {
         IView getView();
         void start();
 
-        Observable<List<ClassModel>> getClassByLevel(String type);
+        Observable<List<ClassModel>> getClassesByLevel(String type);
+
+        Observable<List<ClassModel>> getTasterClasses();
+
+        void subscribeForEvent(String eventId, String eventName, int startTimestamp);
+
+        void unsubscribeFromEvent(String eventId);
+
+        boolean isSubscribedForEvent(String eventId);
     }
 }

@@ -26,4 +26,10 @@ public class ProvidersInterfaces {
     public interface ICurrentSsdfYearProvider {
         String getCurrentSsdfYear();
     }
+
+    public interface ISettingsProvider {
+        boolean isSubscribedForEvent(String eventId);
+        void subscribeForEvent(String eventId, String eventName, int startTimestamp, int notifyTimestamp);
+        void unsubscribeFromEvent(String eventId);
+    }
 }

@@ -3,6 +3,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.classes;
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassLevelModel;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
+import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.List;
 
@@ -19,10 +20,15 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
     private final ClassesInterfaces.IView view;
     private final DataInterfaces.IClassLevelsData classLevelsFirebaseData;
     private final DataInterfaces.IEventsData eventsData;
+    private final ProvidersInterfaces.ISettingsProvider settingsProvider;
 
-    public ClassesPresenter(ClassesInterfaces.IView view, DataInterfaces.IClassLevelsData classLevelsFirebaseData, DataInterfaces.IEventsData eventsData) {
+    public ClassesPresenter(ClassesInterfaces.IView view,
+                            DataInterfaces.IClassLevelsData classLevelsFirebaseData,
+                            DataInterfaces.IEventsData eventsData,
+                            ProvidersInterfaces.ISettingsProvider settingsProvider) {
         this.view = view;
         this.eventsData = eventsData;
+        this.settingsProvider = settingsProvider;
         this.view.setPresenter(this);
         this.classLevelsFirebaseData = classLevelsFirebaseData;
     }
@@ -46,7 +52,27 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
     }
 
     @Override
-    public Observable<List<ClassModel>> getClassByLevel(String type) {
+    public Observable<List<ClassModel>> getClassesByLevel(String type) {
         return this.eventsData.getClassesByLevel(type);
+    }
+
+    @Override
+    public Observable<List<ClassModel>> getTasterClasses() {
+        return this.eventsData.getTasterClasses();
+    }
+
+    @Override
+    public void subscribeForEvent(String eventId, String eventName, int startTimestamp) {
+        this.settingsProvider.subscribeForEvent(eventId, eventName, startTimestamp, 0);
+    }
+
+    @Override
+    public void unsubscribeFromEvent(String eventId) {
+        this.settingsProvider.unsubscribeFromEvent(eventId);
+    }
+
+    @Override
+    public boolean isSubscribedForEvent(String eventId) {
+        return this.settingsProvider.isSubscribedForEvent(eventId);
     }
 }

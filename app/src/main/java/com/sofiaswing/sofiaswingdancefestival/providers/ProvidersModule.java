@@ -1,5 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
+import android.content.Context;
 import android.location.LocationManager;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
@@ -19,12 +20,12 @@ import dagger.Provides;
 
 @Module
 public class ProvidersModule {
-    Lock currentSsdfYearProviderLock;
     private ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
+    private ProvidersInterfaces.ISettingsProvider settingsProvider;
 
     public ProvidersModule() {
-        this.currentSsdfYearProviderLock = new ReentrantLock();
         this.currentSsdfYearProvider = null;
+        this.settingsProvider = null;
     }
 
     @Provides
@@ -38,13 +39,20 @@ public class ProvidersModule {
     }
 
     @Provides
-    ProvidersInterfaces.ICurrentSsdfYearProvider provideCurrentSsdfYearProvider() {
-        currentSsdfYearProviderLock.lock();
+    synchronized ProvidersInterfaces.ICurrentSsdfYearProvider provideCurrentSsdfYearProvider() {
         if (this.currentSsdfYearProvider == null) {
             this.currentSsdfYearProvider = new CurrentSsdfYearProvider();
         }
 
-        currentSsdfYearProviderLock.unlock();
         return this.currentSsdfYearProvider;
+    }
+
+    @Provides
+    synchronized ProvidersInterfaces.ISettingsProvider provideSettingsProvider(Context context) {
+        if (this.settingsProvider == null) {
+            this.settingsProvider = new SettingsProvider(context);
+        }
+
+        return this.settingsProvider;
     }
 }

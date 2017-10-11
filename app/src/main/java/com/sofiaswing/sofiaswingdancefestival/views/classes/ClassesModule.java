@@ -1,6 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.classes;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
+import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import dagger.Module;
 import dagger.Provides;
@@ -18,7 +19,10 @@ public class ClassesModule {
 
     @Provides
     ClassesInterfaces.IPresenter provideNewsPresenter(
-            ClassesInterfaces.IView view, DataInterfaces.IClassLevelsData classLevelsFirebaseData, DataInterfaces.IEventsData eventsData) {
-        return new ClassesPresenter(view, classLevelsFirebaseData, eventsData);
+            ClassesInterfaces.IView view,
+            DataInterfaces.IClassLevelsData classLevelsFirebaseData,
+            DataInterfaces.IEventsData eventsData,
+            ProvidersInterfaces.ISettingsProvider settingsProvider) {
+        return new ClassesPresenter(view, classLevelsFirebaseData, eventsData, settingsProvider);
     }
 }

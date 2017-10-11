@@ -37,13 +37,24 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
 
     @Override
     public Observable<List<ClassModel>> getClassesByLevel(final String level) {
+        String eventTypeFullString = String.format("class_%s", level);
+
+        return this.getClass(eventTypeFullString, level);
+    }
+
+    @Override
+    public Observable<List<ClassModel>> getTasterClasses() {
+        return this.getClass("taster_class", "");
+    }
+
+    private Observable<List<ClassModel>> getClass(String typeFullString, final String level) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         String collectionPath = String.format("%s/events", this.currentSsdfYearProvider.getCurrentSsdfYear());
         final DatabaseReference classLevelsRef = database.getReference(collectionPath);
         final Query classQuery = classLevelsRef
                 .orderByChild("type")
-                .equalTo(String.format("class_%s", level));
+                .equalTo(typeFullString);
 
         Observable<List<ClassModel>> observable = Observable.create(new ObservableOnSubscribe<List<ClassModel>>() {
             @Override
@@ -70,7 +81,10 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                 id = classSnapshot.getKey();
                                 startTime = new Date(Long.parseLong(classSnapshot.child("start").getValue().toString()) * 1000);
                                 endTime = new Date(Long.parseLong(classSnapshot.child("end").getValue().toString()) * 1000);
-                                levelName = classSnapshot.child("levelName").getValue().toString();
+                                levelName =
+                                        classSnapshot.child("levelName").exists() ?
+                                        classSnapshot.child("levelName").getValue().toString()
+                                        : "";
                                 name = classSnapshot.child("name").getValue().toString();
 
                                 DataSnapshot venueSnapshot = classSnapshot.child("venue").getChildren().iterator().next();
@@ -135,4 +149,5 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
 
         return observable;
     }
+
 }

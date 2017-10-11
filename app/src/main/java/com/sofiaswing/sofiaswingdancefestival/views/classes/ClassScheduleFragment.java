@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,7 +23,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.zip.Inflater;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -32,16 +32,24 @@ public class ClassScheduleFragment extends Fragment {
     private ClassesInterfaces.IPresenter presenter;
     private String classLevel;
     private ArrayAdapter<ClassModel> classScheduleAdapter;
+    private List<Boolean> subscribedClasses;
+    private boolean isTaster;
 
     public ClassScheduleFragment() {
         // Required empty public constructor
     }
 
-    public static ClassScheduleFragment newInstance(ClassesInterfaces.IPresenter presenter, String classLevel) {
+    public static ClassScheduleFragment newInstance(
+            ClassesInterfaces.IPresenter presenter,
+            String classLevel,
+            boolean isTaster) {
         ClassScheduleFragment fragment = new ClassScheduleFragment();
 
         fragment.presenter = presenter;
         fragment.classLevel = classLevel;
+        fragment.isTaster = isTaster;
+
+        fragment.subscribedClasses = new ArrayList<>();
 
         return fragment;
     }
@@ -50,16 +58,42 @@ public class ClassScheduleFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        presenter.getClassByLevel(classLevel)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<ClassModel>>() {
-                    @Override
-                    public void accept(List<ClassModel> classModels) throws Exception {
-                        classScheduleAdapter.clear();
-                        classScheduleAdapter.addAll(classModels);
-                    }
-                });
+        if (!this.isTaster) {
+            presenter.getClassesByLevel(classLevel)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<ClassModel>>() {
+                        @Override
+                        public void accept(List<ClassModel> classes) throws Exception {
+                            classScheduleAdapter.clear();
+                            subscribedClasses.clear();
+                            for (int i = 0; i < classes.size(); i++) {
+                                subscribedClasses.add(i,
+                                        presenter.isSubscribedForEvent(classes.get(i).getId()));
+                            }
+
+                            classScheduleAdapter.addAll(classes);
+                        }
+                    });
+        }
+        else {
+            presenter.getTasterClasses()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<ClassModel>>() {
+                        @Override
+                        public void accept(List<ClassModel> classes) throws Exception {
+                            classScheduleAdapter.clear();
+                            subscribedClasses.clear();
+                            for (int i = 0; i < classes.size(); i++) {
+                                subscribedClasses.add(i,
+                                        presenter.isSubscribedForEvent(classes.get(i).getId()));
+                            }
+
+                            classScheduleAdapter.addAll(classes);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -71,6 +105,25 @@ public class ClassScheduleFragment extends Fragment {
         ListView lvClasses = root.findViewById(R.id.lvClassSchedule);
         this.classScheduleAdapter = new ClassScheduleAdapter(root.getContext(), android.R.layout.simple_list_item_1);
         lvClasses.setAdapter(this.classScheduleAdapter);
+        lvClasses.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (subscribedClasses.get(position)) {
+                    subscribedClasses.set(position, false);
+                    view.findViewById(R.id.tvIsSubscribed).setVisibility(View.GONE);
+                    presenter.unsubscribeFromEvent(classScheduleAdapter.getItem(position).getId());
+                }
+                else {
+                    subscribedClasses.set(position, true);
+                    view.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
+                    presenter.subscribeForEvent(
+                            classScheduleAdapter.getItem(position).getId(),
+                            classScheduleAdapter.getItem(position).getName(),
+                            (int)(classScheduleAdapter.getItem(position).getStartTime().getTime() / 1000));
+
+                }
+            }
+        });
 
         return root;
     }
@@ -101,6 +154,9 @@ public class ClassScheduleFragment extends Fragment {
                             dateFormatter.format(classItem.getStartTime()),
                             dateFormatter.format(classItem.getEndTime())));
 
+            ((TextView) classRow.findViewById(R.id.tvName))
+                    .setText(classItem.getName());
+
             String instructorsNames = "";
             for (InstructorModel instructor: classItem.getInstructors()) {
                 if (instructorsNames != "") {
@@ -115,6 +171,15 @@ public class ClassScheduleFragment extends Fragment {
 
             ((TextView) classRow.findViewById(R.id.tvVenue))
                     .setText(classItem.getVenue().getName());
+
+            if (subscribedClasses.get(position)) {
+                subscribedClasses.set(position, true);
+                classRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
+            }
+            else {
+                subscribedClasses.set(position, false);
+                classRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.GONE);
+            }
 
             return classRow;
         }
