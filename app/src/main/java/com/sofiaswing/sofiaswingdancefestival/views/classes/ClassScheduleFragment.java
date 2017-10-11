@@ -1,7 +1,10 @@
 package com.sofiaswing.sofiaswingdancefestival.views.classes;
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -18,9 +21,11 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
+import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -100,7 +105,7 @@ public class ClassScheduleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_class_schedule, container, false);
+        final View root = inflater.inflate(R.layout.fragment_class_schedule, container, false);
 
         ListView lvClasses = root.findViewById(R.id.lvClassSchedule);
         this.classScheduleAdapter = new ClassScheduleAdapter(root.getContext(), android.R.layout.simple_list_item_1);

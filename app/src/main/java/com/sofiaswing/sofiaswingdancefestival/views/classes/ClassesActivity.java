@@ -12,6 +12,7 @@ import com.sofiaswing.sofiaswingdancefestival.ui.TitleFragmentAttacher;
 import javax.inject.Inject;
 
 public class ClassesActivity extends AppCompatActivity {
+    public static final String EVENT_ID_KEY = "event_id_key";
     @Inject
     public DrawerNavigationFragmentFactory drawerNavigationFragmentFactory;
     @Inject

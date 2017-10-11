@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.sofiaswing.sofiaswingdancefestival.data.FirebaseData.FirebaseDataModule;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersModule;
+import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
 import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesModule;
 import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity;
@@ -61,6 +62,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
         void inject(InstructorDetailsActivity instructorDetailsActivity);
         void inject(VenuesActivity venuesActivity);
         void inject(ClassesActivity classesActivity);
+        void inject(EventSubscriptionAlarmReceiver eventSubscriptionAlarmReceiver);
     }
 }
 
