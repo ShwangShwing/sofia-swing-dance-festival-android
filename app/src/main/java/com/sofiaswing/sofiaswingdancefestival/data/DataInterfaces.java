@@ -4,6 +4,7 @@ import com.sofiaswing.sofiaswingdancefestival.models.ClassLevelModel;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
 import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
+import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.util.List;
@@ -36,5 +37,9 @@ public class DataInterfaces {
     public interface IEventsData {
         Observable<List<ClassModel>> getClassesByLevel(String level);
         Observable<List<ClassModel>> getTasterClasses();
+    }
+
+    public interface IPartiesData {
+        Observable<List<PartyModel>> getParties();
     }
 }

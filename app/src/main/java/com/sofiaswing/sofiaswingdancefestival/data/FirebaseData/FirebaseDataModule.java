@@ -43,4 +43,9 @@ public class FirebaseDataModule {
     DataInterfaces.IEventsData provideFirebaseEventsData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
         return new EventsFirebaseData(currentSsdfYearProvider);
     }
+
+    @Provides
+    DataInterfaces.IPartiesData provideFirebasePartiesData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
+        return new PartiesFirebaseData(currentSsdfYearProvider);
+    }
 }

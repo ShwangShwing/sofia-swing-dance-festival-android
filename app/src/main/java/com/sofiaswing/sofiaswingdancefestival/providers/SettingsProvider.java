@@ -83,7 +83,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
     }
 
     @Override
-    public void subscribeForEvent(String eventId, String eventName, int startTimestamp, int notifyTimestamp) {
+    public void subscribeForEvent(String eventId, String eventName, long startTimestamp, long notifyTimestamp) {
         ContentValues values = new ContentValues();
         values.put(SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_ID, eventId);
         values.put(SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_NAME, eventName);
@@ -101,7 +101,6 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
             }
 
             if (notifyTimestamp == 0) {
-                //TODO: get default notification time
                 notifyTimestamp = startTimestamp - getEventsNotificationAdvanceTimeSeconds();
             }
 
@@ -233,8 +232,8 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
     private void setNotificationAlarmIfNotTooLate(
             String eventId,
             String eventName,
-            int startTimestamp,
-            int notifyTimestamp) {
+            long startTimestamp,
+            long notifyTimestamp) {
 
         if (System.currentTimeMillis() / 1000 > startTimestamp) {
             // The event has already started. Don't notify.
@@ -252,7 +251,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
                         eventNotificationIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long executionTimestampMs = notifyTimestamp * 1000;
+        long executionTimestampMs = (long)notifyTimestamp * 1000;
         AlarmManager alarmManager = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, executionTimestampMs, pendingIntent);
     }

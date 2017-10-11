@@ -3,7 +3,7 @@
     package="com.sofiaswing.sofiaswingdancefestival">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".SofiaSwingDanceFestivalApplication"
@@ -41,6 +41,11 @@
             android:name=".views.classes.ClassesActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
+            android:name=".views.parties.PartiesActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
 
         <receiver
             android:name=".utils.EventSubscriptionAlarmReceiver"

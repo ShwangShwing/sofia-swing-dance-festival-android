@@ -29,7 +29,7 @@ public class ProvidersInterfaces {
 
     public interface ISettingsProvider {
         boolean isSubscribedForEvent(String eventId);
-        void subscribeForEvent(String eventId, String eventName, int startTimestamp, int notifyTimestamp);
+        void subscribeForEvent(String eventId, String eventName, long startTimestamp, long notifyTimestamp);
         void unsubscribeFromEvent(String eventId);
 
         int getEventsNotificationAdvanceTimeSeconds();

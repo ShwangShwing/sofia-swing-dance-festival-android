@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import com.sofiaswing.sofiaswingdancefestival.commonFragments.DrawerNavigationFragment;
+import com.sofiaswing.sofiaswingdancefestival.views.parties.PartiesActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesActivity;
 
 /**
@@ -61,6 +62,10 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
                         intent = new Intent(activity, ClassesActivity.class);
                         activity.startActivity(intent);
                         break;
+                    case 4:
+                        intent = new Intent(activity, PartiesActivity.class);
+                        activity.startActivity(intent);
+                        break;
                     case 6:
                         intent = new Intent(activity, VenuesActivity.class);
                         activity.startActivity(intent);
@@ -87,6 +92,9 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
         }
         else if (activity instanceof ClassesActivity) {
             drawerFragment.setSelectedItem(3);
+        }
+        else if (activity instanceof PartiesActivity) {
+            drawerFragment.setSelectedItem(4);
         }
         else if (activity instanceof VenuesActivity) {
             drawerFragment.setSelectedItem(6);
