@@ -41,9 +41,13 @@
             android:name=".views.classes.ClassesActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
         <activity
             android:name=".views.parties.PartiesActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
+            android:name=".views.about.AboutActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
 
