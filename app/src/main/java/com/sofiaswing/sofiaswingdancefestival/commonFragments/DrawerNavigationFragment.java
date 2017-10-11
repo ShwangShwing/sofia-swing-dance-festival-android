@@ -77,6 +77,7 @@ public class DrawerNavigationFragment extends Fragment {
         final Drawer.OnDrawerItemClickListener onClickListenerWithClose = new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                // keep the selection. new activities are started with their own drawer on their correct location
                 drawer.setSelection(selectedItem, false);
                 if (undecoratedOnClickListener.onItemClick(view, position, drawerItem)) {
                     closeDrawer();

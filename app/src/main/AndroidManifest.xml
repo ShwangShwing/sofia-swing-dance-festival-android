@@ -3,6 +3,7 @@
     package="com.sofiaswing.sofiaswingdancefestival">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name=".SofiaSwingDanceFestivalApplication"
         android:allowBackup="true"
@@ -31,7 +32,11 @@
         <activity
             android:name=".views.instructorDetails.InstructorDetailsActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".views.venues.VenuesActivity"
+        <activity
+            android:name=".views.venues.VenuesActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".views.classes.ClassesActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
     </application>

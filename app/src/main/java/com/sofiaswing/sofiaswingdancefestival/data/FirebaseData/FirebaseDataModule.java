@@ -33,4 +33,14 @@ public class FirebaseDataModule {
     {
         return new VenuesFirebaseData(currentSsdfYearProvider);
     }
+
+    @Provides
+    DataInterfaces.IClassLevelsData provideClassLevelsFirebaseData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
+        return new ClassLevelsFirebaseData(currentSsdfYearProvider);
+    }
+
+    @Provides
+    DataInterfaces.IEventsData provideFirebaseEventsData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
+        return new EventsFirebaseData(currentSsdfYearProvider);
+    }
 }

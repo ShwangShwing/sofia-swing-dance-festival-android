@@ -27,6 +27,14 @@ public class InstructorModel {
         this.description = "";
     }
 
+    public InstructorModel(String id, String name, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.type = "";
+        this.description = "";
+    }
+
     public String getId() {
         return id;
     }

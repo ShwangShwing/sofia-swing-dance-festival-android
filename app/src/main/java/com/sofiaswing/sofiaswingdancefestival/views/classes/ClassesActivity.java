@@ -1,8 +1,8 @@
-package com.sofiaswing.sofiaswingdancefestival.views.news;
+package com.sofiaswing.sofiaswingdancefestival.views.classes;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
@@ -11,13 +11,13 @@ import com.sofiaswing.sofiaswingdancefestival.ui.TitleFragmentAttacher;
 
 import javax.inject.Inject;
 
-public class NewsActivity extends AppCompatActivity {
+public class ClassesActivity extends AppCompatActivity {
     @Inject
     public DrawerNavigationFragmentFactory drawerNavigationFragmentFactory;
     @Inject
     TitleFragmentAttacher titleFragmentAttacher;
     @Inject
-    NewsInterfaces.IPresenter presenter;
+    ClassesInterfaces.IPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class NewsActivity extends AppCompatActivity {
         this.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container_fragment, (Fragment) this.presenter.getView())
-                .replace(R.id.container_title, this.titleFragmentAttacher.getTitleFragment(this.getString(R.string.news)))
+                .replace(R.id.container_title, this.titleFragmentAttacher.getTitleFragment(this.getString(R.string.classes)))
                 .commit();
     }
 
