@@ -145,9 +145,14 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
 
     @Override
     public void stopLocationService() {
-        this.sensorManager.cancelTriggerSensor(triggerEventListener, significantMotionSensor);
-        this.locationManager.removeUpdates(this.locationListener);
-        this.locationListener = null;
+        if (this.sensorManager != null) {
+            this.sensorManager.cancelTriggerSensor(triggerEventListener, significantMotionSensor);
+        }
+
+        if (this.locationManager != null) {
+            this.locationManager.removeUpdates(this.locationListener);
+            this.locationListener = null;
+        }
     }
 
     @Override
