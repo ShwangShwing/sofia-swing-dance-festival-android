@@ -136,8 +136,21 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
     }
 
     @Override
-    public int getEventsNotificationAdvanceTimeSeconds() {
-        return Integer.parseInt(getSettingValueById(SETTING_ID_NOTIFICATION_ADVANCE_TIME_SECONDS));
+    public long getEventsNotificationAdvanceTimeSeconds() {
+        long result = DEFAULT_EVENT_NOTIFICATION_TIME_S;
+
+        try {
+            result = Integer.parseInt(getSettingValueById(SETTING_ID_NOTIFICATION_ADVANCE_TIME_SECONDS));
+        } catch (Exception e) {
+
+        }
+
+        return result;
+    }
+
+    @Override
+    public void setEventsNotificationAdvanceTimeSeconds(long seconds) {
+        this.setSettingValue(SETTING_ID_NOTIFICATION_ADVANCE_TIME_SECONDS, String.valueOf(seconds));
     }
 
     @Override
@@ -195,7 +208,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
                 try {
                     wait();
                 } catch (InterruptedException e) {
-                    return String.valueOf(DEFAULT_EVENT_NOTIFICATION_TIME_S);
+                    return "";
                 }
             }
 
@@ -204,7 +217,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
             };
 
             String selection = SettingsContract.Settings.COLUMN_NAME_SETTING_ID + " = ?";
-            String[] selectionArgs = {SettingsContract.Settings.COLUMN_NAME_SETTING_ID};
+            String[] selectionArgs = {settingId};
 
             Cursor cursor = this.database.query(
                     SettingsContract.Settings.TABLE_NAME,                     // The table to query
@@ -216,7 +229,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
                     null                                 // The sort order
             );
 
-            String result = String.valueOf(DEFAULT_EVENT_NOTIFICATION_TIME_S);
+            String result = "";
             if (cursor.moveToNext()) {
                 result = cursor.getString(
                         cursor.getColumnIndexOrThrow(
@@ -226,6 +239,54 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
             cursor.close();
 
             return result;
+        }
+    }
+
+    private void setSettingValue(String settingId, String settingValue) {
+        String[] projection = {
+                SettingsContract.Settings.COLUMN_NAME_SETTING_ID,
+        };
+
+
+        String selection = SettingsContract.Settings.COLUMN_NAME_SETTING_ID + " = ?";
+        String[] selectionArgs = {settingId};
+
+        ContentValues settingDbRowValues = new ContentValues();
+        settingDbRowValues.put(SettingsContract.Settings.COLUMN_NAME_SETTING_VALUE, settingValue);
+
+        synchronized (this) {
+            while (this.database == null) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+
+            Cursor cursor = this.database.query(
+                    SettingsContract.Settings.TABLE_NAME,                     // The table to query
+                    projection,                               // The columns to return
+                    selection,                                // The columns for the WHERE clause
+                    selectionArgs,                            // The values for the WHERE clause
+                    null,                                     // don't group the rows
+                    null,                                     // don't filter by row groups
+                    null                                 // The sort order
+            );
+
+            boolean settingExists = cursor.getCount() > 0;
+            cursor.close();
+
+            if (settingExists) {
+                this.database.update(
+                        SettingsContract.Settings.TABLE_NAME,
+                        settingDbRowValues,
+                        selection,
+                        selectionArgs
+                );
+            } else {
+                settingDbRowValues.put(SettingsContract.Settings.COLUMN_NAME_SETTING_ID, settingId);
+                this.database.insert(SettingsContract.Settings.TABLE_NAME, null, settingDbRowValues);
+            }
         }
     }
 
@@ -251,7 +312,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
                         eventNotificationIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long executionTimestampMs = (long)notifyTimestamp * 1000;
+        long executionTimestampMs = (long) notifyTimestamp * 1000;
         AlarmManager alarmManager = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, executionTimestampMs, pendingIntent);
     }

@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import com.sofiaswing.sofiaswingdancefestival.commonFragments.DrawerNavigationFragment;
 import com.sofiaswing.sofiaswingdancefestival.views.parties.PartiesActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.settings.SettingsActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesActivity;
 
 /**
@@ -40,9 +41,9 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
         items.add(new DrawerItemInfo(2, activity.getString(R.string.instructors)));
         items.add(new DrawerItemInfo(3, activity.getString(R.string.classes)));
         items.add(new DrawerItemInfo(4, activity.getString(R.string.parties)));
-        items.add(new DrawerItemInfo(5, activity.getString(R.string.schedule)));
+        //items.add(new DrawerItemInfo(5, activity.getString(R.string.schedule)));
         items.add(new DrawerItemInfo(6, activity.getString(R.string.venues)));
-        items.add(new DrawerItemInfo(7, activity.getString(R.string.map)));
+        //items.add(new DrawerItemInfo(7, activity.getString(R.string.map)));
         items.add(new DrawerItemInfo(8, activity.getString(R.string.contacts)));
         items.add(new DrawerItemInfo(9, activity.getString(R.string.settings)));
         items.add(new DrawerItemInfo(10, activity.getString(R.string.about)));
@@ -74,6 +75,10 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
                         break;
                     case 8:
                         intent = new Intent(activity, ContactUsActivity.class);
+                        activity.startActivity(intent);
+                        break;
+                    case 9:
+                        intent = new Intent(activity, SettingsActivity.class);
                         activity.startActivity(intent);
                         break;
                     case 10:
@@ -111,6 +116,9 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
         }
         else if (activity instanceof ContactUsActivity) {
             drawerFragment.setSelectedItem(8);
+        }
+        else if (activity instanceof SettingsActivity) {
+            drawerFragment.setSelectedItem(9);
         }
         else if (activity instanceof AboutActivity) {
             drawerFragment.setSelectedItem(10);

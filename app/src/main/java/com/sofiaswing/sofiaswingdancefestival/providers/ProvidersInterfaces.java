@@ -32,7 +32,8 @@ public class ProvidersInterfaces {
         void subscribeForEvent(String eventId, String eventName, long startTimestamp, long notifyTimestamp);
         void unsubscribeFromEvent(String eventId);
 
-        int getEventsNotificationAdvanceTimeSeconds();
+        long getEventsNotificationAdvanceTimeSeconds();
+        void setEventsNotificationAdvanceTimeSeconds(long seconds);
 
         void setupAllNotificationAlarms();
     }

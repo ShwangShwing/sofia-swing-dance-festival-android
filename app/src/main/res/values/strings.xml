@@ -22,4 +22,8 @@
     <string name="link_to_lindyhop_bg_facebook"><a href="https://www.facebook.com/LindyHopBulgaria/">https://www.facebook.com/LindyHopBulgaria</a></string>
     <string name="link_to_ssdf"><a href="http://sofiaswing.com/">Sofia swing dance festival</a></string>
     <string name="link_to_ssdf_facebook"><a href="https://www.facebook.com/SofiaSwing">https://www.facebook.com/SofiaSwing</a></string>
+    <string name="saved_events_notifications">Saved events notifications:</string>
+    <string name="minutes">minutes</string>
+    <string name="hour">hour</string>
+    <string name="dont_notify">don\'t notify</string>
 </resources>

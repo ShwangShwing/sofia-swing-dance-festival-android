@@ -57,6 +57,11 @@
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
 
+        <activity
+            android:name=".views.settings.SettingsActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+
         <receiver
             android:name=".utils.EventSubscriptionAlarmReceiver"
             android:enabled="true"
