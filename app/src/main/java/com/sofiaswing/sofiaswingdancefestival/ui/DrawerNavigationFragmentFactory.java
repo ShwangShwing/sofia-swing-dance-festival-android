@@ -12,6 +12,7 @@ import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.utils.DrawerItemInfo;
 import com.sofiaswing.sofiaswingdancefestival.views.about.AboutActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.contactUs.ContactUsActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.news.NewsActivity;
 
@@ -71,6 +72,10 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
                         intent = new Intent(activity, VenuesActivity.class);
                         activity.startActivity(intent);
                         break;
+                    case 8:
+                        intent = new Intent(activity, ContactUsActivity.class);
+                        activity.startActivity(intent);
+                        break;
                     case 10:
                         intent = new Intent(activity, AboutActivity.class);
                         activity.startActivity(intent);
@@ -103,6 +108,9 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
         }
         else if (activity instanceof VenuesActivity) {
             drawerFragment.setSelectedItem(6);
+        }
+        else if (activity instanceof ContactUsActivity) {
+            drawerFragment.setSelectedItem(8);
         }
         else if (activity instanceof AboutActivity) {
             drawerFragment.setSelectedItem(10);
