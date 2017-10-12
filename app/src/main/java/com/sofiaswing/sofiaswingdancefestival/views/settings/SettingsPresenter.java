@@ -1,8 +1,5 @@
 package com.sofiaswing.sofiaswingdancefestival.views.settings;
 
-import android.support.v4.app.Fragment;
-import android.widget.Toast;
-
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 /**
@@ -33,6 +30,5 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     public void setEventsNotificationAdvanceTimeSeconds(long seconds) {
         settingsProvider.setEventsNotificationAdvanceTimeSeconds(seconds);
         settingsProvider.setupAllNotificationAlarms(); // to reacalculate the alarm times
-        Toast.makeText(((Fragment)view).getContext(), String.format("Setting to %d seconds", seconds), Toast.LENGTH_SHORT).show();
     }
 }
