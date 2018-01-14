@@ -1,5 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.settings;
 
+import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,8 @@ public class SettingsInterfaces {
         void setEventNotificationTimeSelection(long seconds);
 
         void setPresenter(IPresenter presenter);
+
+        void setPopupCreator(UiInterfaces.IPopupCreator popupCreator);
     }
 
     public interface IPresenter {

@@ -3,7 +3,10 @@ package com.sofiaswing.sofiaswingdancefestival.views.settings;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +25,25 @@ import java.util.List;
 public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     private final long SIGNIFICANTLY_LARGE_TIME_INTERVAL_SECONDS = 2 * 365 * 24 * 60 * 60;
     private SettingsInterfaces.IPresenter presenter;
+    private UiInterfaces.IPopupCreator popupCreator;
     private ArrayAdapter<String> eventNotifyTimeAdapter;
     private List<Long> eventNotifyTimesSeconds;
     private Spinner spinner;
     private boolean ignoreNextNotificationTimeCallback;
+    //the following variables are for enabling some features for debugging
+    private GestureDetectorCompat hackerModeGestureDetector;
+    private int hackerModeCorrectGestureCount;
+    // combination for enabling the hacker mode
+    private static final String[] hackerModeCorrectGestureCombination = {
+            "up",
+            "up",
+            "down",
+            "down",
+            "left",
+            "right",
+            "left",
+            "right"};
+
 
     public SettingsView() {
         // Required empty public constructor
@@ -34,7 +53,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_settings_view, container, false);
+        final View root = inflater.inflate(R.layout.fragment_settings_view, container, false);
 
         this.spinner = (Spinner) root.findViewById(R.id.spEventNotifyTime);
         this.eventNotifyTimeAdapter = new ArrayAdapter(root.getContext(), android.R.layout.simple_spinner_dropdown_item);
@@ -65,6 +84,70 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+
+        this.hackerModeCorrectGestureCount = 0;
+        this.hackerModeGestureDetector = new GestureDetectorCompat(getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent event) {
+                // don't return false here or else none of the other
+                // gestures will work
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                String eventName = "";
+
+                float xDiff = e2.getX() - e1.getX();
+                float yDiff = e2.getY() - e1.getY();
+
+                if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                    // horizontal
+                    if (xDiff > 0) {
+                        eventName = "right";
+                    }
+                    else {
+                        eventName = "left";
+                    }
+                }
+                else {
+                    // vertical
+                    if (yDiff > 0) {
+                        eventName = "down";
+                    }
+                    else {
+                        eventName = "up";
+                    }
+                }
+
+                if (eventName == hackerModeCorrectGestureCombination[hackerModeCorrectGestureCount]) {
+                    hackerModeCorrectGestureCount++;
+                }
+                else {
+                    hackerModeCorrectGestureCount = 0;
+                    // handle the first gesture in the combination after reset
+                    if (eventName == hackerModeCorrectGestureCombination[hackerModeCorrectGestureCount]) {
+                        hackerModeCorrectGestureCount++;
+                    }
+                }
+
+                if (hackerModeCorrectGestureCount >= hackerModeCorrectGestureCombination.length) {
+                    popupCreator.popup(getContext(), "Hacker mode enabled");
+                    hackerModeCorrectGestureCount = 0;
+                }
+
+
+                return true;
+            }
+        });
+
+        root.findViewById(R.id.ivSecretHackerModeEnabler).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return hackerModeGestureDetector.onTouchEvent(event);
             }
         });
 
@@ -104,5 +187,10 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     @Override
     public void setPresenter(SettingsInterfaces.IPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void setPopupCreator(UiInterfaces.IPopupCreator popupCreator) {
+        this.popupCreator = popupCreator;
     }
 }

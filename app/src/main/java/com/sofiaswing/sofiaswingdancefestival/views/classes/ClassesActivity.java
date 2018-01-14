@@ -7,18 +7,19 @@ import android.support.v7.app.AppCompatActivity;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.ui.DrawerNavigationFragmentFactory;
-import com.sofiaswing.sofiaswingdancefestival.ui.TitleFragmentAttacher;
+import com.sofiaswing.sofiaswingdancefestival.ui.TitleFragmentFactory;
+import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import javax.inject.Inject;
 
 public class ClassesActivity extends AppCompatActivity {
     public static final String EVENT_ID_KEY = "event_id_key";
     @Inject
-    public DrawerNavigationFragmentFactory drawerNavigationFragmentFactory;
+    public UiInterfaces.IDrawerNavigationFragmentFactory drawerNavigationFragmentFactory;
     @Inject
-    TitleFragmentAttacher titleFragmentAttacher;
+    public UiInterfaces.ITitleFragmentFactory titleFragmentFactory;
     @Inject
-    ClassesInterfaces.IPresenter presenter;
+    public ClassesInterfaces.IPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class ClassesActivity extends AppCompatActivity {
         this.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container_fragment, (Fragment) this.presenter.getView())
-                .replace(R.id.container_title, this.titleFragmentAttacher.getTitleFragment(this.getString(R.string.classes)))
+                .replace(R.id.container_title, this.titleFragmentFactory.getTitleFragment(this.getString(R.string.classes)))
                 .commit();
     }
 

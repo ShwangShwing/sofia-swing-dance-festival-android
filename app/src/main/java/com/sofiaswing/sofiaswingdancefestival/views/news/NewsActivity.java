@@ -7,17 +7,18 @@ import android.os.Bundle;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.ui.DrawerNavigationFragmentFactory;
-import com.sofiaswing.sofiaswingdancefestival.ui.TitleFragmentAttacher;
+import com.sofiaswing.sofiaswingdancefestival.ui.TitleFragmentFactory;
+import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import javax.inject.Inject;
 
 public class NewsActivity extends AppCompatActivity {
     @Inject
-    public DrawerNavigationFragmentFactory drawerNavigationFragmentFactory;
+    public UiInterfaces.IDrawerNavigationFragmentFactory drawerNavigationFragmentFactory;
     @Inject
-    TitleFragmentAttacher titleFragmentAttacher;
+    public UiInterfaces.ITitleFragmentFactory titleFragmentFactory;
     @Inject
-    NewsInterfaces.IPresenter presenter;
+    public NewsInterfaces.IPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class NewsActivity extends AppCompatActivity {
         this.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container_fragment, (Fragment) this.presenter.getView())
-                .replace(R.id.container_title, this.titleFragmentAttacher.getTitleFragment(this.getString(R.string.news)))
+                .replace(R.id.container_title, this.titleFragmentFactory.getTitleFragment(this.getString(R.string.news)))
                 .commit();
     }
 

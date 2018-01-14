@@ -30,10 +30,6 @@ import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesActivity;
  */
 
 public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavigationFragmentFactory {
-    @Inject
-    public DrawerNavigationFragmentFactory() {
-    }
-
     public Fragment getNavigationFragment(final AppCompatActivity activity) {
         ArrayList<DrawerItemInfo> items = new ArrayList<>();
 

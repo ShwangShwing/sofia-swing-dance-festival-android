@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.sofiaswing.sofiaswingdancefestival.data.FirebaseData.FirebaseDataModule;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersModule;
+import com.sofiaswing.sofiaswingdancefestival.ui.UiModule;
 import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
 import com.sofiaswing.sofiaswingdancefestival.views.about.AboutActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.about.AboutModule;
@@ -64,6 +65,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
             ContactUsModule.class,
             SettingsModule.class,
             AboutModule.class,
+            UiModule.class,
             FirebaseDataModule.class,
             ProvidersModule.class
     })

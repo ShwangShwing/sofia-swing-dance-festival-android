@@ -12,11 +12,7 @@ import javax.inject.Inject;
  * Created by shwangshwing on 10/9/17.
  */
 
-public class TitleFragmentAttacher implements UiInterfaces.ITitleFragmentFactory {
-    @Inject
-    public TitleFragmentAttacher() {
-    }
-
+public class TitleFragmentFactory implements UiInterfaces.ITitleFragmentFactory {
     @Override
     public Fragment getTitleFragment(String title) {
         TitleFragment titleFragment = TitleFragment.createFragment(title);

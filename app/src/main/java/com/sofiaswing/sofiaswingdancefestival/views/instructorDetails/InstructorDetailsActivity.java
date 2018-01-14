@@ -14,7 +14,7 @@ public class InstructorDetailsActivity extends AppCompatActivity {
     public static final String INSTRUCTOR_ID_KEY = "instructor_id";
 
     @Inject
-    InstructorDetailsInterfaces.IPresenter presenter;
+    public InstructorDetailsInterfaces.IPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

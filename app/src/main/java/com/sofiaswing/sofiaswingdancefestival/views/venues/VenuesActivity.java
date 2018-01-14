@@ -7,17 +7,18 @@ import android.os.Bundle;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.ui.DrawerNavigationFragmentFactory;
-import com.sofiaswing.sofiaswingdancefestival.ui.TitleFragmentAttacher;
+import com.sofiaswing.sofiaswingdancefestival.ui.TitleFragmentFactory;
+import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import javax.inject.Inject;
 
 public class VenuesActivity extends AppCompatActivity {
     @Inject
-    public DrawerNavigationFragmentFactory drawerNavigationFragmentAttacher;
+    public UiInterfaces.IDrawerNavigationFragmentFactory drawerNavigationFragmentAttacher;
     @Inject
-    TitleFragmentAttacher titleFragmentAttacher;
+    public UiInterfaces.ITitleFragmentFactory titleFragmentFactory;
     @Inject
-    VenuesInterfaces.IPresenter presenter;
+    public VenuesInterfaces.IPresenter presenter;
 
 
     @Override
@@ -35,7 +36,7 @@ public class VenuesActivity extends AppCompatActivity {
         this.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container_fragment, (Fragment) this.presenter.getView())
-                .replace(R.id.container_title, this.titleFragmentAttacher.getTitleFragment(this.getString(R.string.venues)))
+                .replace(R.id.container_title, this.titleFragmentFactory.getTitleFragment(this.getString(R.string.venues)))
                 .commit();
     }
 

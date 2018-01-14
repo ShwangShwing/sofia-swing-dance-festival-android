@@ -1,6 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.settings;
 
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
+import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,7 +20,8 @@ public class SettingsModule {
     @Provides
     SettingsInterfaces.IPresenter providePresenter(
             SettingsInterfaces.IView view,
-            ProvidersInterfaces.ISettingsProvider settingsProvider) {
-        return new SettingsPresenter(view, settingsProvider);
+            ProvidersInterfaces.ISettingsProvider settingsProvider,
+            UiInterfaces.IPopupCreator popupCreator) {
+        return new SettingsPresenter(view, settingsProvider, popupCreator);
     }
 }
