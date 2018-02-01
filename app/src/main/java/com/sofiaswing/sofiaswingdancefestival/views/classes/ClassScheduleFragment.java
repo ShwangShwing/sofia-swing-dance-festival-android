@@ -134,9 +134,11 @@ public class ClassScheduleFragment extends Fragment {
     }
 
     private class ClassScheduleAdapter extends ArrayAdapter<ClassModel> {
+        private ArrayList<String> itemDates;
 
         public ClassScheduleAdapter(@NonNull Context context, @LayoutRes int resource) {
             super(context, resource);
+            itemDates = new ArrayList<>();
         }
 
         @NonNull
@@ -152,15 +154,39 @@ public class ClassScheduleFragment extends Fragment {
 
             ClassModel classItem = getItem(position);
 
-            DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+            {
+                // Fill date separator
+                DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault());
 
-            ((TextView) classRow.findViewById(R.id.tvTime))
-                    .setText(String.format("%s - %s",
-                            dateFormatter.format(classItem.getStartTime()),
-                            dateFormatter.format(classItem.getEndTime())));
+                if (this.itemDates.size() <= position) {
+                    this.itemDates.add(dateFormatter.format(classItem.getStartTime()));
+                }
+                else {
+                    this.itemDates.set(position, dateFormatter.format(classItem.getStartTime()));
+                }
 
-            ((TextView) classRow.findViewById(R.id.tvName))
-                    .setText(classItem.getName());
+
+                TextView tvDateSeparator = classRow.findViewById(R.id.tvDateSeparator);
+                if (position == 0 || !this.itemDates.get(position).equals(this.itemDates.get(position - 1))) {
+                    tvDateSeparator.setVisibility(View.VISIBLE);
+                    tvDateSeparator.setText(String.format("%s", this.itemDates.get(position)));
+                }
+                else {
+                    tvDateSeparator.setVisibility(View.GONE);
+                }
+            }
+
+            {
+                DateFormat dateTimeFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+
+                ((TextView) classRow.findViewById(R.id.tvTime))
+                        .setText(String.format("%s - %s",
+                                dateTimeFormatter.format(classItem.getStartTime()),
+                                dateTimeFormatter.format(classItem.getEndTime())));
+
+                ((TextView) classRow.findViewById(R.id.tvName))
+                        .setText(classItem.getName());
+            }
 
             String instructorsNames = "";
             for (InstructorModel instructor: classItem.getInstructors()) {

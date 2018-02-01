@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
@@ -135,7 +137,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
                 }
 
                 if (hackerModeCorrectGestureCount >= hackerModeCorrectGestureCombination.length) {
-                    popupCreator.popup(getContext(), "Hacker mode enabled");
+                    presenter.enableHackerMode();
                     hackerModeCorrectGestureCount = 0;
                 }
 
@@ -192,5 +194,24 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     @Override
     public void setPopupCreator(UiInterfaces.IPopupCreator popupCreator) {
         this.popupCreator = popupCreator;
+    }
+
+    @Override
+    public void notifyHackerModeEnabled() {
+        popupCreator.popup(getContext(), "Hacker mode enabled");
+    }
+
+    @Override
+    public void showHackerModeEnabledIndicator() {
+        ImageView tvHackerModeEnabledIndicator
+                = this.getView().findViewById(R.id.ivHackerModeEnabledIndicator);
+        tvHackerModeEnabledIndicator.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideHackerModeEnabledIndicator() {
+        ImageView tvHackerModeEnabledIndicator
+                = this.getView().findViewById(R.id.ivHackerModeEnabledIndicator);
+        tvHackerModeEnabledIndicator.setVisibility(View.GONE);
     }
 }

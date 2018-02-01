@@ -27,13 +27,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <ImageView
-                android:id="@+id/ivSecretHackerModeEnabler"
-                android:layout_width="117dp"
-                android:layout_height="117dp"
-                android:scaleType="centerInside"
-                android:layout_gravity="center"
-                android:src="@drawable/vintage_gramophone"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+                <ImageView
+                    android:id="@+id/ivSecretHackerModeEnabler"
+                    android:layout_width="117dp"
+                    android:layout_height="117dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/vintage_gramophone"/>
+                <ImageView
+                    android:id="@+id/ivHackerModeEnabledIndicator"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:scaleType="centerInside"
+                    android:visibility="gone"
+                    android:src="@drawable/gclef"/>
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 

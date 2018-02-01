@@ -3,6 +3,11 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tvDateSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/md_amber_A700"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,15 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
 import android.content.Context;
-import android.location.LocationManager;
-
-import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
-
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,6 +13,7 @@ import dagger.Provides;
 public class ProvidersModule {
     private ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
     private ProvidersInterfaces.ISettingsProvider settingsProvider;
+    private ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
 
     public ProvidersModule() {
         this.currentSsdfYearProvider = null;
@@ -54,5 +46,14 @@ public class ProvidersModule {
         }
 
         return this.settingsProvider;
+    }
+
+    @Provides
+    synchronized ProvidersInterfaces.IVolatileSettingsProvider provideVolatileSettingsProvider() {
+        if (this.volatileSettingsProvider == null) {
+            this.volatileSettingsProvider = new VolatileSettingsProvider();
+        }
+
+        return this.volatileSettingsProvider;
     }
 }

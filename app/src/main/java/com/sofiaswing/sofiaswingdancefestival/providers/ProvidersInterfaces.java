@@ -37,4 +37,10 @@ public class ProvidersInterfaces {
 
         void setupAllNotificationAlarms();
     }
+
+    public interface IVolatileSettingsProvider {
+        boolean isHackerModeEnabled();
+        void enableHackerMode();
+        void disableHackerMode();
+    }
 }
