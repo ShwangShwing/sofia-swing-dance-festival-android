@@ -84,6 +84,7 @@ public class DrawerNavigationFragmentFactory implements UiInterfaces.IDrawerNavi
                     default:
                         return false;
                 }
+                activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             }
         });
