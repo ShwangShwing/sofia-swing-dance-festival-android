@@ -2,6 +2,8 @@ package com.sofiaswing.sofiaswingdancefestival.providers;
 
 import android.content.Context;
 
+import java.security.Provider;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -11,6 +13,7 @@ import dagger.Provides;
 
 @Module
 public class ProvidersModule {
+    private ProvidersInterfaces.ILocationProvider locationProvider;
     private ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
     private ProvidersInterfaces.ISettingsProvider settingsProvider;
     private ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
@@ -26,8 +29,12 @@ public class ProvidersModule {
     }
 
     @Provides
-    ProvidersInterfaces.ILocationProvider provideLocationProvider() {
-        return new LocationProvider();
+    synchronized ProvidersInterfaces.ILocationProvider provideLocationProvider() {
+        if (this.locationProvider == null) {
+            this.locationProvider = new LocationProvider();
+        }
+
+        return this.locationProvider;
     }
 
     @Provides

@@ -53,7 +53,7 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
     }
 
     @Override
-    public void startLocationService(final Activity activity) {
+    public synchronized void startLocationService(final Activity activity) {
         if (ActivityCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -79,40 +79,46 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
             return;
         }
 
+        final LocationProvider thisLocationProvider = this;
         this.locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
-                Date currentTime = new Date();
-                long secondsSinceLastFix = currentTime.getTime() - lastBestLocationFixTime.getTime();
+                synchronized (thisLocationProvider) {
+                    Date currentTime = new Date();
+                    long secondsSinceLastFix = currentTime.getTime() - lastBestLocationFixTime.getTime();
 
-                float decayedAccuracySinceLastFix =
-                        lastBestLocation.getAccuracy() + secondsSinceLastFix * ACCURACY_DECAY_MPS;
-                if (location.getAccuracy() < decayedAccuracySinceLastFix) {
-                    lastBestLocation = new Location(location);
-                    lastBestLocationFixTime = currentTime;
+                    float decayedAccuracySinceLastFix =
+                            lastBestLocation.getAccuracy() + secondsSinceLastFix * ACCURACY_DECAY_MPS;
+                    if (location.getAccuracy() < decayedAccuracySinceLastFix) {
+                        lastBestLocation = new Location(location);
+                        lastBestLocationFixTime = currentTime;
 
-                    for (ObservableEmitter<Location> emitter : emitters){
-                        emitter.onNext(lastBestLocation);
-                    }
+                        for (ObservableEmitter<Location> emitter : emitters) {
+                            emitter.onNext(lastBestLocation);
+                        }
 
-                    if (location.getSpeed() >= GPS_DONT_TURN_OFF_DISTANCE_SPEED_MPS) {
-                        locationTurnOffTime = new Date();
-                        locationTurnOffTime.setTime(locationTurnOffTime.getTime()
-                                + GPS_AUTO_TURN_OFF_SECONDS * 1000);
-                    }
+                        if (location.getSpeed() >= GPS_DONT_TURN_OFF_DISTANCE_SPEED_MPS) {
+                            locationTurnOffTime = new Date();
+                            locationTurnOffTime.setTime(locationTurnOffTime.getTime()
+                                    + GPS_AUTO_TURN_OFF_SECONDS * 1000);
+                        }
 
-                    if (currentTime.getTime() >= locationTurnOffTime.getTime()) {
-                        stopLocationService();
+                        if (currentTime.getTime() >= locationTurnOffTime.getTime()) {
+                            stopLocationService();
 
-                        // Setup the sensor to auto turn on if significant motion is detected
-                        triggerEventListener = new TriggerEventListener() {
-                            @Override
-                            public void onTrigger(TriggerEvent event) {
-                                startLocationService(activity);
+                            if (significantMotionSensor != null) {
+                                // Setup the sensor to auto turn on if significant motion is detected
+                                // only if the device supports the significant motion sensor
+                                triggerEventListener = new TriggerEventListener() {
+                                    @Override
+                                    public void onTrigger(TriggerEvent event) {
+                                        startLocationService(activity);
+                                    }
+                                };
+
+                                sensorManager.requestTriggerSensor(triggerEventListener, significantMotionSensor);
                             }
-                        };
-
-                        sensorManager.requestTriggerSensor(triggerEventListener, significantMotionSensor);
+                        }
                     }
                 }
             }
@@ -135,8 +141,8 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
 
         };
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, locationListener, Looper.getMainLooper());
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener, Looper.getMainLooper());
+        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, locationListener, Looper.getMainLooper());
+        this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener, Looper.getMainLooper());
 
         this.locationTurnOffTime = new Date();
         this.locationTurnOffTime.setTime(this.locationTurnOffTime.getTime()
@@ -144,19 +150,21 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
     }
 
     @Override
-    public void stopLocationService() {
-        if (this.sensorManager != null) {
-            this.sensorManager.cancelTriggerSensor(triggerEventListener, significantMotionSensor);
+    public synchronized void stopLocationService() {
+        if (this.sensorManager != null
+                && this.triggerEventListener != null
+                && this.significantMotionSensor != null) {
+            this.sensorManager.cancelTriggerSensor(this.triggerEventListener, this.significantMotionSensor);
         }
 
-        if (this.locationManager != null) {
+        if (this.locationManager != null && this.locationListener != null) {
             this.locationManager.removeUpdates(this.locationListener);
             this.locationListener = null;
         }
     }
 
     @Override
-    public Observable<Location> getCurrentLocation() {
+    public synchronized Observable<Location> getCurrentLocation() {
         Observable<Location> observable = Observable.create(new ObservableOnSubscribe<Location>() {
             @Override
             public void subscribe(@NonNull final ObservableEmitter<Location> e) throws Exception {

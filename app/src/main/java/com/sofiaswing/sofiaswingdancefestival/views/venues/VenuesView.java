@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -58,6 +59,15 @@ public class VenuesView extends Fragment
         ListView lvVenues = root.findViewById(R.id.lvVenues);
         this.venuesAdapter = new VenuesAdapter(root.getContext(), android.R.layout.simple_list_item_1);
         lvVenues.setAdapter(this.venuesAdapter);
+
+        final Fragment thisFragment = this;
+        lvVenues.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                locationProvider.startLocationService(thisFragment.getActivity());
+                return false;
+            }
+        });
 
         return root;
     }
@@ -119,6 +129,19 @@ public class VenuesView extends Fragment
         }
     }
 
+    private void checkAndAskPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                this.getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+        }
+        else {
+            this.hasLocationPermission = true;
+        }
+    }
+
     private class VenuesAdapter extends ArrayAdapter<VenueViewModel> {
 
         public VenuesAdapter(@NonNull Context context, @LayoutRes int resource) {
@@ -160,23 +183,9 @@ public class VenuesView extends Fragment
                                 tvDistance.setVisibility(View.VISIBLE);
                             }
                         });
-
             }
 
             return venueRow;
-        }
-    }
-
-    private void checkAndAskPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this.getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-        }
-        else {
-            this.hasLocationPermission = true;
         }
     }
 }
