@@ -26,6 +26,8 @@ import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -40,6 +42,7 @@ public class VenuesView extends Fragment
     private ArrayAdapter<VenueViewModel> venuesAdapter;
     private ProvidersInterfaces.ILocationProvider locationProvider;
     private boolean hasLocationPermission;
+    private CompositeDisposable locationSubscriptions;
 
     public VenuesView() {
         // Required empty public constructor
@@ -56,6 +59,8 @@ public class VenuesView extends Fragment
 
         this.hasLocationPermission = false;
 
+        this.locationSubscriptions = new CompositeDisposable();
+
         ListView lvVenues = root.findViewById(R.id.lvVenues);
         this.venuesAdapter = new VenuesAdapter(root.getContext(), android.R.layout.simple_list_item_1);
         lvVenues.setAdapter(this.venuesAdapter);
@@ -64,7 +69,6 @@ public class VenuesView extends Fragment
         lvVenues.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                locationProvider.startLocationService(thisFragment.getActivity());
                 return false;
             }
         });
@@ -99,6 +103,12 @@ public class VenuesView extends Fragment
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.locationSubscriptions.dispose();
     }
 
     @Override
@@ -143,7 +153,6 @@ public class VenuesView extends Fragment
     }
 
     private class VenuesAdapter extends ArrayAdapter<VenueViewModel> {
-
         public VenuesAdapter(@NonNull Context context, @LayoutRes int resource) {
             super(context, resource);
         }
@@ -166,7 +175,7 @@ public class VenuesView extends Fragment
 
             if (hasLocationPermission && venue.getLocation() != null) {
                 final View finalVenueRow = venueRow;
-                locationProvider.getCurrentLocation()
+                Disposable d = locationProvider.getCurrentLocation()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Consumer<Location>() {
@@ -183,9 +192,16 @@ public class VenuesView extends Fragment
                                 tvDistance.setVisibility(View.VISIBLE);
                             }
                         });
+                locationSubscriptions.add(d);
             }
 
             return venueRow;
+        }
+
+        @Override
+        public void clear() {
+            super.clear();
+            locationSubscriptions.clear();
         }
     }
 }

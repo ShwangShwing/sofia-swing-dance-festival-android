@@ -24,7 +24,7 @@ public class ProvidersInterfaces {
     }
 
     public interface ICurrentSsdfYearProvider {
-        String getCurrentSsdfYear();
+        Observable<String> getCurrentSsdfYear();
     }
 
     public interface ISettingsProvider {

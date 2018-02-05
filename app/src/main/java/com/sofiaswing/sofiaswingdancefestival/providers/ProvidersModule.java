@@ -2,7 +2,7 @@ package com.sofiaswing.sofiaswingdancefestival.providers;
 
 import android.content.Context;
 
-import java.security.Provider;
+import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,9 +38,11 @@ public class ProvidersModule {
     }
 
     @Provides
-    synchronized ProvidersInterfaces.ICurrentSsdfYearProvider provideCurrentSsdfYearProvider() {
+    synchronized ProvidersInterfaces.ICurrentSsdfYearProvider provideCurrentSsdfYearProvider(
+            DataInterfaces.ICurrentSsdfYearData currentSsdfYearData
+    ) {
         if (this.currentSsdfYearProvider == null) {
-            this.currentSsdfYearProvider = new CurrentSsdfYearProvider();
+            this.currentSsdfYearProvider = new CurrentSsdfYearProvider(currentSsdfYearData);
         }
 
         return this.currentSsdfYearProvider;

@@ -38,7 +38,7 @@ public class PartiesFirebaseData implements DataInterfaces.IPartiesData {
     public Observable<List<PartyModel>> getParties() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        String collectionPath = String.format("%s/events", this.currentSsdfYearProvider.getCurrentSsdfYear());
+        String collectionPath = String.format("dev2017/events", this.currentSsdfYearProvider.getCurrentSsdfYear());
         final DatabaseReference partiesRef = database.getReference(collectionPath);
         final Query partiesQuery = partiesRef
                 .orderByChild("type")

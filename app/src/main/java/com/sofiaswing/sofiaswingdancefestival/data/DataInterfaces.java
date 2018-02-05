@@ -42,4 +42,8 @@ public class DataInterfaces {
     public interface IPartiesData {
         Observable<List<PartyModel>> getParties();
     }
+
+    public interface ICurrentSsdfYearData {
+        Observable<String> getCurrentSsdfYear();
+    }
 }

@@ -3,7 +3,6 @@ package com.sofiaswing.sofiaswingdancefestival.providers;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Looper;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -36,6 +35,7 @@ public class ImageProvider implements ProvidersInterfaces.IImageProvider {
                         }
                     }
                 });
+
                 imageGetter.execute(url);
             }
         });

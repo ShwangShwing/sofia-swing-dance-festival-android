@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,9 +94,17 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
                         lastBestLocation = new Location(location);
                         lastBestLocationFixTime = currentTime;
 
+                        List<ObservableEmitter<Location>> disposedEmitters = new ArrayList<>();
                         for (ObservableEmitter<Location> emitter : emitters) {
-                            emitter.onNext(lastBestLocation);
+                            if (emitter.isDisposed()) {
+                                disposedEmitters.add(emitter);
+                            }
+                            else {
+                                emitter.onNext(lastBestLocation);
+                            }
                         }
+
+                        emitters.removeAll(disposedEmitters);
 
                         if (location.getSpeed() >= GPS_DONT_TURN_OFF_DISTANCE_SPEED_MPS) {
                             locationTurnOffTime = new Date();
@@ -108,7 +117,7 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
 
                             if (significantMotionSensor != null) {
                                 // Setup the sensor to auto turn on if significant motion is detected
-                                // only if the device supports the significant motion sensor
+
                                 triggerEventListener = new TriggerEventListener() {
                                     @Override
                                     public void onTrigger(TriggerEvent event) {
