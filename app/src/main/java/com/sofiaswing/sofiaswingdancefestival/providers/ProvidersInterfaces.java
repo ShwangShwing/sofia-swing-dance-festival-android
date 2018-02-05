@@ -44,6 +44,8 @@ public class ProvidersInterfaces {
         boolean isHackerModeEnabled();
         void enableHackerMode();
         void disableHackerMode();
+        boolean isYearFromDatabase();
+        String getCurrentCustomSsdfYear();
         void setCurrentSsdfYearFromData();
         void setCurrentSsdfYear(String currentSsdfYear);
     }

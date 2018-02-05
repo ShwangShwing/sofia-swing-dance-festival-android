@@ -18,6 +18,12 @@ public class SettingsInterfaces {
         void notifyHackerModeEnabled();
         void showHackerModeEnabledIndicator();
         void hideHackerModeEnabledIndicator();
+
+        void showHackerPanel();
+        void hideHackerPanel();
+
+        void setYearFromDatabase(boolean isSet);
+        void setCustomYear(String customYear);
     }
 
     public interface IPresenter {
@@ -25,6 +31,8 @@ public class SettingsInterfaces {
         void start();
 
         void setEventsNotificationAdvanceTimeSeconds(long seconds);
-        public void enableHackerMode();
+        void enableHackerMode();
+        void setYearFromDatabase();
+        void setCustomYear(String customYear);
     }
 }

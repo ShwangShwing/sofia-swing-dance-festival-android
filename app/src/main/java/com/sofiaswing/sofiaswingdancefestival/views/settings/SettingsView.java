@@ -11,7 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -153,6 +158,27 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
             }
         });
 
+        CheckBox cbYearFromDatabase = root.findViewById(R.id.cb_year_from_database);
+        cbYearFromDatabase.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    presenter.setYearFromDatabase();
+                }
+            }
+        });
+
+        Button btnSetCustomYear = root.findViewById(R.id.btn_set_custom_year);
+        btnSetCustomYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText et = root.findViewById(R.id.et_custom_year);
+                String customYear = et.getText().toString();
+                presenter.setCustomYear(customYear);
+            }
+        });
+
+
         return root;
     }
 
@@ -214,4 +240,30 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
                 = this.getView().findViewById(R.id.ivHackerModeEnabledIndicator);
         tvHackerModeEnabledIndicator.setVisibility(View.GONE);
     }
+
+    @Override
+    public void showHackerPanel() {
+        LinearLayout llHackerPanel = this.getView().findViewById(R.id.ll_hacker_panel);
+        llHackerPanel.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideHackerPanel() {
+        LinearLayout llHackerPanel = this.getView().findViewById(R.id.ll_hacker_panel);
+        llHackerPanel.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setYearFromDatabase(boolean isSet) {
+        CheckBox cbYearFromDatabase = this.getView().findViewById(R.id.cb_year_from_database);
+        cbYearFromDatabase.setChecked(isSet);
+    }
+
+    @Override
+    public void setCustomYear(String customYear) {
+        EditText et = this.getView().findViewById(R.id.et_custom_year);
+        et.setText(customYear);
+    }
+
+
 }

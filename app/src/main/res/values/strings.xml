@@ -26,4 +26,7 @@
     <string name="minutes">minutes</string>
     <string name="hour">hour</string>
     <string name="dont_notify">don\'t notify</string>
+    <string name="year_from_database">Current db year from database:</string>
+    <string name="custom_year">Custom year</string>
+    <string name="set">Set</string>
 </resources>

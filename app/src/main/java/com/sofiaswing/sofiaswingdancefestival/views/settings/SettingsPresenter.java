@@ -32,7 +32,8 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     @Override
     public void start() {
         this.view.setEventNotificationTimeSelection(settingsProvider.getEventsNotificationAdvanceTimeSeconds());
-        this.updateHacerModeIndicator();
+        this.updateHackerPanelAndIndicator();
+        this.updateCustomYearFields();
     }
 
     @Override
@@ -44,16 +45,41 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     @Override
     public void enableHackerMode() {
         this.volatileSettingsProvider.enableHackerMode();
-        this.updateHacerModeIndicator();
+        this.updateHackerPanelAndIndicator();
         this.view.notifyHackerModeEnabled();
     }
 
-    private void updateHacerModeIndicator() {
+    @Override
+    public void setYearFromDatabase() {
+        this.volatileSettingsProvider.setCurrentSsdfYearFromData();
+        this.updateCustomYearFields();
+    }
+
+    @Override
+    public void setCustomYear(String customYear) {
+        this.volatileSettingsProvider.setCurrentSsdfYear(customYear);
+        this.updateCustomYearFields();
+    }
+
+    private void updateHackerPanelAndIndicator() {
         if (this.volatileSettingsProvider.isHackerModeEnabled()) {
             this.view.showHackerModeEnabledIndicator();
+            this.view.showHackerPanel();
         }
         else {
             this.view.hideHackerModeEnabledIndicator();
+            this.view.hideHackerModeEnabledIndicator();
+        }
+    }
+
+    private void updateCustomYearFields() {
+        if (this.volatileSettingsProvider.isYearFromDatabase()) {
+            this.view.setYearFromDatabase(true);
+            this.view.setCustomYear("");
+        }
+        else {
+            this.view.setYearFromDatabase(false);
+            this.view.setCustomYear(this.volatileSettingsProvider.getCurrentCustomSsdfYear());
         }
     }
 }
