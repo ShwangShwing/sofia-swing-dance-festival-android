@@ -25,6 +25,8 @@ public class ProvidersInterfaces {
 
     public interface ICurrentSsdfYearProvider {
         Observable<String> getCurrentSsdfYear();
+        void setCurrentSsdfYearFromData();
+        void setCurrentSsdfYear(String currentSsdfYear);
     }
 
     public interface ISettingsProvider {
@@ -42,5 +44,7 @@ public class ProvidersInterfaces {
         boolean isHackerModeEnabled();
         void enableHackerMode();
         void disableHackerMode();
+        void setCurrentSsdfYearFromData();
+        void setCurrentSsdfYear(String currentSsdfYear);
     }
 }

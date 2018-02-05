@@ -58,9 +58,9 @@ public class ProvidersModule {
     }
 
     @Provides
-    synchronized ProvidersInterfaces.IVolatileSettingsProvider provideVolatileSettingsProvider() {
+    synchronized ProvidersInterfaces.IVolatileSettingsProvider provideVolatileSettingsProvider(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
         if (this.volatileSettingsProvider == null) {
-            this.volatileSettingsProvider = new VolatileSettingsProvider();
+            this.volatileSettingsProvider = new VolatileSettingsProvider(currentSsdfYearProvider);
         }
 
         return this.volatileSettingsProvider;

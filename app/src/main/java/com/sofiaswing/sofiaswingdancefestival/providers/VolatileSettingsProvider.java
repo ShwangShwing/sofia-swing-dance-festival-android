@@ -6,7 +6,13 @@ package com.sofiaswing.sofiaswingdancefestival.providers;
  */
 
 public class VolatileSettingsProvider implements ProvidersInterfaces.IVolatileSettingsProvider {
+    private final ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
+
     private boolean isHackerEnabled = false;
+
+    VolatileSettingsProvider(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
+        this.currentSsdfYearProvider = currentSsdfYearProvider;
+    }
 
     @Override
     public boolean isHackerModeEnabled() {
@@ -21,5 +27,15 @@ public class VolatileSettingsProvider implements ProvidersInterfaces.IVolatileSe
     @Override
     public void disableHackerMode() {
         this.isHackerEnabled = false;
+    }
+
+    @Override
+    public void setCurrentSsdfYearFromData() {
+        this.currentSsdfYearProvider.setCurrentSsdfYearFromData();
+    }
+
+    @Override
+    public void setCurrentSsdfYear(String currentSsdfYear) {
+        this.currentSsdfYearProvider.setCurrentSsdfYear(currentSsdfYear);
     }
 }
