@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.List;
@@ -39,10 +40,11 @@ public class VenuesView extends Fragment
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 666;
 
     private VenuesInterfaces.IPresenter presenter;
-    private ArrayAdapter<VenueViewModel> venuesAdapter;
+    private ArrayAdapter<VenueModel> venuesAdapter;
     private ProvidersInterfaces.ILocationProvider locationProvider;
     private boolean hasLocationPermission;
     private CompositeDisposable locationSubscriptions;
+    private boolean hasAskedForPermissions;
 
     public VenuesView() {
         // Required empty public constructor
@@ -58,6 +60,7 @@ public class VenuesView extends Fragment
         this.setRetainInstance(true);
 
         this.hasLocationPermission = false;
+        this.hasAskedForPermissions = false;
 
         this.locationSubscriptions = new CompositeDisposable();
 
@@ -77,27 +80,19 @@ public class VenuesView extends Fragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        this.checkAndAskPermission();
-
-        this.presenter.start();
-
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-
+        this.checkAndAskPermission();
+        this.presenter.start();
         this.locationProvider.startLocationService(this.getActivity());
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
         this.locationProvider.stopLocationService();
+        this.presenter.stop();
+        this.locationSubscriptions.clear();
     }
 
     @Override
@@ -106,18 +101,12 @@ public class VenuesView extends Fragment
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.locationSubscriptions.dispose();
-    }
-
-    @Override
     public void setPresenter(VenuesInterfaces.IPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setVenues(List<VenueViewModel> venues) {
+    public void setVenues(List<VenueModel> venues) {
         this.venuesAdapter.clear();
         this.venuesAdapter.addAll(venues);
     }
@@ -140,19 +129,23 @@ public class VenuesView extends Fragment
     }
 
     private void checkAndAskPermission() {
+
         if (ActivityCompat.checkSelfPermission(
                 this.getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+            if (!this.hasAskedForPermissions) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+                this.hasAskedForPermissions = true;
+            }
         }
         else {
             this.hasLocationPermission = true;
         }
     }
 
-    private class VenuesAdapter extends ArrayAdapter<VenueViewModel> {
+    private class VenuesAdapter extends ArrayAdapter<VenueModel> {
         public VenuesAdapter(@NonNull Context context, @LayoutRes int resource) {
             super(context, resource);
         }
@@ -168,7 +161,7 @@ public class VenuesView extends Fragment
                 venueRow = inflater.inflate(R.layout.layout_venue_row, null);
             }
 
-            final VenueViewModel venue = getItem(position);
+            final VenueModel venue = getItem(position);
 
             ((TextView) venueRow.findViewById(R.id.tvVenueName)).setText(venue.getName());
             ((TextView) venueRow.findViewById(R.id.tvVenueAddress)).setText(venue.getAddress());

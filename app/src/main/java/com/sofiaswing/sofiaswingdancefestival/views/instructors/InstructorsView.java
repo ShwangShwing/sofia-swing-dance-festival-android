@@ -21,12 +21,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity;
 
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -36,8 +38,10 @@ import io.reactivex.schedulers.Schedulers;
 public class InstructorsView extends Fragment
     implements InstructorsInterfaces.IView {
     private InstructorsInterfaces.IPresenter presenter;
-    private ArrayAdapter<InstructorViewModel> instructorsAdapter;
+    private ArrayAdapter<InstructorModel> instructorsAdapter;
     private ProvidersInterfaces.IImageProvider imageProvider;
+
+    private CompositeDisposable subscriptions;
 
     public InstructorsView() {
         // Required empty public constructor
@@ -47,6 +51,8 @@ public class InstructorsView extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        this.subscriptions = new CompositeDisposable();
+
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_instructors_view, container, false);
         this.setRetainInstance(true);
@@ -65,12 +71,21 @@ public class InstructorsView extends Fragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         this.presenter.start();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        this.presenter.stop();
+        this.subscriptions.clear();
+    }
+
+    @Override
     public void setPresenter(InstructorsInterfaces.IPresenter presenter) {
         this.presenter = presenter;
     }
@@ -81,7 +96,7 @@ public class InstructorsView extends Fragment
     }
 
     @Override
-    public void setInstructors(List<InstructorViewModel> instructors) {
+    public void setInstructors(List<InstructorModel> instructors) {
         this.instructorsAdapter.clear();
         this.instructorsAdapter.addAll(instructors);
     }
@@ -93,7 +108,7 @@ public class InstructorsView extends Fragment
         this.startActivity(intent);
     }
 
-    private class InstructorsAdapter extends ArrayAdapter<InstructorViewModel>  {
+    private class InstructorsAdapter extends ArrayAdapter<InstructorModel>  {
         public InstructorsAdapter(@NonNull Context context, @LayoutRes int resource) {
             super(context, resource);
         }
@@ -111,7 +126,7 @@ public class InstructorsView extends Fragment
                 instructorRow = inflater.inflate(R.layout.layout_instructor_row, null);
             }
 
-            InstructorViewModel instructor = this.getItem(position);
+            InstructorModel instructor = this.getItem(position);
 
             ((TextView) instructorRow.findViewById(R.id.tvInstructorName))
                     .setText(instructor.getName());
@@ -137,7 +152,8 @@ public class InstructorsView extends Fragment
             final ProgressBar progressBar = instructorRow.findViewById(R.id.pbInstructorImageLoading);
             progressBar.setVisibility(View.VISIBLE);
 
-            imageProvider.getImageFromUrl(instructor.getImageUrl())
+            subscriptions.add(
+                    imageProvider.getImageFromUrl(instructor.getImageUrl())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<Bitmap>() {
@@ -159,7 +175,8 @@ public class InstructorsView extends Fragment
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
                         }
-                    });
+                    })
+            );
 
             return instructorRow;
         }

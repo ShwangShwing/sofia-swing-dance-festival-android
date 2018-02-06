@@ -3,6 +3,7 @@ package com.sofiaswing.sofiaswingdancefestival.providers;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -20,18 +21,18 @@ import io.reactivex.annotations.NonNull;
 public class ImageProvider implements ProvidersInterfaces.IImageProvider {
     @Override
     public Observable<Bitmap> getImageFromUrl(final String url) {
-
         Observable<Bitmap> observable = Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(@NonNull final ObservableEmitter<Bitmap> e) throws Exception {
                 ImageGetter imageGetter = new ImageGetter(new IImageReadyCallback() {
                     @Override
                     public void onImageReady(Bitmap bitmap) {
-                        if (bitmap != null) {
-                            e.onNext(bitmap);
-                        }
-                        else {
-                            e.onError(new FileNotFoundException(String.format("Image with url of %s not found", url)));
+                        if (!e.isDisposed()) {
+                            if (bitmap != null) {
+                                e.onNext(bitmap);
+                            } else {
+                                e.onError(new FileNotFoundException(String.format("ffffImage with url of %s not found", url)));
+                            }
                         }
                     }
                 });

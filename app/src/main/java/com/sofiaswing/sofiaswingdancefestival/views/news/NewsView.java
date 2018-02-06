@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
 
@@ -32,6 +33,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -46,7 +48,9 @@ public class NewsView extends Fragment
 
     private NewsInterfaces.IPresenter presenter;
 
-    private ArrayAdapter<NewsArticleViewModel> lvNewsAdapter;
+    private ArrayAdapter<NewsArticleModel> lvNewsAdapter;
+
+    private CompositeDisposable subscriptions;
 
     public NewsView() {
         // Required empty public constructor
@@ -55,6 +59,8 @@ public class NewsView extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        this.subscriptions = new CompositeDisposable();
+
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_news_view, container, false);
 
@@ -74,10 +80,18 @@ public class NewsView extends Fragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         this.presenter.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        this.presenter.stop();
+        subscriptions.clear();
     }
 
     @Override
@@ -91,7 +105,7 @@ public class NewsView extends Fragment
     }
 
     @Override
-    public void setNews(List<NewsArticleViewModel> newsArticles) {
+    public void setNews(List<NewsArticleModel> newsArticles) {
         this.lvNewsAdapter.clear();
         this.lvNewsAdapter.addAll(newsArticles);
     }
@@ -103,7 +117,7 @@ public class NewsView extends Fragment
         startActivity(intent);
     }
 
-    private class NewsArticlesAdapter extends ArrayAdapter<NewsArticleViewModel> {
+    private class NewsArticlesAdapter extends ArrayAdapter<NewsArticleModel> {
 
         public NewsArticlesAdapter(@NonNull Context context, @LayoutRes int resource) {
             super(context, resource);
@@ -122,7 +136,7 @@ public class NewsView extends Fragment
                 newsArticleRow = inflater.inflate(R.layout.layout_news_article_row, null);
             }
 
-            NewsArticleViewModel article = this.getItem(position);
+            NewsArticleModel article = this.getItem(position);
 
             DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
             ((TextView) newsArticleRow.findViewById(R.id.tvNewsArticleDate))
@@ -137,7 +151,8 @@ public class NewsView extends Fragment
             final ProgressBar progressBar = newsArticleRow.findViewById(R.id.pbNewsArticleImageLoading);
             progressBar.setVisibility(View.VISIBLE);
 
-            imageProvider.getImageFromUrl(article.getImageUrl())
+            subscriptions.add(
+                    imageProvider.getImageFromUrl(article.getImageUrl())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<Bitmap>() {
@@ -159,7 +174,8 @@ public class NewsView extends Fragment
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
                         }
-                    });
+                    })
+            );
 
             return newsArticleRow;
         }

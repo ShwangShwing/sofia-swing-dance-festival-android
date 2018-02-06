@@ -66,10 +66,15 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
+    public void onResume() {
+        super.onResume();
         this.presenter.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        this.presenter.stop();
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -21,6 +22,8 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
     private final List<PartyViewModel> partyViewModels;
 
+    private final CompositeDisposable subscriptions;
+
     public PartiesPresenter(PartiesInterfaces.IView view,
                             DataInterfaces.IPartiesData partiesData,
                             ProvidersInterfaces.ISettingsProvider settingsProvider) {
@@ -29,6 +32,8 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
         this.settingsProvider = settingsProvider;
         this.view.setPresenter(this);
         this.partyViewModels = new ArrayList<>();
+
+        this.subscriptions = new CompositeDisposable();
     }
 
     @Override
@@ -38,7 +43,8 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
 
     @Override
     public void start() {
-        this.partiesData.getParties()
+        this.subscriptions.add(
+            this.partiesData.getParties()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<PartyModel>>() {
@@ -57,7 +63,13 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
                         }
                         view.setParties(partyViewModels);
                     }
-                });
+                })
+        );
+    }
+
+    @Override
+    public void stop() {
+        this.subscriptions.clear();
     }
 
     @Override

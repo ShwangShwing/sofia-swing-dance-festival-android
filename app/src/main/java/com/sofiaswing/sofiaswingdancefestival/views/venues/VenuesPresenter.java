@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -22,6 +23,7 @@ public class VenuesPresenter
     private final VenuesInterfaces.IView view;
     private final DataInterfaces.IVenuesData venuesData;
     private final ProvidersInterfaces.ILocationProvider locationProvider;
+    private final CompositeDisposable subscriptions;
 
     public VenuesPresenter(VenuesInterfaces.IView view, DataInterfaces.IVenuesData venuesData,
                            ProvidersInterfaces.ILocationProvider locationProvider) {
@@ -30,6 +32,8 @@ public class VenuesPresenter
         this.view.setPresenter(this);
         this.locationProvider = locationProvider;
         this.view.setLocationProvider(locationProvider);
+
+        this.subscriptions = new CompositeDisposable();
     }
 
     @Override
@@ -45,22 +49,13 @@ public class VenuesPresenter
                 .subscribe(new Consumer<List<VenueModel>>() {
                     @Override
                     public void accept(List<VenueModel> venueModels) throws Exception {
-                        List<VenueViewModel> venuesForView = new ArrayList<VenueViewModel>();
-
-                        for (VenueModel venue : venueModels) {
-                            Location location = null;
-                            if (venue.getLocation() != null) {
-                                location = new Location(venue.getLocation());
-                            }
-                            venuesForView.add(new VenueViewModel(
-                                    venue.getName(),
-                                    venue.getAddress(),
-                                    location
-                            ));
-                        }
-
-                        view.setVenues(venuesForView);
+                        view.setVenues(venueModels);
                     }
                 });
+    }
+
+    @Override
+    public void stop() {
+        this.subscriptions.clear();
     }
 }

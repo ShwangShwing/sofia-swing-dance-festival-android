@@ -1,7 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.views.newsArticle;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,15 +13,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.views.news.NewsArticleViewModel;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -35,6 +33,8 @@ public class NewsArticleView extends Fragment
     private NewsArticleInterfaces.IPresenter presenter;
     private ProvidersInterfaces.IImageProvider imageProvider;
 
+    private CompositeDisposable subscriptions;
+
     public NewsArticleView() {
         // Required empty public constructor
     }
@@ -43,6 +43,8 @@ public class NewsArticleView extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        this.subscriptions = new CompositeDisposable();
+
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_news_article_view, container, false);
 
@@ -52,10 +54,18 @@ public class NewsArticleView extends Fragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         this.presenter.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        this.presenter.stop();
+        this.subscriptions.clear();
     }
 
     @Override
@@ -69,7 +79,7 @@ public class NewsArticleView extends Fragment
     }
 
     @Override
-    public void setNewsArticle(NewsArticleViewModel newsArticle) {
+    public void setNewsArticle(NewsArticleModel newsArticle) {
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
         ((TextView) this.getActivity().findViewById(R.id.tvNewsArticleDate))
                 .setText(dateFormatter.format(newsArticle.getPostedOn()));
@@ -83,7 +93,8 @@ public class NewsArticleView extends Fragment
         final ProgressBar progressBar = this.getActivity().findViewById(R.id.pbNewsArticleImageLoading);
         progressBar.setVisibility(View.VISIBLE);
 
-        imageProvider.getImageFromUrl(newsArticle.getImageUrl())
+        this.subscriptions.add(
+                imageProvider.getImageFromUrl(newsArticle.getImageUrl())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Bitmap>() {
@@ -104,6 +115,7 @@ public class NewsArticleView extends Fragment
                         image.setAlpha(1f);
                         progressBar.setVisibility(View.GONE);
                     }
-                });
+                })
+        );
     }
 }

@@ -17,6 +17,7 @@ public class PartiesInterfaces {
     public interface IPresenter {
         IView getView();
         void start();
+        void stop();
         void setPartySubscription(int position, boolean subscriptionStatus);
     }
 }

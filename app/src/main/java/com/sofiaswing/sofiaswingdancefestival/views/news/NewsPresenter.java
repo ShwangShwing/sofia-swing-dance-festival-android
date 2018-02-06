@@ -10,6 +10,7 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -23,6 +24,8 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
     private final DataInterfaces.INewsArticlesData newsArticlesData;
     private List<NewsArticleModel> newsArticles;
 
+    private final CompositeDisposable subscriptions;
+
     public NewsPresenter(NewsInterfaces.IView view,
                          ProvidersInterfaces.IImageProvider imageProvider,
                          DataInterfaces.INewsArticlesData newsArticlesData) {
@@ -31,6 +34,7 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
         view.setPresenter(this);
         view.setImageProvider(imageProvider);
         this.newsArticles = new ArrayList<>();
+        this.subscriptions = new CompositeDisposable();
     }
 
     @Override
@@ -40,33 +44,23 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
 
     @Override
     public void start() {
-        this.newsArticlesData.getAll()
+        this.subscriptions.add(
+                this.newsArticlesData.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<List<NewsArticleModel>, List<NewsArticleViewModel>>() {
+                .subscribe(new Consumer<List<NewsArticleModel>>() {
                     @Override
-                    public List<NewsArticleViewModel> apply(@NonNull List<NewsArticleModel> incomingNewsArticles) throws Exception {
-                        newsArticles = new ArrayList<NewsArticleModel>(incomingNewsArticles);
-                        Collections.reverse(newsArticles);
-                        List<NewsArticleViewModel> newsArticlesForView = new ArrayList<NewsArticleViewModel>();
-                        for (NewsArticleModel newsArticle : newsArticles) {
-                            NewsArticleViewModel newsArticleForView =
-                                    new NewsArticleViewModel(
-                                            newsArticle.getPostedOn(),
-                                            newsArticle.getImageUrl(),
-                                            newsArticle.getText());
-                            newsArticlesForView.add(newsArticleForView);
-                        }
-
-                        return newsArticlesForView;
+                    public void accept(List<NewsArticleModel> incomingNewsArticles) throws Exception {
+                        newsArticles = incomingNewsArticles;
+                        getView().setNews(newsArticles);
                     }
                 })
-                .subscribe(new Consumer<List<NewsArticleViewModel>>() {
-                    @Override
-                    public void accept(List<NewsArticleViewModel> newsArticleViewModels) throws Exception {
-                        getView().setNews(newsArticleViewModels);
-                    }
-                });
+        );
+    }
+
+    @Override
+    public void stop() {
+        this.subscriptions.clear();
     }
 
     @Override

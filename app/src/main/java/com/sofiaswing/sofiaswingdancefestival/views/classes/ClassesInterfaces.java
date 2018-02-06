@@ -21,6 +21,7 @@ public class ClassesInterfaces {
     public interface IPresenter {
         IView getView();
         void start();
+        void stop();
 
         Observable<List<ClassModel>> getClassesByLevel(String type);
 

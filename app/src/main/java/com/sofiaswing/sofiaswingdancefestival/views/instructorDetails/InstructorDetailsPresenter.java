@@ -3,9 +3,9 @@ package com.sofiaswing.sofiaswingdancefestival.views.instructorDetails;
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorViewModel;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -18,6 +18,8 @@ public class InstructorDetailsPresenter implements InstructorDetailsInterfaces.I
     private final DataInterfaces.IInstructorsData instructorsData;
     private String instructorId;
 
+    private final CompositeDisposable subscriptions;
+
     public InstructorDetailsPresenter(
             InstructorDetailsInterfaces.IView view,
             DataInterfaces.IInstructorsData instructorsData,
@@ -27,6 +29,8 @@ public class InstructorDetailsPresenter implements InstructorDetailsInterfaces.I
 
         this.view.setPresenter(this);
         this.view.setImageProvider(imageProvider);
+
+        this.subscriptions = new CompositeDisposable();
     }
 
     @Override
@@ -36,22 +40,22 @@ public class InstructorDetailsPresenter implements InstructorDetailsInterfaces.I
 
     @Override
     public void start() {
-        this.instructorsData.getById(this.instructorId)
+        this.subscriptions.add(
+                this.instructorsData.getById(this.instructorId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<InstructorModel>() {
                     @Override
                     public void accept(InstructorModel instructor) throws Exception {
-                        InstructorViewModel instructorView = new InstructorViewModel(
-                                instructor.getName(),
-                                instructor.getImageUrl(),
-                                instructor.getType(),
-                                instructor.getDescription()
-                        );
-
-                        view.setInstructor(instructorView);
+                        view.setInstructor(instructor);
                     }
-                });
+                })
+        );
+    }
+
+    @Override
+    public void stop() {
+        this.subscriptions.clear();
     }
 
     @Override

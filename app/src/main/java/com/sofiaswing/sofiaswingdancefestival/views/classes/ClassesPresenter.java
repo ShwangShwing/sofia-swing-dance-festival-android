@@ -9,6 +9,8 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -21,6 +23,7 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
     private final DataInterfaces.IClassLevelsData classLevelsFirebaseData;
     private final DataInterfaces.IEventsData eventsData;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
+    private final CompositeDisposable disposables;
 
     public ClassesPresenter(ClassesInterfaces.IView view,
                             DataInterfaces.IClassLevelsData classLevelsFirebaseData,
@@ -31,6 +34,8 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
         this.settingsProvider = settingsProvider;
         this.view.setPresenter(this);
         this.classLevelsFirebaseData = classLevelsFirebaseData;
+
+        this.disposables = new CompositeDisposable();
     }
 
     @Override
@@ -40,7 +45,7 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
 
     @Override
     public void start() {
-        this.classLevelsFirebaseData.getAll()
+        Disposable subscription = this.classLevelsFirebaseData.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<ClassLevelModel>>() {
@@ -49,6 +54,13 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
                         view.setClassesTabs(classLevels);
                     }
                 });
+
+        this.disposables.add(subscription);
+    }
+
+    @Override
+    public void stop() {
+        this.disposables.clear();
     }
 
     @Override

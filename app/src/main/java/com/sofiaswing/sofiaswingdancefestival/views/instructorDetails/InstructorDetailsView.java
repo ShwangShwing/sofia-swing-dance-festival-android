@@ -13,8 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorViewModel;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -45,10 +45,17 @@ public class InstructorDetailsView extends Fragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         this.presenter.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        this.presenter.stop();
     }
 
     @Override
@@ -62,7 +69,7 @@ public class InstructorDetailsView extends Fragment
     }
 
     @Override
-    public void setInstructor(InstructorViewModel instructor) {
+    public void setInstructor(InstructorModel instructor) {
         ((TextView) this.getActivity().findViewById(R.id.tvInstructorName))
                 .setText(instructor.getName());
 

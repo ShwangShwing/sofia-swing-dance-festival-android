@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -20,6 +21,8 @@ public class InstructorsPresenter implements InstructorsInterfaces.IPresenter{
     private final DataInterfaces.IInstructorsData instructorsData;
     private List<InstructorModel> instructors;
 
+    private final CompositeDisposable subscriptions;
+
     public InstructorsPresenter(InstructorsInterfaces.IView view,
                                 ProvidersInterfaces.IImageProvider imageProvider,
                                 DataInterfaces.IInstructorsData instructorsData) {
@@ -30,6 +33,7 @@ public class InstructorsPresenter implements InstructorsInterfaces.IPresenter{
         this.view.setImageProvider(imageProvider);
 
         this.instructors = new ArrayList<>();
+        this.subscriptions = new CompositeDisposable();
     }
 
     @Override
@@ -39,7 +43,8 @@ public class InstructorsPresenter implements InstructorsInterfaces.IPresenter{
 
     @Override
     public void start() {
-        this.instructorsData.getAll()
+        this.subscriptions.add(
+                this.instructorsData.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<InstructorModel>>() {
@@ -47,20 +52,15 @@ public class InstructorsPresenter implements InstructorsInterfaces.IPresenter{
                     public void accept(List<InstructorModel> incomingInstructors) throws Exception {
                         instructors = new ArrayList(incomingInstructors);
 
-                        ArrayList<InstructorViewModel> viewInstructors = new ArrayList<InstructorViewModel>();
-
-                        for (InstructorModel instructor : instructors) {
-                            InstructorViewModel viewInstructor = new InstructorViewModel(
-                                    instructor.getName(),
-                                    instructor.getImageUrl(),
-                                    instructor.getType()
-                            );
-                            viewInstructors.add(viewInstructor);
-                        }
-
-                        view.setInstructors(viewInstructors);
+                        view.setInstructors(instructors);
                     }
-                });
+                })
+        );
+    }
+
+    @Override
+    public void stop() {
+        this.subscriptions.dispose();
     }
 
     @Override

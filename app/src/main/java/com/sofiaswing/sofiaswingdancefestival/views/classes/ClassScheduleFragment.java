@@ -1,15 +1,13 @@
 package com.sofiaswing.sofiaswingdancefestival.views.classes;
 
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +19,18 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
-import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+// TODO: The presenter should put data here, this is a view, it should not request data! Fix it!
 
 public class ClassScheduleFragment extends Fragment {
     private ClassesInterfaces.IPresenter presenter;
@@ -39,6 +38,8 @@ public class ClassScheduleFragment extends Fragment {
     private ArrayAdapter<ClassModel> classScheduleAdapter;
     private List<Boolean> subscribedClasses;
     private boolean isTaster;
+
+    private CompositeDisposable subscriptions;
 
     public ClassScheduleFragment() {
         // Required empty public constructor
@@ -56,15 +57,17 @@ public class ClassScheduleFragment extends Fragment {
 
         fragment.subscribedClasses = new ArrayList<>();
 
+        fragment.subscriptions = new CompositeDisposable();
+
         return fragment;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         if (!this.isTaster) {
-            presenter.getClassesByLevel(classLevel)
+            this.subscriptions.add(presenter.getClassesByLevel(classLevel)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<List<ClassModel>>() {
@@ -79,10 +82,10 @@ public class ClassScheduleFragment extends Fragment {
 
                             classScheduleAdapter.addAll(classes);
                         }
-                    });
+                    }));
         }
         else {
-            presenter.getTasterClasses()
+            this.subscriptions.add(presenter.getTasterClasses()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<List<ClassModel>>() {
@@ -97,8 +100,14 @@ public class ClassScheduleFragment extends Fragment {
 
                             classScheduleAdapter.addAll(classes);
                         }
-                    });
+                    }));
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        this.subscriptions.clear();
     }
 
     @Override

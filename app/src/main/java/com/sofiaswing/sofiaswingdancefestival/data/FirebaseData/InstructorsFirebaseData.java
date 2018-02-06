@@ -111,7 +111,6 @@ public class InstructorsFirebaseData implements DataInterfaces.IInstructorsData 
     @Override
     public Observable<InstructorModel> getById(String id) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        Log.d("+++++++++++", id);
         final DatabaseReference instructorsRef = database.getReference(id);
 
         Observable<InstructorModel> observable = Observable.create(new ObservableOnSubscribe<InstructorModel>() {

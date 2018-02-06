@@ -119,7 +119,6 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
     @Override
     public Observable<NewsArticleModel> getById(String id) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
         final DatabaseReference newsArticlesRef = database.getReference(id);
 
         Observable<NewsArticleModel> observable = Observable.create(new ObservableOnSubscribe<NewsArticleModel>() {

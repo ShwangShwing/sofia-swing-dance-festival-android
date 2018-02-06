@@ -1,7 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.newsArticle;
 
+import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.views.news.NewsArticleViewModel;
 
 /**
  * Created by shwangshwing on 10/9/17.
@@ -12,12 +12,13 @@ public class NewsArticleInterfaces {
         void setPresenter(IPresenter presenter);
         void setImageProvider(ProvidersInterfaces.IImageProvider imageProvider);
 
-        void setNewsArticle(NewsArticleViewModel newsArticle);
+        void setNewsArticle(NewsArticleModel newsArticle);
     }
 
     public interface IPresenter {
         IView getView();
         void start();
+        void stop();
         void setNewsArticleId(String id);
     }
 }

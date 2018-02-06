@@ -1,7 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.instructorDetails;
 
+import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorViewModel;
 
 /**
  * Created by shwangshwing on 10/10/17.
@@ -12,12 +12,13 @@ public class InstructorDetailsInterfaces {
         void setPresenter(IPresenter presenter);
         void setImageProvider(ProvidersInterfaces.IImageProvider imageProvider);
 
-        void setInstructor(InstructorViewModel instructor);
+        void setInstructor(InstructorModel instructor);
     }
 
     public interface IPresenter {
         IView getView();
         void start();
+        void stop();
         void setInstructorId(String id);
     }
 }

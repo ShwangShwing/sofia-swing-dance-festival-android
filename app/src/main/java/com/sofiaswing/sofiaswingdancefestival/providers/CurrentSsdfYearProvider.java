@@ -1,5 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
+import android.util.Log;
+
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ public class CurrentSsdfYearProvider implements ProvidersInterfaces.ICurrentSsdf
     private boolean overrideYear;
     private String lastEmittedSsdfYear;
 
+    Observable<String> currentSsdfYearObservable;
+
     private final List<ObservableEmitter<String>> emitters;
     Disposable ssdfYearDataSubscr;
 
@@ -36,29 +40,31 @@ public class CurrentSsdfYearProvider implements ProvidersInterfaces.ICurrentSsdf
 
     @Override
     public synchronized Observable<String> getCurrentSsdfYear() {
-        Observable<String> observable = Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(ObservableEmitter<String> e) throws Exception {
-                List<ObservableEmitter<String>> disposedEmitters = new ArrayList<>();
-                for (ObservableEmitter<String> emitter : emitters) {
-                    if (emitter.isDisposed()) {
-                        disposedEmitters.add(emitter);
+        if (this.currentSsdfYearObservable == null) {
+            this.currentSsdfYearObservable = Observable.create(new ObservableOnSubscribe<String>() {
+                @Override
+                public void subscribe(ObservableEmitter<String> e) throws Exception {
+                    List<ObservableEmitter<String>> disposedEmitters = new ArrayList<>();
+                    for (ObservableEmitter<String> emitter : emitters) {
+                        if (emitter.isDisposed()) {
+                            disposedEmitters.add(emitter);
+                        }
+                    }
+
+                    emitters.removeAll(disposedEmitters);
+
+                    emitters.add(e);
+                    Log.d("+++++++++++", String.format("%d", emitters.size()));
+                    if (lastEmittedSsdfYear == null) {
+                        setupProperSsdfYear();
+                    } else {
+                        e.onNext(lastEmittedSsdfYear);
                     }
                 }
+            });
+        }
 
-                emitters.removeAll(disposedEmitters);
-
-                emitters.add(e);
-                if (lastEmittedSsdfYear == null) {
-                    setupProperSsdfYear();
-                }
-                else {
-                    e.onNext(lastEmittedSsdfYear);
-                }
-            }
-        });
-
-        return observable;
+        return this.currentSsdfYearObservable;
     }
 
     @Override

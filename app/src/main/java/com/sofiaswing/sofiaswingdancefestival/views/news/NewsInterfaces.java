@@ -14,13 +14,14 @@ public class NewsInterfaces {
         void setPresenter(IPresenter presenter);
         void setImageProvider(ProvidersInterfaces.IImageProvider imageProvider);
 
-        void setNews(List<NewsArticleViewModel> newsArticles);
+        void setNews(List<NewsArticleModel> newsArticles);
         void navigateToArticle(String articleId);
     }
 
     public interface IPresenter {
         IView getView();
         void start();
+        void stop();
         void selectNewsArticle(int index);
     }
 }
