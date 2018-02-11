@@ -29,4 +29,7 @@
     <string name="year_from_database">Current db year from database:</string>
     <string name="custom_year">Custom year</string>
     <string name="set">Set</string>
+    <string name="test_notif">Test notif</string>
+    <string name="notification_test_panel">Notification test panel</string>
+    <string name="test_notification_created">Test notification created.</string>
 </resources>

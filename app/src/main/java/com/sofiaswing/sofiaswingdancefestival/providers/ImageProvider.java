@@ -31,7 +31,7 @@ public class ImageProvider implements ProvidersInterfaces.IImageProvider {
                             if (bitmap != null) {
                                 e.onNext(bitmap);
                             } else {
-                                e.onError(new FileNotFoundException(String.format("ffffImage with url of %s not found", url)));
+                                e.onError(new FileNotFoundException(String.format("Image with url of %s not found", url)));
                             }
                         }
                     }
@@ -58,6 +58,8 @@ public class ImageProvider implements ProvidersInterfaces.IImageProvider {
             try {
                 URL url = new URL(requestUrl);
                 URLConnection conn = url.openConnection();
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
                 Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
                 return bitmap;
             } catch (Exception ex) {

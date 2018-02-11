@@ -1,5 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.settings;
 
+import android.util.Log;
+
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
@@ -59,6 +61,19 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     public void setCustomYear(String customYear) {
         this.volatileSettingsProvider.setCurrentSsdfYear(customYear);
         this.updateCustomYearFields();
+    }
+
+    @Override
+    public void createTestNotification(String id, String name, long startTime, long notifyTime) {
+        if (startTime == 0) startTime = notifyTime;
+        if (notifyTime == 0) notifyTime = startTime;
+        Log.d("++++++++++", String.format("%d", startTime));
+        Log.d("++++++++++", String.format("%d", notifyTime));
+        this.settingsProvider.subscribeForEvent(
+                id,
+                name,
+                startTime,
+                notifyTime);
     }
 
     private void updateHackerPanelAndIndicator() {

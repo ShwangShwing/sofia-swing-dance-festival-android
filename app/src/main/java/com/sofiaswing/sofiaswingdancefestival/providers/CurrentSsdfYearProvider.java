@@ -54,7 +54,6 @@ public class CurrentSsdfYearProvider implements ProvidersInterfaces.ICurrentSsdf
                     emitters.removeAll(disposedEmitters);
 
                     emitters.add(e);
-                    Log.d("+++++++++++", String.format("%d", emitters.size()));
                     if (lastEmittedSsdfYear == null) {
                         setupProperSsdfYear();
                     } else {
