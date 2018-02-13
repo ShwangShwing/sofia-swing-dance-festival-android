@@ -30,7 +30,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-// TODO: The newPresenter should put data here, this is a view, it should not request data! Fix it!
+// TODO: The presenter should put data here, this is a view, it should not request data! Fix it!
 
 public class ClassScheduleFragment extends Fragment {
     private ClassesInterfaces.IPresenter presenter;
