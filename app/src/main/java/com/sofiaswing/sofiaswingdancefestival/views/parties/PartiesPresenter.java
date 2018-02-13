@@ -17,28 +17,25 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class PartiesPresenter implements PartiesInterfaces.IPresenter {
-    private final PartiesInterfaces.IView view;
+    private PartiesInterfaces.IView view;
     private final DataInterfaces.IPartiesData partiesData;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
     private final List<PartyViewModel> partyViewModels;
 
     private final CompositeDisposable subscriptions;
 
-    public PartiesPresenter(PartiesInterfaces.IView view,
-                            DataInterfaces.IPartiesData partiesData,
+    public PartiesPresenter(DataInterfaces.IPartiesData partiesData,
                             ProvidersInterfaces.ISettingsProvider settingsProvider) {
-        this.view = view;
         this.partiesData = partiesData;
         this.settingsProvider = settingsProvider;
-        this.view.setPresenter(this);
         this.partyViewModels = new ArrayList<>();
 
         this.subscriptions = new CompositeDisposable();
     }
 
     @Override
-    public PartiesInterfaces.IView getView() {
-        return this.view;
+    public void setView(PartiesInterfaces.IView view) {
+        this.view = view;
     }
 
     @Override

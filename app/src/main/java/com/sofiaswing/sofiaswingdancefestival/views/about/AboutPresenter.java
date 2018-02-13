@@ -5,16 +5,15 @@ package com.sofiaswing.sofiaswingdancefestival.views.about;
  */
 
 public class AboutPresenter implements AboutInterfaces.IPresenter {
-    private final AboutInterfaces.IView view;
+    private AboutInterfaces.IView view;
 
-    public AboutPresenter(AboutInterfaces.IView view) {
-        this.view = view;
-        this.view.setPresenter(this);
+    public AboutPresenter() {
+
     }
 
     @Override
-    public AboutInterfaces.IView getView() {
-        return this.view;
+    public void setView(AboutInterfaces.IView view) {
+        this.view = view;
     }
 
     @Override

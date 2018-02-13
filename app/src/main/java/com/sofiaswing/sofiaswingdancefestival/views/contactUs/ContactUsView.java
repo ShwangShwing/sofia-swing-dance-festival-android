@@ -23,20 +23,38 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ContactUsView extends Fragment implements ContactUsInterfaces.IView {
     private static final int MY_PERMISSIONS_REQUEST_PHONE = 533;
-    private ContactUsInterfaces.IPresenter presenter;
+
+    @Inject
+    public ContactUsInterfaces.IPresenter presenter;
+
     private ArrayAdapter contactsAdapter;
     private String phoneToCallAfterPermissionIsGranted;
 
+    public static ContactUsView newInstance() {
+        ContactUsView fragment = new ContactUsView();
+        return fragment;
+    }
+
     public ContactUsView() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inject();
+        presenter.setView(this);
     }
 
     @Override
@@ -58,10 +76,6 @@ public class ContactUsView extends Fragment implements ContactUsInterfaces.IView
         this.presenter.start();
     }
 
-    public void setPresenter(ContactUsInterfaces.IPresenter presenter) {
-        this.presenter = presenter;
-    }
-
     @Override
     public void setContacts(List<ContactViewModel> contacts) {
         contactsAdapter.clear();
@@ -80,6 +94,12 @@ public class ContactUsView extends Fragment implements ContactUsInterfaces.IView
                     }
                 }
         }
+    }
+
+    private void inject() {
+        ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
+                .getComponent()
+                .inject(this);
     }
 
     private void callPhone(String phoneNumber) {

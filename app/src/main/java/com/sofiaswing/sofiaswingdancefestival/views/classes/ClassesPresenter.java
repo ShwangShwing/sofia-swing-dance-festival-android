@@ -19,28 +19,25 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class ClassesPresenter implements ClassesInterfaces.IPresenter {
-    private final ClassesInterfaces.IView view;
+    private ClassesInterfaces.IView view;
     private final DataInterfaces.IClassLevelsData classLevelsFirebaseData;
     private final DataInterfaces.IEventsData eventsData;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
     private final CompositeDisposable disposables;
 
-    public ClassesPresenter(ClassesInterfaces.IView view,
-                            DataInterfaces.IClassLevelsData classLevelsFirebaseData,
+    public ClassesPresenter(DataInterfaces.IClassLevelsData classLevelsFirebaseData,
                             DataInterfaces.IEventsData eventsData,
                             ProvidersInterfaces.ISettingsProvider settingsProvider) {
-        this.view = view;
         this.eventsData = eventsData;
         this.settingsProvider = settingsProvider;
-        this.view.setPresenter(this);
         this.classLevelsFirebaseData = classLevelsFirebaseData;
 
         this.disposables = new CompositeDisposable();
     }
 
     @Override
-    public ClassesInterfaces.IView getView() {
-        return view;
+    public void setView(ClassesInterfaces.IView view) {
+        this.view = view;
     }
 
     @Override

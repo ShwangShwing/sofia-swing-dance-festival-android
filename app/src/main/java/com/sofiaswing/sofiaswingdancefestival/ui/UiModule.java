@@ -10,13 +10,8 @@ import dagger.Provides;
 @Module
 public class UiModule {
     @Provides
-    UiInterfaces.ITitleFragmentFactory provideTitleFragmentFactory() {
-        return new TitleFragmentFactory();
-    }
-
-    @Provides
-    UiInterfaces.IDrawerNavigationFragmentFactory provideDrawerNavigationFragmentFactory() {
-        return new DrawerNavigationFragmentFactory();
+    UiInterfaces.IDrawerNavigationFactory provideDrawerNavigationFactory() {
+        return new DrawerNavigationFactory();
     }
 
     @Provides

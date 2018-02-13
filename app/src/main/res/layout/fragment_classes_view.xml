@@ -12,11 +12,12 @@
         <com.astuetz.PagerSlidingTabStrip
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="48dip"></com.astuetz.PagerSlidingTabStrip>
+            android:layout_height="48dip"/>
+
         <android.support.v4.view.ViewPager
             android:id="@+id/tabsPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
 </FrameLayout>

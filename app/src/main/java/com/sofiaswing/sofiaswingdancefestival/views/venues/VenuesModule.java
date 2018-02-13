@@ -13,16 +13,9 @@ import dagger.Provides;
 @Module
 public class VenuesModule {
     @Provides
-    VenuesInterfaces.IView provideView() {
-        return new VenuesView();
-    }
-
-    @Provides
     VenuesInterfaces.IPresenter providePresenter(
-            VenuesInterfaces.IView view,
             DataInterfaces.IVenuesData venuesData,
-            ProvidersInterfaces.ILocationProvider locationProvider
-    ) {
-        return new VenuesPresenter(view, venuesData, locationProvider);
+            ProvidersInterfaces.ILocationProvider locationProvider) {
+        return new VenuesPresenter(venuesData, locationProvider);
     }
 }

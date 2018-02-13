@@ -36,10 +36,10 @@ public class ClassScheduleFragment extends Fragment {
     private ClassesInterfaces.IPresenter presenter;
     private String classLevel;
     private ArrayAdapter<ClassModel> classScheduleAdapter;
-    private List<Boolean> subscribedClasses;
     private boolean isTaster;
 
-    private CompositeDisposable subscriptions;
+    private List<Boolean> subscribedClasses = new ArrayList<>();
+    private CompositeDisposable subscriptions = new CompositeDisposable();
 
     public ClassScheduleFragment() {
         // Required empty public constructor
@@ -54,10 +54,6 @@ public class ClassScheduleFragment extends Fragment {
         fragment.presenter = presenter;
         fragment.classLevel = classLevel;
         fragment.isTaster = isTaster;
-
-        fragment.subscribedClasses = new ArrayList<>();
-
-        fragment.subscriptions = new CompositeDisposable();
 
         return fragment;
     }
@@ -111,10 +107,17 @@ public class ClassScheduleFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View root = inflater.inflate(R.layout.fragment_class_schedule, container, false);
+
+        setRetainInstance(true);
 
         ListView lvClasses = root.findViewById(R.id.lvClassSchedule);
         this.classScheduleAdapter = new ClassScheduleAdapter(root.getContext(), android.R.layout.simple_list_item_1);

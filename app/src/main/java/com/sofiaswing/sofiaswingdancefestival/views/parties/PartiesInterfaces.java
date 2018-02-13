@@ -10,12 +10,11 @@ import java.util.List;
 
 public class PartiesInterfaces {
     public interface IView {
-        void setPresenter(IPresenter presenter);
         void setParties(List<PartyViewModel> parties);
     }
 
     public interface IPresenter {
-        IView getView();
+        void setView(IView view);
         void start();
         void stop();
         void setPartySubscription(int position, boolean subscriptionStatus);

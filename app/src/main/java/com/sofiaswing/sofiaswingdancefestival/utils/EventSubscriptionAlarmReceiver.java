@@ -6,14 +6,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.main.MainActivity;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -65,8 +64,8 @@ public class EventSubscriptionAlarmReceiver extends BroadcastReceiver {
                 230, 20
         };
 
-        Intent resultIntent = new Intent(context.getApplicationContext(), ClassesActivity.class);
-        resultIntent.putExtra(ClassesActivity.EVENT_ID_KEY, eventId);
+        Intent resultIntent = new Intent(context.getApplicationContext(), MainActivity.class);
+        resultIntent.putExtra(EVENT_ID_KEY, eventId);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, eventId.hashCode(), resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 

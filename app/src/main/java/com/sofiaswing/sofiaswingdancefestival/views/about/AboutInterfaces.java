@@ -6,11 +6,11 @@ package com.sofiaswing.sofiaswingdancefestival.views.about;
 
 public class AboutInterfaces {
     public interface IView {
-        void setPresenter(IPresenter presenter);
+
     }
 
     public interface IPresenter {
-        IView getView();
+        void setView(IView view);
         void start();
     }
 }

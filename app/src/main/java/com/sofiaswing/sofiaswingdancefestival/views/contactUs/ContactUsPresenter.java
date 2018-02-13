@@ -8,16 +8,15 @@ import java.util.List;
  */
 
 public class ContactUsPresenter implements ContactUsInterfaces.IPresenter {
-    private final ContactUsInterfaces.IView view;
+    private ContactUsInterfaces.IView view;
 
-    public ContactUsPresenter(ContactUsInterfaces.IView view) {
-        this.view = view;
-        this.view.setPresenter(this);
+    public ContactUsPresenter() {
+
     }
 
     @Override
-    public ContactUsInterfaces.IView getView() {
-        return this.view;
+    public void setView(ContactUsInterfaces.IView view) {
+        this.view = view;
     }
 
     @Override
