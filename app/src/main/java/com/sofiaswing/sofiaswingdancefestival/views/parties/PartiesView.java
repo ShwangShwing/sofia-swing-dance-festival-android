@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
 
 import java.text.DateFormat;
@@ -23,17 +24,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class PartiesView extends Fragment implements PartiesInterfaces.IView {
-    private PartiesInterfaces.IPresenter presenter;
+    @Inject
+    public PartiesInterfaces.IPresenter presenter;
+
     private ArrayAdapter<PartyViewModel> partiesAdapter;
+
+    public static PartiesView newInstance() {
+        PartiesView fragment = new PartiesView();
+        return fragment;
+    }
 
     public PartiesView() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inject();
+        presenter.setView(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,14 +94,15 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
     }
 
     @Override
-    public void setPresenter(PartiesInterfaces.IPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
     public void setParties(List<PartyViewModel> parties) {
         partiesAdapter.clear();
         partiesAdapter.addAll(parties);
+    }
+
+    private void inject() {
+        ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
+                .getComponent()
+                .inject(this);
     }
 
     private class PartiesAdapter extends ArrayAdapter<PartyViewModel> {

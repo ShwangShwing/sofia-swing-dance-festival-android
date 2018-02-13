@@ -11,6 +11,7 @@ public class VenueModel {
     final String name;
     final String address;
     final Location location;
+    private String distance = "-";
 
     public VenueModel(String id, String name, String address, Location location) {
         this.id = id;
@@ -33,6 +34,14 @@ public class VenueModel {
 
     public Location getLocation() {
         return location;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getDistance() {
+        return distance;
     }
 
 }

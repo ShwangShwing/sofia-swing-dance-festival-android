@@ -12,16 +12,11 @@ import dagger.Provides;
 
 @Module
 public class PartiesModule {
-    @Provides
-    PartiesInterfaces.IView provideNewsView() {
-        return new PartiesView();
-    }
 
     @Provides
     PartiesInterfaces.IPresenter provideNewsPresenter(
-            PartiesInterfaces.IView view,
             DataInterfaces.IPartiesData partiesData,
             ProvidersInterfaces.ISettingsProvider settingsProvider) {
-        return new PartiesPresenter(view, partiesData, settingsProvider);
+        return new PartiesPresenter(partiesData, settingsProvider);
     }
 }

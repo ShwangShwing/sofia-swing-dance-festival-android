@@ -20,26 +20,21 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class NewsPresenter implements NewsInterfaces.IPresenter {
-    public final NewsInterfaces.IView view;
+    public NewsInterfaces.IView view;
     private final DataInterfaces.INewsArticlesData newsArticlesData;
     private List<NewsArticleModel> newsArticles;
 
     private final CompositeDisposable subscriptions;
 
-    public NewsPresenter(NewsInterfaces.IView view,
-                         ProvidersInterfaces.IImageProvider imageProvider,
-                         DataInterfaces.INewsArticlesData newsArticlesData) {
-        this.view = view;
+    public NewsPresenter(DataInterfaces.INewsArticlesData newsArticlesData) {
         this.newsArticlesData = newsArticlesData;
-        view.setPresenter(this);
-        view.setImageProvider(imageProvider);
         this.newsArticles = new ArrayList<>();
         this.subscriptions = new CompositeDisposable();
     }
 
     @Override
-    public NewsInterfaces.IView getView() {
-        return this.view;
+    public void setView(NewsInterfaces.IView view) {
+        this.view = view;
     }
 
     @Override
@@ -52,7 +47,7 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
                     @Override
                     public void accept(List<NewsArticleModel> incomingNewsArticles) throws Exception {
                         newsArticles = incomingNewsArticles;
-                        getView().setNews(newsArticles);
+                        view.setNews(newsArticles);
                     }
                 })
         );

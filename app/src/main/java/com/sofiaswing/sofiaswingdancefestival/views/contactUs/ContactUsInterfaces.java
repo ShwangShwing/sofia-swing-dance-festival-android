@@ -8,13 +8,11 @@ import java.util.List;
 
 public class ContactUsInterfaces {
     public interface IView {
-        void setPresenter(IPresenter presenter);
-
         void setContacts(List<ContactViewModel> contacts);
     }
 
     public interface IPresenter {
-        IView getView();
+        void setView(IView view);
         void start();
     }
 }

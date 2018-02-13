@@ -21,10 +21,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -35,21 +38,31 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VenuesView extends Fragment
-        implements VenuesInterfaces.IView {
+public class VenuesView extends Fragment implements VenuesInterfaces.IView {
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 666;
 
-    private VenuesInterfaces.IPresenter presenter;
+    @Inject
+    public VenuesInterfaces.IPresenter presenter;
+
     private ArrayAdapter<VenueModel> venuesAdapter;
-    private ProvidersInterfaces.ILocationProvider locationProvider;
     private boolean hasLocationPermission;
-    private CompositeDisposable locationSubscriptions;
     private boolean hasAskedForPermissions;
+
+    public static VenuesView newInstance() {
+        VenuesView fragment = new VenuesView();
+        return fragment;
+    }
 
     public VenuesView() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inject();
+        presenter.setView(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,8 +74,6 @@ public class VenuesView extends Fragment
 
         this.hasLocationPermission = false;
         this.hasAskedForPermissions = false;
-
-        this.locationSubscriptions = new CompositeDisposable();
 
         ListView lvVenues = root.findViewById(R.id.lvVenues);
         this.venuesAdapter = new VenuesAdapter(root.getContext(), android.R.layout.simple_list_item_1);
@@ -84,36 +95,18 @@ public class VenuesView extends Fragment
         super.onResume();
         this.checkAndAskPermission();
         this.presenter.start();
-        this.locationProvider.startLocationService(this.getActivity());
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        this.locationProvider.stopLocationService();
         this.presenter.stop();
-        this.locationSubscriptions.clear();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void setPresenter(VenuesInterfaces.IPresenter presenter) {
-        this.presenter = presenter;
     }
 
     @Override
     public void setVenues(List<VenueModel> venues) {
         this.venuesAdapter.clear();
         this.venuesAdapter.addAll(venues);
-    }
-
-    @Override
-    public void setLocationProvider(ProvidersInterfaces.ILocationProvider locationProvider) {
-        this.locationProvider = locationProvider;
     }
 
     @Override
@@ -126,6 +119,12 @@ public class VenuesView extends Fragment
                     this.venuesAdapter.notifyDataSetChanged();
                 }
         }
+    }
+
+    private void inject() {
+        ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
+                .getComponent()
+                .inject(this);
     }
 
     private void checkAndAskPermission() {
@@ -167,34 +166,12 @@ public class VenuesView extends Fragment
             ((TextView) venueRow.findViewById(R.id.tvVenueAddress)).setText(venue.getAddress());
 
             if (hasLocationPermission && venue.getLocation() != null) {
-                final View finalVenueRow = venueRow;
-                Disposable d = locationProvider.getCurrentLocation()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<Location>() {
-                            @Override
-                            public void accept(Location currentLocation) throws Exception {
-                                float distanceInMeters = currentLocation.distanceTo(venue.getLocation());
-                                String formatedDistance = String.format("%.0fm", distanceInMeters);
-                                if (distanceInMeters >= 1000) {
-                                    formatedDistance = String.format("%.1fkm", distanceInMeters / 1000);
-                                }
-
-                                TextView tvDistance = finalVenueRow.findViewById(R.id.tvDistance);
-                                tvDistance.setText(String.format("%s %s", getString(R.string.distance), formatedDistance));
-                                tvDistance.setVisibility(View.VISIBLE);
-                            }
-                        });
-                locationSubscriptions.add(d);
+                TextView tvDistance = venueRow.findViewById(R.id.tvDistance);
+                tvDistance.setText(String.format("%s %s", getString(R.string.distance), venue.getDistance()));
+                tvDistance.setVisibility(View.VISIBLE);
             }
 
             return venueRow;
-        }
-
-        @Override
-        public void clear() {
-            super.clear();
-            locationSubscriptions.clear();
         }
     }
 }

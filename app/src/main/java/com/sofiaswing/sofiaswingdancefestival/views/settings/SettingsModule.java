@@ -13,16 +13,9 @@ import dagger.Provides;
 @Module
 public class SettingsModule {
     @Provides
-    SettingsInterfaces.IView provideAboutView() {
-        return new SettingsView();
-    }
-
-    @Provides
     SettingsInterfaces.IPresenter providePresenter(
-            SettingsInterfaces.IView view,
             ProvidersInterfaces.ISettingsProvider settingsProvider,
-            ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider,
-            UiInterfaces.IPopupCreator popupCreator) {
-        return new SettingsPresenter(view, settingsProvider, volatileSettingsProvider, popupCreator);
+            ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
+        return new SettingsPresenter(settingsProvider, volatileSettingsProvider);
     }
 }

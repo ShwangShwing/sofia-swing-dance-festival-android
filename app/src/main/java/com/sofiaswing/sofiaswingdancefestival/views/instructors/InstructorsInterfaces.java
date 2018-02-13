@@ -11,15 +11,12 @@ import java.util.List;
 
 public class InstructorsInterfaces {
     public interface IView {
-        void setPresenter(IPresenter presenter);
-        void setImageProvider(ProvidersInterfaces.IImageProvider imageProvider);
-
         void setInstructors(List<InstructorModel> newsArticles);
         void navigateToInstructor(String instructorId);
     }
 
     public interface IPresenter {
-        IView getView();
+        void setView(IView view);
         void start();
         void stop();
         void selectInstructor(int index);

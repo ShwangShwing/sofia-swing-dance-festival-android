@@ -9,13 +9,9 @@ import dagger.Provides;
 
 @Module
 public class ContactUsModule {
-    @Provides
-    ContactUsInterfaces.IView provideAboutView() {
-        return new ContactUsView();
-    }
 
     @Provides
-    ContactUsInterfaces.IPresenter providePresenter(ContactUsInterfaces.IView view) {
-        return new ContactUsPresenter(view);
+    ContactUsInterfaces.IPresenter providePresenter() {
+        return new ContactUsPresenter();
     }
 }

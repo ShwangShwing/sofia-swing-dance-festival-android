@@ -1,7 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.views.news;
 
 import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.List;
 
@@ -11,15 +10,12 @@ import java.util.List;
 
 public class NewsInterfaces {
     public interface IView {
-        void setPresenter(IPresenter presenter);
-        void setImageProvider(ProvidersInterfaces.IImageProvider imageProvider);
-
         void setNews(List<NewsArticleModel> newsArticles);
         void navigateToArticle(String articleId);
     }
 
     public interface IPresenter {
-        IView getView();
+        void setView(IView view);
         void start();
         void stop();
         void selectNewsArticle(int index);

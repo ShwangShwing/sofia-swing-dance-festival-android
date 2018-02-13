@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
@@ -42,18 +43,31 @@ import static android.R.attr.name;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewsView extends Fragment
-        implements NewsInterfaces.IView {
-    public ProvidersInterfaces.IImageProvider imageProvider;
-
-    private NewsInterfaces.IPresenter presenter;
-
+public class NewsView extends Fragment implements NewsInterfaces.IView {
     private ArrayAdapter<NewsArticleModel> lvNewsAdapter;
 
     private CompositeDisposable subscriptions;
 
+    @Inject
+    public ProvidersInterfaces.IImageProvider imageProvider;
+
+    @Inject
+    public NewsInterfaces.IPresenter presenter;
+
+    public static Fragment newInstance() {
+        Fragment fragment = new NewsView();
+        return fragment;
+    }
+
     public NewsView() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inject();
+        presenter.setView(this);
     }
 
     @Override
@@ -95,16 +109,6 @@ public class NewsView extends Fragment
     }
 
     @Override
-    public void setPresenter(NewsInterfaces.IPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void setImageProvider(ProvidersInterfaces.IImageProvider imageProvider) {
-        this.imageProvider = imageProvider;
-    }
-
-    @Override
     public void setNews(List<NewsArticleModel> newsArticles) {
         this.lvNewsAdapter.clear();
         this.lvNewsAdapter.addAll(newsArticles);
@@ -115,6 +119,12 @@ public class NewsView extends Fragment
         Intent intent = new Intent(this.getContext(), NewsArticleActivity.class);
         intent.putExtra(NewsArticleActivity.ARTICLE_ID_KEY, articleId);
         startActivity(intent);
+    }
+
+    private void inject() {
+        ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
+                .getComponent()
+                .inject(this);
     }
 
     private class NewsArticlesAdapter extends ArrayAdapter<NewsArticleModel> {

@@ -11,14 +11,10 @@ import java.util.List;
 
 public class VenuesInterfaces {
     interface IView {
-        void setPresenter(IPresenter presenter);
-
         void setVenues(List<VenueModel> venues);
-
-        void setLocationProvider(ProvidersInterfaces.ILocationProvider locationProvider);
     }
     interface IPresenter {
-        IView getView();
+        void setView(IView view);
         void start();
         void stop();
     }

@@ -17,28 +17,22 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class InstructorsPresenter implements InstructorsInterfaces.IPresenter{
-    private final InstructorsInterfaces.IView view;
+    private InstructorsInterfaces.IView view;
     private final DataInterfaces.IInstructorsData instructorsData;
     private List<InstructorModel> instructors;
 
     private final CompositeDisposable subscriptions;
 
-    public InstructorsPresenter(InstructorsInterfaces.IView view,
-                                ProvidersInterfaces.IImageProvider imageProvider,
-                                DataInterfaces.IInstructorsData instructorsData) {
-        this.view = view;
+    public InstructorsPresenter(DataInterfaces.IInstructorsData instructorsData) {
         this.instructorsData = instructorsData;
-
-        this.view.setPresenter(this);
-        this.view.setImageProvider(imageProvider);
 
         this.instructors = new ArrayList<>();
         this.subscriptions = new CompositeDisposable();
     }
 
     @Override
-    public InstructorsInterfaces.IView getView() {
-        return this.view;
+    public void setView(InstructorsInterfaces.IView view) {
+        this.view = view;
     }
 
     @Override
@@ -60,7 +54,7 @@ public class InstructorsPresenter implements InstructorsInterfaces.IPresenter{
 
     @Override
     public void stop() {
-        this.subscriptions.dispose();
+        this.subscriptions.clear();
     }
 
     @Override

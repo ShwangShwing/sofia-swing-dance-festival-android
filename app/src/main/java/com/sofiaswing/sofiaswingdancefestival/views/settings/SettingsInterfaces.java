@@ -12,9 +12,6 @@ public class SettingsInterfaces {
     public interface IView {
         void setEventNotificationTimeSelection(long seconds);
 
-        void setPresenter(IPresenter presenter);
-        void setPopupCreator(UiInterfaces.IPopupCreator popupCreator);
-
         void notifyHackerModeEnabled();
         void showHackerModeEnabledIndicator();
         void hideHackerModeEnabledIndicator();
@@ -27,7 +24,7 @@ public class SettingsInterfaces {
     }
 
     public interface IPresenter {
-        IView getView();
+        void setView(IView view);
         void start();
 
         void setEventsNotificationAdvanceTimeSeconds(long seconds);

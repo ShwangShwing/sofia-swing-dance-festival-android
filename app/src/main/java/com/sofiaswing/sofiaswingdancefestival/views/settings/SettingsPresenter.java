@@ -8,25 +8,19 @@ import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
  */
 
 public class SettingsPresenter implements SettingsInterfaces.IPresenter {
-    private final SettingsInterfaces.IView view;
+    private SettingsInterfaces.IView view;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
     private final ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
 
-    public SettingsPresenter(SettingsInterfaces.IView view,
-                             ProvidersInterfaces.ISettingsProvider settingsProvider,
-                             ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider,
-                             UiInterfaces.IPopupCreator popupCreator
-    ) {
-        this.view = view;
+    public SettingsPresenter(ProvidersInterfaces.ISettingsProvider settingsProvider,
+                             ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
         this.settingsProvider = settingsProvider;
         this.volatileSettingsProvider = volatileSettingsProvider;
-        this.view.setPresenter(this);
-        this.view.setPopupCreator(popupCreator);
     }
 
     @Override
-    public SettingsInterfaces.IView getView() {
-        return this.view;
+    public void setView(SettingsInterfaces.IView view) {
+        this.view = view;
     }
 
     @Override

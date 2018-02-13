@@ -12,16 +12,9 @@ import dagger.Provides;
 
 @Module
 public class InstructorsModule {
-    @Provides
-    InstructorsInterfaces.IView provideView() {
-        return new InstructorsView();
-    }
 
     @Provides
-    InstructorsInterfaces.IPresenter providePresenter(
-            InstructorsInterfaces.IView view,
-            ProvidersInterfaces.IImageProvider imageProvider,
-            DataInterfaces.IInstructorsData instructorsData) {
-        return new InstructorsPresenter(view, imageProvider, instructorsData);
+    InstructorsInterfaces.IPresenter providePresenter(DataInterfaces.IInstructorsData instructorsData) {
+        return new InstructorsPresenter(instructorsData);
     }
 }

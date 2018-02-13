@@ -7,26 +7,27 @@ import com.sofiaswing.sofiaswingdancefestival.data.FirebaseData.FirebaseDataModu
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersModule;
 import com.sofiaswing.sofiaswingdancefestival.ui.UiModule;
 import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
-import com.sofiaswing.sofiaswingdancefestival.views.about.AboutActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.about.AboutModule;
-import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.about.AboutView;
 import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesModule;
-import com.sofiaswing.sofiaswingdancefestival.views.contactUs.ContactUsActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesView;
 import com.sofiaswing.sofiaswingdancefestival.views.contactUs.ContactUsModule;
+import com.sofiaswing.sofiaswingdancefestival.views.contactUs.ContactUsView;
 import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsModule;
-import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsModule;
-import com.sofiaswing.sofiaswingdancefestival.views.news.NewsActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsView;
+import com.sofiaswing.sofiaswingdancefestival.views.main.MainActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.news.NewsModule;
+import com.sofiaswing.sofiaswingdancefestival.views.news.NewsView;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleModule;
-import com.sofiaswing.sofiaswingdancefestival.views.parties.PartiesActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.parties.PartiesModule;
-import com.sofiaswing.sofiaswingdancefestival.views.settings.SettingsActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.parties.PartiesView;
 import com.sofiaswing.sofiaswingdancefestival.views.settings.SettingsModule;
-import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.settings.SettingsView;
 import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesModule;
+import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesView;
 
 import dagger.Component;
 import dagger.Module;
@@ -70,17 +71,18 @@ public class SofiaSwingDanceFestivalApplication extends Application {
             ProvidersModule.class
     })
     public interface ApplicationComponent {
-        void inject(NewsActivity newsActivity);
+        void inject(MainActivity mainActivity);
+        void inject(NewsView newsView);
         void inject(NewsArticleActivity newsArticleActivity);
-        void inject(InstructorsActivity instructorsActivity);
+        void inject(InstructorsView instructorsView);
         void inject(InstructorDetailsActivity instructorDetailsActivity);
-        void inject(VenuesActivity venuesActivity);
-        void inject(ClassesActivity classesActivity);
+        void inject(VenuesView venuesView);
+        void inject(ClassesView classesView);
         void inject(EventSubscriptionAlarmReceiver eventSubscriptionAlarmReceiver);
-        void inject(PartiesActivity partiesActivity);
-        void inject(AboutActivity aboutActivity);
-        void inject(ContactUsActivity contactUsActivity);
-        void inject(SettingsActivity settingsActivity);
+        void inject(PartiesView partiesView);
+        void inject(AboutView aboutView);
+        void inject(ContactUsView contactUsView);
+        void inject(SettingsView settingsView);
     }
 }
 

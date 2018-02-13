@@ -3,6 +3,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.classes;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassLevelModel;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -13,13 +14,11 @@ import io.reactivex.Observable;
 
 public class ClassesInterfaces {
     public interface IView {
-        void setPresenter(IPresenter presenter);
-
         void setClassesTabs(List<ClassLevelModel> classLevels);
     }
 
     public interface IPresenter {
-        IView getView();
+        void setView(IView view);
         void start();
         void stop();
 

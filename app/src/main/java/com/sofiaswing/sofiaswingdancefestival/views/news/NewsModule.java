@@ -12,16 +12,9 @@ import dagger.Provides;
 
 @Module
 public class NewsModule {
-    @Provides
-    NewsInterfaces.IView provideNewsView() {
-        return new NewsView();
-    }
 
     @Provides
-    NewsInterfaces.IPresenter provideNewsPresenter(
-            NewsInterfaces.IView view,
-            ProvidersInterfaces.IImageProvider imageProvider,
-            DataInterfaces.INewsArticlesData newsArticlesData) {
-        return new NewsPresenter(view, imageProvider, newsArticlesData);
+    NewsInterfaces.IPresenter provideNewsPresenter(DataInterfaces.INewsArticlesData newsArticlesData) {
+        return new NewsPresenter(newsArticlesData);
     }
 }

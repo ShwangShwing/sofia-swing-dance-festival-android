@@ -2,6 +2,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.classes;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -15,10 +16,13 @@ import android.widget.ListView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassLevelModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -27,22 +31,37 @@ import io.reactivex.schedulers.Schedulers;
  * A simple {@link Fragment} subclass.
  */
 public class ClassesView extends Fragment implements ClassesInterfaces.IView {
-    private ClassesInterfaces.IPresenter presenter;
+
+    @Inject
+    public ClassesInterfaces.IPresenter presenter;
+
+    private View rootView;
+
+    public static ClassesView newInstance() {
+        ClassesView fragment = new ClassesView();
+        return fragment;
+    }
 
     public ClassesView() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inject();
+        presenter.setView(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_classes_view, container, false);
+        rootView = inflater.inflate(R.layout.fragment_classes_view, container, false);
 
         this.setRetainInstance(true);
 
-        return root;
+        return rootView;
     }
 
     @Override
@@ -60,19 +79,20 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
     }
 
     @Override
-    public void setPresenter(ClassesInterfaces.IPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
     public void setClassesTabs(List<ClassLevelModel> classLevels) {
-        ViewPager pager = this.getActivity().findViewById(R.id.tabsPager);
+        ViewPager pager = rootView.findViewById(R.id.tabsPager);
         pager.setAdapter(new TabsNavigationAdapter(
-                this.getActivity().getSupportFragmentManager(),
+                getChildFragmentManager(),
                 classLevels, getString(R.string.taster)));
 
-        PagerSlidingTabStrip tabs = this.getActivity().findViewById(R.id.tabs);
+        PagerSlidingTabStrip tabs = rootView.findViewById(R.id.tabs);
         tabs.setViewPager(pager);
+    }
+
+    private void inject() {
+        ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
+                .getComponent()
+                .inject(this);
     }
 
     private class TabsNavigationAdapter extends FragmentStatePagerAdapter {

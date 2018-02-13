@@ -21,11 +21,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -35,18 +38,30 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class InstructorsView extends Fragment
-    implements InstructorsInterfaces.IView {
-    private InstructorsInterfaces.IPresenter presenter;
-    private ArrayAdapter<InstructorModel> instructorsAdapter;
-    private ProvidersInterfaces.IImageProvider imageProvider;
+public class InstructorsView extends Fragment implements InstructorsInterfaces.IView {
+    @Inject
+    public InstructorsInterfaces.IPresenter presenter;
+    @Inject
+    public ProvidersInterfaces.IImageProvider imageProvider;
 
+    private ArrayAdapter<InstructorModel> instructorsAdapter;
     private CompositeDisposable subscriptions;
+
+    public static InstructorsView newInstance() {
+        InstructorsView fragment = new InstructorsView();
+        return fragment;
+    }
 
     public InstructorsView() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inject();
+        presenter.setView(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,16 +101,6 @@ public class InstructorsView extends Fragment
     }
 
     @Override
-    public void setPresenter(InstructorsInterfaces.IPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void setImageProvider(ProvidersInterfaces.IImageProvider imageProvider) {
-        this.imageProvider = imageProvider;
-    }
-
-    @Override
     public void setInstructors(List<InstructorModel> instructors) {
         this.instructorsAdapter.clear();
         this.instructorsAdapter.addAll(instructors);
@@ -106,6 +111,12 @@ public class InstructorsView extends Fragment
         Intent intent = new Intent(this.getContext(), InstructorDetailsActivity.class);
         intent.putExtra(InstructorDetailsActivity.INSTRUCTOR_ID_KEY, instructorId);
         this.startActivity(intent);
+    }
+
+    private void inject() {
+        ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
+                .getComponent()
+                .inject(this);
     }
 
     private class InstructorsAdapter extends ArrayAdapter<InstructorModel>  {

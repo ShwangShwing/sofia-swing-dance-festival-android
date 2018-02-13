@@ -2,6 +2,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.settings;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
@@ -21,18 +22,25 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     private final long SIGNIFICANTLY_LARGE_TIME_INTERVAL_SECONDS = 2 * 365 * 24 * 60 * 60;
-    private SettingsInterfaces.IPresenter presenter;
-    private UiInterfaces.IPopupCreator popupCreator;
+
+    @Inject
+    public SettingsInterfaces.IPresenter presenter;
+    @Inject
+    public UiInterfaces.IPopupCreator popupCreator;
+
     private ArrayAdapter<String> eventNotifyTimeAdapter;
     private List<Long> eventNotifyTimesSeconds;
     private Spinner spinner;
@@ -51,9 +59,20 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
             "left",
             "right"};
 
+    public static SettingsView newInstance() {
+        SettingsView fragment = new SettingsView();
+        return fragment;
+    }
 
     public SettingsView() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inject();
+        presenter.setView(this);
     }
 
     @Override
@@ -78,7 +97,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
         eventNotifyTimesSeconds.add(new Long(60 * 60));
         this.eventNotifyTimeAdapter.add(this.getString(R.string.hour));
 
-        this.ignoreNextNotificationTimeCallback = true; // Avoid events to presenter during initialization of spinner
+        this.ignoreNextNotificationTimeCallback = true; // Avoid events to newPresenter during initialization of spinner
         this.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -213,16 +232,6 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     }
 
     @Override
-    public void setPresenter(SettingsInterfaces.IPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void setPopupCreator(UiInterfaces.IPopupCreator popupCreator) {
-        this.popupCreator = popupCreator;
-    }
-
-    @Override
     public void notifyHackerModeEnabled() {
         popupCreator.popup(getContext(), "Hacker mode enabled");
     }
@@ -265,5 +274,9 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
         et.setText(customYear);
     }
 
-
+    private void inject() {
+        ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
+                .getComponent()
+                .inject(this);
+    }
 }
