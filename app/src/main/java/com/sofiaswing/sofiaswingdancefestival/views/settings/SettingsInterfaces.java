@@ -31,5 +31,7 @@ public class SettingsInterfaces {
         void enableHackerMode();
         void setYearFromDatabase();
         void setCustomYear(String customYear);
+
+        void createTestNotification(String id, String name, long startTime, long notifyTime);
     }
 }

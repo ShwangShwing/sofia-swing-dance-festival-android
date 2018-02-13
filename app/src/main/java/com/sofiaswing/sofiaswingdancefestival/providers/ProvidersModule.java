@@ -17,15 +17,15 @@ public class ProvidersModule {
     private ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
     private ProvidersInterfaces.ISettingsProvider settingsProvider;
     private ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
-
-    public ProvidersModule() {
-        this.currentSsdfYearProvider = null;
-        this.settingsProvider = null;
-    }
+    private ProvidersInterfaces.IImageProvider imageProvider;
 
     @Provides
     ProvidersInterfaces.IImageProvider provideImageProvider() {
-        return new ImageProvider();
+        if (this.imageProvider == null) {
+            this.imageProvider = new ImageProvider();
+        }
+
+        return this.imageProvider;
     }
 
     @Provides

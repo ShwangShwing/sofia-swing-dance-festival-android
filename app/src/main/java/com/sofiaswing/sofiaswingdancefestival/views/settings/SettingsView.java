@@ -15,17 +15,21 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -197,6 +201,41 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
             }
         });
 
+        Button btnToggleNotifPanel = root.findViewById(R.id.btn_toggle_notif);
+        btnToggleNotifPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View notifPanel = root.findViewById(R.id.notification_test_panel);
+                if (notifPanel.getVisibility() == View.VISIBLE) {
+                    notifPanel.setVisibility(View.GONE);
+                }
+                else {
+                    notifPanel.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        Button btnCreateTestNotif = root.findViewById(R.id.btn_create_test_notification);
+        btnCreateTestNotif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = "test";
+                String name = "Test notification";
+                DatePicker datePicker = root.findViewById(R.id.notif_date_picker);
+                TimePicker timePicker = root.findViewById(R.id.notif_time_picker);
+                GregorianCalendar dateTime = new GregorianCalendar(
+                        datePicker.getYear(),
+                        datePicker.getMonth(),
+                        datePicker.getDayOfMonth(),
+                        timePicker.getCurrentHour(),
+                        timePicker.getCurrentMinute()
+                );
+                long startTime = 0;
+                long notifyTime = dateTime.getTimeInMillis() / 1000;
+                presenter.createTestNotification(id, name, startTime, notifyTime);
+                popupCreator.popup(root.getContext(), getString(R.string.test_notification_created));
+            }
+        });
 
         return root;
     }

@@ -44,7 +44,7 @@ public class EventSubscriptionAlarmReceiver extends BroadcastReceiver {
         String eventName = intent.getStringExtra(EVENT_NAME_KEY);
 
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
-        int eventStartTimeIn = intent.getIntExtra(EVENT_START_TIME_KEY, 0);
+        long eventStartTimeIn = intent.getLongExtra(EVENT_START_TIME_KEY, 0);
         String eventStartTime = "Start time unknown! Error!";
         if (eventStartTimeIn > 0) {
             eventStartTime = dateFormatter.format(new Date((long) eventStartTimeIn * 1000));
