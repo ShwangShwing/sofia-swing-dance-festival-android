@@ -165,14 +165,11 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
                     imageProvider.getImageFromUrl(article.getImageUrl())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Bitmap>() {
-                        @Override
-                        public void accept(Bitmap bitmap) throws Exception {
-                            //TODO: need to unsubscribe if views are reused then remove
-                            image.setImageBitmap(bitmap);
-                            image.setAlpha(1f);
-                            progressBar.setVisibility(View.GONE);
-                        }
+                    .subscribe(bitmap -> {
+                        //TODO: need to unsubscribe if views are reused then remove
+                        image.setImageBitmap(bitmap);
+                        image.setAlpha(1f);
+                        progressBar.setVisibility(View.GONE);
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {

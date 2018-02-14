@@ -42,77 +42,74 @@ public class VenuesFirebaseData implements DataInterfaces.IVenuesData {
             public void subscribe(final ObservableEmitter<List<VenueModel>> e) throws Exception {
                 ssdfYearFbDbRefProvider.getDatabaseReference("venues")
                         .subscribeOn(Schedulers.io())
-                        .subscribe(new Consumer<DatabaseReference>() {
-                            @Override
-                            public void accept(DatabaseReference databaseReference) throws Exception {
-                                if (activeVenuesDbRef != null && activeChildEventListener != null)
-                                {
-                                    activeVenuesDbRef.removeEventListener(activeChildEventListener);
+                        .subscribe(databaseReference -> {
+                            if (activeVenuesDbRef != null && activeChildEventListener != null)
+                            {
+                                activeVenuesDbRef.removeEventListener(activeChildEventListener);
+                            }
+
+                            activeVenuesDbRef = databaseReference;
+                            activeChildEventListener = new ChildEventListener() {
+                                private List<VenueModel> venues = new ArrayList<VenueModel>();
+
+                                @Override
+                                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                    String venueKey = dataSnapshot.getKey();
+                                    DataSnapshot venueNameSnapshot = dataSnapshot.child("name");
+                                    DataSnapshot addressSnapshot = dataSnapshot.child("address");
+                                    DataSnapshot latitudeSnapshot = dataSnapshot.child("latitude");
+                                    DataSnapshot longitudeSnapshot = dataSnapshot.child("longitude");
+
+                                    Location location = null;
+                                    try {
+                                        double latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
+                                        double longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
+
+                                        location = new Location(String.format("%f, %f", latitude, longitude));
+                                        location.setLatitude(latitude);
+                                        location.setLongitude(longitude);
+                                    } catch (NumberFormatException ex) {
+                                        location = null;
+                                    } catch (NullPointerException ex) {
+                                        location = null;
+                                    }
+
+                                    VenueModel venue = new VenueModel(
+                                            venueKey,
+                                            venueNameSnapshot.exists() ? venueNameSnapshot.getValue().toString()
+                                                    : "No name in the database!",
+                                            addressSnapshot.exists() ? addressSnapshot.getValue().toString()
+                                                    : "",
+                                            location
+                                    );
+
+                                    venues.add(venue);
+
+                                    e.onNext(venues);
                                 }
 
-                                activeVenuesDbRef = databaseReference;
-                                activeChildEventListener = new ChildEventListener() {
-                                    private List<VenueModel> venues = new ArrayList<VenueModel>();
+                                @Override
+                                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                                    @Override
-                                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                        String venueKey = dataSnapshot.getKey();
-                                        DataSnapshot venueNameSnapshot = dataSnapshot.child("name");
-                                        DataSnapshot addressSnapshot = dataSnapshot.child("address");
-                                        DataSnapshot latitudeSnapshot = dataSnapshot.child("latitude");
-                                        DataSnapshot longitudeSnapshot = dataSnapshot.child("longitude");
+                                }
 
-                                        Location location = null;
-                                        try {
-                                            double latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
-                                            double longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
+                                @Override
+                                public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                                            location = new Location(String.format("%f, %f", latitude, longitude));
-                                            location.setLatitude(latitude);
-                                            location.setLongitude(longitude);
-                                        } catch (NumberFormatException ex) {
-                                            location = null;
-                                        } catch (NullPointerException ex) {
-                                            location = null;
-                                        }
+                                }
 
-                                        VenueModel venue = new VenueModel(
-                                                venueKey,
-                                                venueNameSnapshot.exists() ? venueNameSnapshot.getValue().toString()
-                                                        : "No name in the database!",
-                                                addressSnapshot.exists() ? addressSnapshot.getValue().toString()
-                                                        : "",
-                                                location
-                                        );
+                                @Override
+                                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                                        venues.add(venue);
+                                }
 
-                                        e.onNext(venues);
-                                    }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                                    @Override
-                                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                                }
+                            };
 
-                                    }
-
-                                    @Override
-                                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                };
-
-                                activeVenuesDbRef.orderByKey().addChildEventListener(activeChildEventListener);
-                            }
+                            activeVenuesDbRef.orderByKey().addChildEventListener(activeChildEventListener);
                         });
             }
         });

@@ -42,12 +42,7 @@ public class NewsArticlePresenter implements NewsArticleInterfaces.IPresenter{
             this.newsArticleData.getById(newsArticleId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<NewsArticleModel>() {
-                    @Override
-                    public void accept(NewsArticleModel newsArticle) throws Exception {
-                        view.setNewsArticle(newsArticle);
-                    }
-                })
+                .subscribe(newsArticle -> view.setNewsArticle(newsArticle))
         );
     }
 

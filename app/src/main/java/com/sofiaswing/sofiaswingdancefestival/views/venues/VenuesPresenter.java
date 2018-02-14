@@ -55,12 +55,9 @@ public class VenuesPresenter
         subscriptions.add(this.venuesData.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<VenueModel>>() {
-                    @Override
-                    public void accept(List<VenueModel> venueModels) throws Exception {
-                        view.setVenues(venueModels);
-                        venues = venueModels;
-                    }
+                .subscribe(venueModels -> {
+                    view.setVenues(venueModels);
+                    venues = venueModels;
                 }));
     }
 
@@ -68,20 +65,17 @@ public class VenuesPresenter
         Disposable d = locationProvider.getCurrentLocation()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Location>() {
-                    @Override
-                    public void accept(Location currentLocation) throws Exception {
-                        if (venues != null) {
-                            for (VenueModel venue : venues) {
-                                float distanceInMeters = currentLocation.distanceTo(venue.getLocation());
-                                String formatedDistance = String.format("%.0fm", distanceInMeters);
-                                if (distanceInMeters >= 1000) {
-                                    formatedDistance = String.format("%.1fkm", distanceInMeters / 1000);
-                                }
-                                venue.setDistance(formatedDistance);
+                .subscribe(currentLocation -> {
+                    if (venues != null) {
+                        for (VenueModel venue : venues) {
+                            float distanceInMeters = currentLocation.distanceTo(venue.getLocation());
+                            String formatedDistance = String.format("%.0fm", distanceInMeters);
+                            if (distanceInMeters >= 1000) {
+                                formatedDistance = String.format("%.1fkm", distanceInMeters / 1000);
                             }
-                            view.setVenues(venues);
+                            venue.setDistance(formatedDistance);
                         }
+                        view.setVenues(venues);
                     }
                 });
         subscriptions.add(d);

@@ -42,57 +42,54 @@ public class ClassLevelsFirebaseData implements DataInterfaces.IClassLevelsData 
             public void subscribe(final ObservableEmitter<List<ClassLevelModel>> e) throws Exception {
                 ssdfYearFbDbRefProvider.getDatabaseReference("classLevels")
                         .subscribeOn(Schedulers.io())
-                        .subscribe(new Consumer<DatabaseReference>() {
-                            @Override
-                            public void accept(DatabaseReference databaseReference) throws Exception {
-                                if (activeClassLevelsDbRef != null && activeChildEventListener != null)
-                                {
-                                    activeClassLevelsDbRef.removeEventListener(activeChildEventListener);
-                                }
+                        .subscribe(databaseReference -> {
+                            if (activeClassLevelsDbRef != null && activeChildEventListener != null)
+                            {
+                                activeClassLevelsDbRef.removeEventListener(activeChildEventListener);
+                            }
 
-                                activeClassLevelsDbRef = databaseReference;
-                                activeChildEventListener = new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        List<ClassLevelModel> classLevels = new ArrayList<ClassLevelModel>();
+                            activeClassLevelsDbRef = databaseReference;
+                            activeChildEventListener = new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    List<ClassLevelModel> classLevels = new ArrayList<ClassLevelModel>();
 
-                                        Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
-                                        while (i.hasNext()) {
-                                            DataSnapshot classLevelSnapshot = i.next();
+                                    Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
+                                    while (i.hasNext()) {
+                                        DataSnapshot classLevelSnapshot = i.next();
 
-                                            String id = classLevelSnapshot.getKey();
-                                            int position = 0;
-                                            try {
-                                                position = Integer.parseInt(classLevelSnapshot.child("position").getValue().toString());
-                                            }
-                                            catch (Exception e) {
+                                        String id = classLevelSnapshot.getKey();
+                                        int position = 0;
+                                        try {
+                                            position = Integer.parseInt(classLevelSnapshot.child("position").getValue().toString());
+                                        }
+                                        catch (Exception e1) {
 
-                                            }
-
-                                            String name = "";
-                                            try {
-                                                name = classLevelSnapshot.child("name").getValue().toString();
-                                            }
-                                            catch (Exception e) {
-
-                                            }
-
-                                            classLevels.add(new ClassLevelModel(id, name, position));
                                         }
 
-                                        Collections.sort(classLevels);
+                                        String name = "";
+                                        try {
+                                            name = classLevelSnapshot.child("name").getValue().toString();
+                                        }
+                                        catch (Exception e1) {
 
-                                        e.onNext(classLevels);
+                                        }
+
+                                        classLevels.add(new ClassLevelModel(id, name, position));
                                     }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+                                    Collections.sort(classLevels);
 
-                                    }
-                                };
+                                    e.onNext(classLevels);
+                                }
 
-                                activeClassLevelsDbRef.addValueEventListener(activeChildEventListener);
-                            }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            };
+
+                            activeClassLevelsDbRef.addValueEventListener(activeChildEventListener);
                         });
             }
         });

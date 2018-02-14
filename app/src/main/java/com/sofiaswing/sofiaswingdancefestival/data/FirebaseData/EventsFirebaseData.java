@@ -57,107 +57,104 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
             public void subscribe(final ObservableEmitter<List<ClassModel>> e) throws Exception {
                 ssdfYearFbDbRefProvider.getDatabaseReference("events")
                         .subscribeOn(Schedulers.io())
-                        .subscribe(new Consumer<DatabaseReference>() {
-                            @Override
-                            public void accept(DatabaseReference databaseReference) throws Exception {
-                                if (activeClassesDbRef != null && activeValueEventListener != null)
-                                {
-                                    activeClassesDbRef.removeEventListener(activeValueEventListener);
-                                }
+                        .subscribe(databaseReference -> {
+                            if (activeClassesDbRef != null && activeValueEventListener != null)
+                            {
+                                activeClassesDbRef.removeEventListener(activeValueEventListener);
+                            }
 
-                                activeClassesDbRef = databaseReference;
-                                activeValueEventListener = new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
+                            activeClassesDbRef = databaseReference;
+                            activeValueEventListener = new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
 
-                                        List<ClassModel> classes = new ArrayList<ClassModel>();
+                                    List<ClassModel> classes = new ArrayList<ClassModel>();
 
-                                        while (i.hasNext()) {
-                                            DataSnapshot classSnapshot = i.next();
+                                    while (i.hasNext()) {
+                                        DataSnapshot classSnapshot = i.next();
 
-                                            String id = "";
-                                            Date startTime = null;
-                                            Date endTime = null;
-                                            String levelName = "";
-                                            String name = "";
-                                            VenueModel venue = null;
-                                            List<InstructorModel> instructors = new ArrayList();
+                                        String id = "";
+                                        Date startTime = null;
+                                        Date endTime = null;
+                                        String levelName = "";
+                                        String name = "";
+                                        VenueModel venue = null;
+                                        List<InstructorModel> instructors = new ArrayList();
 
-                                            try {
-                                                int rootUrlLength = dataSnapshot.getRef().getRoot().toString().length();
-                                                id = dataSnapshot.getRef().toString().substring(rootUrlLength + 1);
-                                                startTime = new Date(Long.parseLong(classSnapshot.child("start").getValue().toString()) * 1000);
-                                                endTime = new Date(Long.parseLong(classSnapshot.child("end").getValue().toString()) * 1000);
-                                                levelName =
-                                                        classSnapshot.child("levelName").exists() ?
-                                                                classSnapshot.child("levelName").getValue().toString()
-                                                                : "";
-                                                name = classSnapshot.child("name").getValue().toString();
+                                        try {
+                                            int rootUrlLength = dataSnapshot.getRef().getRoot().toString().length();
+                                            id = dataSnapshot.getRef().toString().substring(rootUrlLength + 1);
+                                            startTime = new Date(Long.parseLong(classSnapshot.child("start").getValue().toString()) * 1000);
+                                            endTime = new Date(Long.parseLong(classSnapshot.child("end").getValue().toString()) * 1000);
+                                            levelName =
+                                                    classSnapshot.child("levelName").exists() ?
+                                                            classSnapshot.child("levelName").getValue().toString()
+                                                            : "";
+                                            name = classSnapshot.child("name").getValue().toString();
 
-                                                DataSnapshot venueSnapshot = classSnapshot.child("venue").getChildren().iterator().next();
-                                                venue = new VenueModel(venueSnapshot.getKey(),
-                                                        venueSnapshot.child("name").getValue().toString(),
-                                                        venueSnapshot.child("address").getValue().toString(),
-                                                        null);
-                                                DataSnapshot instructorsSnapshot = classSnapshot.child("instructors");
-                                                Iterator<DataSnapshot> instructorsIterator = instructorsSnapshot.getChildren().iterator();
-                                                while(instructorsIterator.hasNext()) {
-                                                    DataSnapshot instructorSnapshot = instructorsIterator.next();
+                                            DataSnapshot venueSnapshot = classSnapshot.child("venue").getChildren().iterator().next();
+                                            venue = new VenueModel(venueSnapshot.getKey(),
+                                                    venueSnapshot.child("name").getValue().toString(),
+                                                    venueSnapshot.child("address").getValue().toString(),
+                                                    null);
+                                            DataSnapshot instructorsSnapshot = classSnapshot.child("instructors");
+                                            Iterator<DataSnapshot> instructorsIterator = instructorsSnapshot.getChildren().iterator();
+                                            while(instructorsIterator.hasNext()) {
+                                                DataSnapshot instructorSnapshot = instructorsIterator.next();
 
-                                                    instructors.add(new InstructorModel(
-                                                            instructorSnapshot.getKey(),
-                                                            instructorSnapshot.child("name").getValue().toString(),
-                                                            instructorSnapshot.child("imageUrl").getValue().toString()
-                                                    ));
-                                                }
+                                                instructors.add(new InstructorModel(
+                                                        instructorSnapshot.getKey(),
+                                                        instructorSnapshot.child("name").getValue().toString(),
+                                                        instructorSnapshot.child("imageUrl").getValue().toString()
+                                                ));
                                             }
-                                            catch (Exception e) {
+                                        }
+                                        catch (Exception e1) {
 
-                                            }
-
-                                            ClassModel newClass = new ClassModel(
-                                                    id,
-                                                    startTime,
-                                                    endTime,
-                                                    level,
-                                                    levelName,
-                                                    name,
-                                                    venue,
-                                                    instructors
-                                            );
-
-                                            classes.add(newClass);
                                         }
 
-                                        Collections.sort(classes, new Comparator<ClassModel>() {
-                                            @Override
-                                            public int compare(ClassModel o1, ClassModel o2) {
-                                                if (o1.getStartTime() == null) {
-                                                    return -1;
-                                                }
-                                                else if (o2.getStartTime() == null) {
-                                                    return 1;
-                                                }
+                                        ClassModel newClass = new ClassModel(
+                                                id,
+                                                startTime,
+                                                endTime,
+                                                level,
+                                                levelName,
+                                                name,
+                                                venue,
+                                                instructors
+                                        );
 
-                                                return (int)(o1.getStartTime().getTime() - o2.getStartTime().getTime());
+                                        classes.add(newClass);
+                                    }
+
+                                    Collections.sort(classes, new Comparator<ClassModel>() {
+                                        @Override
+                                        public int compare(ClassModel o1, ClassModel o2) {
+                                            if (o1.getStartTime() == null) {
+                                                return -1;
                                             }
-                                        });
+                                            else if (o2.getStartTime() == null) {
+                                                return 1;
+                                            }
 
-                                        e.onNext(classes);
-                                    }
+                                            return (int)(o1.getStartTime().getTime() - o2.getStartTime().getTime());
+                                        }
+                                    });
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+                                    e.onNext(classes);
+                                }
 
-                                    }
-                                };
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                                activeClassesDbRef
-                                        .orderByChild("type")
-                                        .equalTo(typeFullString)
-                                        .addValueEventListener(activeValueEventListener);
-                            }
+                                }
+                            };
+
+                            activeClassesDbRef
+                                    .orderByChild("type")
+                                    .equalTo(typeFullString)
+                                    .addValueEventListener(activeValueEventListener);
                         });
             }
         });

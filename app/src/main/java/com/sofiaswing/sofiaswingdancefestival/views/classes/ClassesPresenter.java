@@ -45,12 +45,7 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
         Disposable subscription = this.classLevelsFirebaseData.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<ClassLevelModel>>() {
-                    @Override
-                    public void accept(List<ClassLevelModel> classLevels) throws Exception {
-                        view.setClassesTabs(classLevels);
-                    }
-                });
+                .subscribe(classLevels -> view.setClassesTabs(classLevels));
 
         this.disposables.add(subscription);
     }

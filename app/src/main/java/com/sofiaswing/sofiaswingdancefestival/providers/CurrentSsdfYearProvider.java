@@ -12,6 +12,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.subjects.BehaviorSubject;
 
 /**
  * Created by shwangshwing on 10/9/17.
@@ -22,11 +23,8 @@ public class CurrentSsdfYearProvider implements ProvidersInterfaces.ICurrentSsdf
 
     private String currentSsdfYearOverriden;
     private boolean overrideYear;
-    private String lastEmittedSsdfYear;
 
-    Observable<String> currentSsdfYearObservable;
-
-    private final List<ObservableEmitter<String>> emitters;
+    private final BehaviorSubject<String> yearSubject;
     Disposable ssdfYearDataSubscr;
 
     public CurrentSsdfYearProvider(DataInterfaces.ICurrentSsdfYearData currentSsdfYearData) {
@@ -35,35 +33,13 @@ public class CurrentSsdfYearProvider implements ProvidersInterfaces.ICurrentSsdf
         this.currentSsdfYearOverriden = null;
         this.overrideYear = false;
 
-        emitters = new ArrayList<>();
+        this.yearSubject = BehaviorSubject.create();
+        this.setupProperSsdfYear();
     }
 
     @Override
     public synchronized Observable<String> getCurrentSsdfYear() {
-        if (this.currentSsdfYearObservable == null) {
-            this.currentSsdfYearObservable = Observable.create(new ObservableOnSubscribe<String>() {
-                @Override
-                public void subscribe(ObservableEmitter<String> e) throws Exception {
-                    List<ObservableEmitter<String>> disposedEmitters = new ArrayList<>();
-                    for (ObservableEmitter<String> emitter : emitters) {
-                        if (emitter.isDisposed()) {
-                            disposedEmitters.add(emitter);
-                        }
-                    }
-
-                    emitters.removeAll(disposedEmitters);
-
-                    emitters.add(e);
-                    if (lastEmittedSsdfYear == null) {
-                        setupProperSsdfYear();
-                    } else {
-                        e.onNext(lastEmittedSsdfYear);
-                    }
-                }
-            });
-        }
-
-        return this.currentSsdfYearObservable;
+        return this.yearSubject;
     }
 
     @Override
@@ -83,20 +59,11 @@ public class CurrentSsdfYearProvider implements ProvidersInterfaces.ICurrentSsdf
         this.setupProperSsdfYear();
     }
 
-    private synchronized void setupProperSsdfYear()
-    {
+    private synchronized void setupProperSsdfYear() {
         if (!this.overrideYear) {
             if (ssdfYearDataSubscr == null) {
                 ssdfYearDataSubscr = this.currentSsdfYearData.getCurrentSsdfYear()
-                        .subscribe(new Consumer<String>() {
-                            @Override
-                            public void accept(String s) throws Exception {
-                                for (ObservableEmitter<String> emitter : emitters) {
-                                    emitter.onNext(s);
-                                    lastEmittedSsdfYear = s;
-                                }
-                            }
-                        });
+                        .subscribe(s -> yearSubject.onNext(s));
             }
         } else {
             if (ssdfYearDataSubscr != null) {
@@ -104,10 +71,7 @@ public class CurrentSsdfYearProvider implements ProvidersInterfaces.ICurrentSsdf
                 ssdfYearDataSubscr = null;
             }
 
-            for (ObservableEmitter<String> emitter : emitters) {
-                emitter.onNext(this.currentSsdfYearOverriden);
-                lastEmittedSsdfYear = this.currentSsdfYearOverriden;
-            }
+            yearSubject.onNext(this.currentSsdfYearOverriden);
         }
 
     }

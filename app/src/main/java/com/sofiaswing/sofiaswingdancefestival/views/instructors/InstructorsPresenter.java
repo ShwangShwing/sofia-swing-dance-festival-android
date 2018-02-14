@@ -41,13 +41,10 @@ public class InstructorsPresenter implements InstructorsInterfaces.IPresenter{
                 this.instructorsData.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<InstructorModel>>() {
-                    @Override
-                    public void accept(List<InstructorModel> incomingInstructors) throws Exception {
-                        instructors = new ArrayList(incomingInstructors);
+                .subscribe(incomingInstructors -> {
+                    instructors = new ArrayList(incomingInstructors);
 
-                        view.setInstructors(instructors);
-                    }
+                    view.setInstructors(instructors);
                 })
         );
     }

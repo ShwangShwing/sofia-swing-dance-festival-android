@@ -24,6 +24,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.subjects.BehaviorSubject;
 
 /**
  * Created by shwangshwing on 10/10/17.
@@ -40,7 +41,7 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
     private Date lastBestLocationFixTime;
     private Location lastBestLocation;
     private LocationListener locationListener;
-    private List<ObservableEmitter<Location>> emitters;
+    private BehaviorSubject<Location> locationSubject;
     private SensorManager sensorManager;
     private Sensor significantMotionSensor;
     public TriggerEventListener triggerEventListener;
@@ -50,7 +51,7 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
         this.lastBestLocationFixTime = new Date(0);
         this.lastBestLocation = new Location("zero location");
         this.locationListener = null;
-        this.emitters = new ArrayList<>();
+        this.locationSubject = BehaviorSubject.create();
     }
 
     @Override
@@ -94,17 +95,7 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
                         lastBestLocation = new Location(location);
                         lastBestLocationFixTime = currentTime;
 
-                        List<ObservableEmitter<Location>> disposedEmitters = new ArrayList<>();
-                        for (ObservableEmitter<Location> emitter : emitters) {
-                            if (emitter.isDisposed()) {
-                                disposedEmitters.add(emitter);
-                            }
-                            else {
-                                emitter.onNext(lastBestLocation);
-                            }
-                        }
-
-                        emitters.removeAll(disposedEmitters);
+                        locationSubject.onNext(lastBestLocation);
 
                         if (location.getSpeed() >= GPS_DONT_TURN_OFF_DISTANCE_SPEED_MPS) {
                             locationTurnOffTime = new Date();
@@ -174,14 +165,6 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
 
     @Override
     public synchronized Observable<Location> getCurrentLocation() {
-        Observable<Location> observable = Observable.create(new ObservableOnSubscribe<Location>() {
-            @Override
-            public void subscribe(@NonNull final ObservableEmitter<Location> e) throws Exception {
-                emitters.add(e);
-            }
-
-        });
-
-        return observable;
+        return this.locationSubject;
     }
 }

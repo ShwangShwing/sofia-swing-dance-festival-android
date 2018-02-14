@@ -97,13 +97,10 @@ public class NewsArticleView extends Fragment
                 imageProvider.getImageFromUrl(newsArticle.getImageUrl())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Bitmap>() {
-                    @Override
-                    public void accept(Bitmap bitmap) throws Exception {
-                        image.setImageBitmap(bitmap);
-                        image.setAlpha(1f);
-                        progressBar.setVisibility(View.GONE);
-                    }
+                .subscribe(bitmap -> {
+                    image.setImageBitmap(bitmap);
+                    image.setAlpha(1f);
+                    progressBar.setVisibility(View.GONE);
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {

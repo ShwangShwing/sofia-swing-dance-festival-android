@@ -45,62 +45,59 @@ public class InstructorsFirebaseData implements DataInterfaces.IInstructorsData 
             public void subscribe(final ObservableEmitter<List<InstructorModel>> e) throws Exception {
                 ssdfYearFbDbRefProvider.getDatabaseReference("instructors")
                         .subscribeOn(Schedulers.io())
-                        .subscribe(new Consumer<DatabaseReference>() {
-                            @Override
-                            public void accept(DatabaseReference databaseReference) throws Exception {
-                                if (activeInstructorsDbRef != null && activeChildEventListener != null) {
-                                    activeInstructorsDbRef.removeEventListener(activeChildEventListener);
+                        .subscribe(databaseReference -> {
+                            if (activeInstructorsDbRef != null && activeChildEventListener != null) {
+                                activeInstructorsDbRef.removeEventListener(activeChildEventListener);
+                            }
+
+                            activeInstructorsDbRef = databaseReference;
+                            activeChildEventListener = new ChildEventListener() {
+                                final List<InstructorModel> instructors = new ArrayList<InstructorModel>();
+
+                                @Override
+                                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                    int rootUrlLength = dataSnapshot.getRef().getRoot().toString().length();
+                                    String instructorPath = dataSnapshot.getRef().toString().substring(rootUrlLength + 1);
+                                    DataSnapshot nameSnapshot = dataSnapshot.child("name");
+                                    DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
+                                    DataSnapshot typeSnapshot = dataSnapshot.child("type");
+
+                                    InstructorModel instructor = new InstructorModel(
+                                            instructorPath,
+                                            nameSnapshot.exists() ? nameSnapshot.getValue().toString()
+                                                    : "No name! Problem with the database!",
+                                            imageUrlSnapshot.exists() ? imageUrlSnapshot.getValue().toString()
+                                                    : "No image url! Problem with the database!",
+                                            typeSnapshot.exists() ? typeSnapshot.getValue().toString()
+                                                    : "No instructor type! Problem with the database!"
+                                    );
+
+                                    instructors.add(instructor);
+                                    e.onNext(instructors);
                                 }
 
-                                activeInstructorsDbRef = databaseReference;
-                                activeChildEventListener = new ChildEventListener() {
-                                    final List<InstructorModel> instructors = new ArrayList<InstructorModel>();
+                                @Override
+                                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                                    @Override
-                                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                        int rootUrlLength = dataSnapshot.getRef().getRoot().toString().length();
-                                        String instructorPath = dataSnapshot.getRef().toString().substring(rootUrlLength + 1);
-                                        DataSnapshot nameSnapshot = dataSnapshot.child("name");
-                                        DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
-                                        DataSnapshot typeSnapshot = dataSnapshot.child("type");
+                                }
 
-                                        InstructorModel instructor = new InstructorModel(
-                                                instructorPath,
-                                                nameSnapshot.exists() ? nameSnapshot.getValue().toString()
-                                                        : "No name! Problem with the database!",
-                                                imageUrlSnapshot.exists() ? imageUrlSnapshot.getValue().toString()
-                                                        : "No image url! Problem with the database!",
-                                                typeSnapshot.exists() ? typeSnapshot.getValue().toString()
-                                                        : "No instructor type! Problem with the database!"
-                                        );
+                                @Override
+                                public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                                        instructors.add(instructor);
-                                        e.onNext(instructors);
-                                    }
+                                }
 
-                                    @Override
-                                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                                @Override
+                                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                                    }
+                                }
 
-                                    @Override
-                                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                                    }
+                                }
+                            };
 
-                                    @Override
-                                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                };
-
-                                activeInstructorsDbRef.orderByKey().addChildEventListener(activeChildEventListener);
-                            }
+                            activeInstructorsDbRef.orderByKey().addChildEventListener(activeChildEventListener);
                         });
             }
         });

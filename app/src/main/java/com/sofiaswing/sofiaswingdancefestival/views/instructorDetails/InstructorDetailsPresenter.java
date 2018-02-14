@@ -44,12 +44,7 @@ public class InstructorDetailsPresenter implements InstructorDetailsInterfaces.I
                 this.instructorsData.getById(this.instructorId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<InstructorModel>() {
-                    @Override
-                    public void accept(InstructorModel instructor) throws Exception {
-                        view.setInstructor(instructor);
-                    }
-                })
+                .subscribe(instructor -> view.setInstructor(instructor))
         );
     }
 

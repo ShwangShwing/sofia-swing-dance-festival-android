@@ -44,22 +44,19 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
             this.partiesData.getParties()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<PartyModel>>() {
-                    @Override
-                    public void accept(List<PartyModel> parties) throws Exception {
-                        partyViewModels.clear();
-                        for (PartyModel party : parties) {
-                            partyViewModels.add(new PartyViewModel(
-                                    party.getId(),
-                                    party.getStartTime(),
-                                    party.getEndTime(),
-                                    party.getName(),
-                                    party.getVenue(),
-                                    settingsProvider.isSubscribedForEvent(party.getId())
-                            ));
-                        }
-                        view.setParties(partyViewModels);
+                .subscribe(parties -> {
+                    partyViewModels.clear();
+                    for (PartyModel party : parties) {
+                        partyViewModels.add(new PartyViewModel(
+                                party.getId(),
+                                party.getStartTime(),
+                                party.getEndTime(),
+                                party.getName(),
+                                party.getVenue(),
+                                settingsProvider.isSubscribedForEvent(party.getId())
+                        ));
                     }
+                    view.setParties(partyViewModels);
                 })
         );
     }

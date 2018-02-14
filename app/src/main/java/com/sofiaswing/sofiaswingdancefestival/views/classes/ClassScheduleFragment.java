@@ -66,36 +66,30 @@ public class ClassScheduleFragment extends Fragment {
             this.subscriptions.add(presenter.getClassesByLevel(classLevel)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<List<ClassModel>>() {
-                        @Override
-                        public void accept(List<ClassModel> classes) throws Exception {
-                            classScheduleAdapter.clear();
-                            subscribedClasses.clear();
-                            for (int i = 0; i < classes.size(); i++) {
-                                subscribedClasses.add(i,
-                                        presenter.isSubscribedForEvent(classes.get(i).getId()));
-                            }
-
-                            classScheduleAdapter.addAll(classes);
+                    .subscribe(classes -> {
+                        classScheduleAdapter.clear();
+                        subscribedClasses.clear();
+                        for (int i = 0; i < classes.size(); i++) {
+                            subscribedClasses.add(i,
+                                    presenter.isSubscribedForEvent(classes.get(i).getId()));
                         }
+
+                        classScheduleAdapter.addAll(classes);
                     }));
         }
         else {
             this.subscriptions.add(presenter.getTasterClasses()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<List<ClassModel>>() {
-                        @Override
-                        public void accept(List<ClassModel> classes) throws Exception {
-                            classScheduleAdapter.clear();
-                            subscribedClasses.clear();
-                            for (int i = 0; i < classes.size(); i++) {
-                                subscribedClasses.add(i,
-                                        presenter.isSubscribedForEvent(classes.get(i).getId()));
-                            }
-
-                            classScheduleAdapter.addAll(classes);
+                    .subscribe(classes -> {
+                        classScheduleAdapter.clear();
+                        subscribedClasses.clear();
+                        for (int i = 0; i < classes.size(); i++) {
+                            subscribedClasses.add(i,
+                                    presenter.isSubscribedForEvent(classes.get(i).getId()));
                         }
+
+                        classScheduleAdapter.addAll(classes);
                     }));
         }
     }

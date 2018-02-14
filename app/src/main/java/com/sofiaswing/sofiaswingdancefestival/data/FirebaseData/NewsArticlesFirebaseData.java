@@ -47,67 +47,64 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
             public void subscribe(@NonNull final ObservableEmitter<List<NewsArticleModel>> e) throws Exception {
                 ssdfYearFbDbRefProvider.getDatabaseReference("newsArticles")
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new Consumer<DatabaseReference>() {
-                        @Override
-                        public void accept(DatabaseReference databaseReference) throws Exception {
-                            if (activeArticlesDbRef != null && activeChildEventListener != null)
-                            {
-                                activeArticlesDbRef.removeEventListener(activeChildEventListener);
+                    .subscribe(databaseReference -> {
+                        if (activeArticlesDbRef != null && activeChildEventListener != null)
+                        {
+                            activeArticlesDbRef.removeEventListener(activeChildEventListener);
+                        }
+
+                        activeArticlesDbRef = databaseReference;
+                        activeChildEventListener = new ChildEventListener() {
+                            private List<NewsArticleModel> newsArticles = new ArrayList<NewsArticleModel>();
+
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                int rootUrlLength = dataSnapshot.getRef().getRoot().toString().length();
+                                String articlePath = dataSnapshot.getRef().toString().substring(rootUrlLength + 1);
+
+                                DataSnapshot postedOnSnapshot = dataSnapshot.child("postedOn");
+                                DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
+                                DataSnapshot textSnapshot = dataSnapshot.child("text");
+
+                                NewsArticleModel article = new NewsArticleModel(
+                                        articlePath,
+                                        postedOnSnapshot.exists() ?
+                                                new Date(Long.parseLong(postedOnSnapshot.getValue().toString()) * 1000)
+                                                : null,
+                                        imageUrlSnapshot.exists() ?
+                                                imageUrlSnapshot.getValue().toString()
+                                                : "",
+                                        textSnapshot.exists() ?
+                                                textSnapshot.getValue().toString()
+                                                : "No text. Problem with the database!"
+                                );
+
+                                newsArticles.add(article);
+                                e.onNext(newsArticles);
                             }
 
-                            activeArticlesDbRef = databaseReference;
-                            activeChildEventListener = new ChildEventListener() {
-                                private List<NewsArticleModel> newsArticles = new ArrayList<NewsArticleModel>();
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                                @Override
-                                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                    int rootUrlLength = dataSnapshot.getRef().getRoot().toString().length();
-                                    String articlePath = dataSnapshot.getRef().toString().substring(rootUrlLength + 1);
+                            }
 
-                                    DataSnapshot postedOnSnapshot = dataSnapshot.child("postedOn");
-                                    DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
-                                    DataSnapshot textSnapshot = dataSnapshot.child("text");
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                                    NewsArticleModel article = new NewsArticleModel(
-                                            articlePath,
-                                            postedOnSnapshot.exists() ?
-                                                    new Date(Long.parseLong(postedOnSnapshot.getValue().toString()) * 1000)
-                                                    : null,
-                                            imageUrlSnapshot.exists() ?
-                                                    imageUrlSnapshot.getValue().toString()
-                                                    : "",
-                                            textSnapshot.exists() ?
-                                                    textSnapshot.getValue().toString()
-                                                    : "No text. Problem with the database!"
-                                    );
+                            }
 
-                                    newsArticles.add(article);
-                                    e.onNext(newsArticles);
-                                }
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                                @Override
-                                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                            }
 
-                                }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                                @Override
-                                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                            }
+                        };
 
-                                }
-
-                                @Override
-                                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            };
-
-                            activeArticlesDbRef.orderByKey().addChildEventListener(activeChildEventListener);
-                        }
+                        activeArticlesDbRef.orderByKey().addChildEventListener(activeChildEventListener);
                     });
 
             }
