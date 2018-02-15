@@ -29,9 +29,9 @@ public class ProvidersModule {
     }
 
     @Provides
-    synchronized ProvidersInterfaces.ILocationProvider provideLocationProvider() {
+    synchronized ProvidersInterfaces.ILocationProvider provideLocationProvider(Context context) {
         if (this.locationProvider == null) {
-            this.locationProvider = new LocationProvider();
+            this.locationProvider = new LocationProvider(context);
         }
 
         return this.locationProvider;

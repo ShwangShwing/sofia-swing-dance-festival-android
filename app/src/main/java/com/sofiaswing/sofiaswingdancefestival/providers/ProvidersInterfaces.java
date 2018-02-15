@@ -16,7 +16,7 @@ public class ProvidersInterfaces {
     }
 
     public interface ILocationProvider {
-        void startLocationService(Activity activity);
+        void startLocationService();
 
         void stopLocationService();
 

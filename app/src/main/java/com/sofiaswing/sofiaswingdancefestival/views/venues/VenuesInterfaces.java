@@ -1,5 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.venues;
 
+import android.location.Location;
+
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
@@ -12,6 +14,7 @@ import java.util.List;
 public class VenuesInterfaces {
     interface IView {
         void setVenues(List<VenueModel> venues);
+        void setLocation(Location location);
     }
     interface IPresenter {
         void setView(IView view);

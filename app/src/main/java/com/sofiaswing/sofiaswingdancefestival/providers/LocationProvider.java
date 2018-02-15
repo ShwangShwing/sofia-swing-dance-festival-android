@@ -1,7 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -14,16 +13,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.subjects.BehaviorSubject;
 
 /**
@@ -45,31 +38,33 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
     private SensorManager sensorManager;
     private Sensor significantMotionSensor;
     public TriggerEventListener triggerEventListener;
+    private Context context;
 
-    public LocationProvider() {
+    public LocationProvider(Context context) {
         this.locationTurnOffTime = new Date(0);
         this.lastBestLocationFixTime = new Date(0);
         this.lastBestLocation = new Location("zero location");
         this.locationListener = null;
         this.locationSubject = BehaviorSubject.create();
+        this.context = context;
     }
 
     @Override
-    public synchronized void startLocationService(final Activity activity) {
+    public synchronized void startLocationService() {
         if (ActivityCompat.checkSelfPermission(
-                activity,
+                this.context,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                && ActivityCompat.checkSelfPermission(this.context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //don't start in this case
             return;
         }
 
         if (this.locationManager == null) {
-            this.locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+            this.locationManager = (LocationManager) this.context.getSystemService(Context.LOCATION_SERVICE);
         }
 
         if (this.sensorManager == null) {
-            this.sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+            this.sensorManager = (SensorManager) this.context.getSystemService(Context.SENSOR_SERVICE);
         }
 
         if (this.significantMotionSensor == null) {
@@ -112,7 +107,7 @@ public class LocationProvider implements ProvidersInterfaces.ILocationProvider {
                                 triggerEventListener = new TriggerEventListener() {
                                     @Override
                                     public void onTrigger(TriggerEvent event) {
-                                        startLocationService(activity);
+                                        startLocationService();
                                     }
                                 };
 

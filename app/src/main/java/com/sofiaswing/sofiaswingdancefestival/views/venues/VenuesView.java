@@ -48,6 +48,8 @@ public class VenuesView extends Fragment implements VenuesInterfaces.IView {
     private boolean hasLocationPermission;
     private boolean hasAskedForPermissions;
 
+    private Location currentLocation;
+
     public static VenuesView newInstance() {
         VenuesView fragment = new VenuesView();
         return fragment;
@@ -79,14 +81,6 @@ public class VenuesView extends Fragment implements VenuesInterfaces.IView {
         this.venuesAdapter = new VenuesAdapter(root.getContext(), android.R.layout.simple_list_item_1);
         lvVenues.setAdapter(this.venuesAdapter);
 
-        final Fragment thisFragment = this;
-        lvVenues.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                return false;
-            }
-        });
-
         return root;
     }
 
@@ -107,6 +101,12 @@ public class VenuesView extends Fragment implements VenuesInterfaces.IView {
     public void setVenues(List<VenueModel> venues) {
         this.venuesAdapter.clear();
         this.venuesAdapter.addAll(venues);
+    }
+
+    @Override
+    public void setLocation(Location location) {
+        this.currentLocation = location;
+        this.venuesAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -165,9 +165,14 @@ public class VenuesView extends Fragment implements VenuesInterfaces.IView {
             ((TextView) venueRow.findViewById(R.id.tvVenueName)).setText(venue.getName());
             ((TextView) venueRow.findViewById(R.id.tvVenueAddress)).setText(venue.getAddress());
 
-            if (hasLocationPermission && venue.getLocation() != null) {
+            if (hasLocationPermission && venue.getLocation() != null && currentLocation != null) {
                 TextView tvDistance = venueRow.findViewById(R.id.tvDistance);
-                tvDistance.setText(String.format("%s %s", getString(R.string.distance), venue.getDistance()));
+                float distanceInMeters = currentLocation.distanceTo(venue.getLocation());
+                String formatedDistance = String.format("%.0fm", distanceInMeters);
+                if (distanceInMeters >= 1000) {
+                    formatedDistance = String.format("%.1fkm", distanceInMeters / 1000);
+                }
+                tvDistance.setText(String.format("%s %s", getString(R.string.distance), formatedDistance));
                 tvDistance.setVisibility(View.VISIBLE);
             }
 
