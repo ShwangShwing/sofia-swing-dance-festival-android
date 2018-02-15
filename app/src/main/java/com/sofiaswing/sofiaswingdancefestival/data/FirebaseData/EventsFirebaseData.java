@@ -83,8 +83,8 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                         List<InstructorModel> instructors = new ArrayList();
 
                                         try {
-                                            int rootUrlLength = dataSnapshot.getRef().getRoot().toString().length();
-                                            id = dataSnapshot.getRef().toString().substring(rootUrlLength + 1);
+                                            int rootUrlLength = classSnapshot.getRef().getRoot().toString().length();
+                                            id = classSnapshot.getRef().toString().substring(rootUrlLength + 1);
                                             startTime = new Date(Long.parseLong(classSnapshot.child("start").getValue().toString()) * 1000);
                                             endTime = new Date(Long.parseLong(classSnapshot.child("end").getValue().toString()) * 1000);
                                             levelName =
