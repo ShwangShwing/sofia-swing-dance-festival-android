@@ -3,6 +3,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.venues;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,11 +12,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,17 +25,11 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
+import com.sofiaswing.sofiaswingdancefestival.views.map.MapsActivity;
 
 import java.util.List;
 
 import javax.inject.Inject;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +60,7 @@ public class VenuesView extends Fragment implements VenuesInterfaces.IView {
         super.onCreate(savedInstanceState);
         inject();
         presenter.setView(this);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -118,6 +115,23 @@ public class VenuesView extends Fragment implements VenuesInterfaces.IView {
                     this.hasLocationPermission = true;
                     this.venuesAdapter.notifyDataSetChanged();
                 }
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.venues_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.show_map:
+                Intent intent = new Intent(getContext(), MapsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

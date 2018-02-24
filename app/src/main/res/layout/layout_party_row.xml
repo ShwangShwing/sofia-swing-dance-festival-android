@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="@string/notifyme"
-            android:textColor="@color/md_yellow_A700"
+            android:textColor="@color/colorNotifyMe"
             android:visibility="gone" />
     </RelativeLayout>
 

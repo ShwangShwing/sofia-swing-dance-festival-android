@@ -18,6 +18,8 @@ import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.Instructor
 import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsView;
 import com.sofiaswing.sofiaswingdancefestival.views.main.MainActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.map.MapsActivity;
+import com.sofiaswing.sofiaswingdancefestival.views.map.MapsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.news.NewsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.news.NewsView;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
@@ -68,7 +70,8 @@ public class SofiaSwingDanceFestivalApplication extends Application {
             AboutModule.class,
             UiModule.class,
             FirebaseDataModule.class,
-            ProvidersModule.class
+            ProvidersModule.class,
+            MapsModule.class
     })
     public interface ApplicationComponent {
         void inject(MainActivity mainActivity);
@@ -83,6 +86,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
         void inject(AboutView aboutView);
         void inject(ContactUsView contactUsView);
         void inject(SettingsView settingsView);
+        void inject(MapsActivity mapsActivity);
     }
 }
 
