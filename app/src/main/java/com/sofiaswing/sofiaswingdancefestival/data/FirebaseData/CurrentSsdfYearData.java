@@ -29,22 +29,17 @@ public class CurrentSsdfYearData  implements DataInterfaces.ICurrentSsdfYearData
 
         final DatabaseReference activeSsdfYearRef = database.getReference("activeSsdfYear");
 
-        Observable<String> observable = Observable.create(new ObservableOnSubscribe<String>() {
+        Observable<String> observable = Observable.create(e -> activeSsdfYearRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void subscribe(@NonNull final ObservableEmitter<String> e) throws Exception {
-                activeSsdfYearRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        e.onNext(dataSnapshot.getValue().toString());
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                e.onNext(dataSnapshot.getValue().toString());
             }
-        });
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        }));
 
         return observable;
     }

@@ -1,9 +1,12 @@
 package com.sofiaswing.sofiaswingdancefestival.views.settings;
 
-import android.util.Log;
-
+import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
+
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by shwangshwing on 10/12/17.
@@ -13,11 +16,15 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     private SettingsInterfaces.IView view;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
     private final ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
+    private final DataInterfaces.ISsdfYearsData ssdfYearsData;
+    private Disposable ssdfYearsObs;
 
     public SettingsPresenter(ProvidersInterfaces.ISettingsProvider settingsProvider,
-                             ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
+                             ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider,
+                             DataInterfaces.ISsdfYearsData ssdfYearsData) {
         this.settingsProvider = settingsProvider;
         this.volatileSettingsProvider = volatileSettingsProvider;
+        this.ssdfYearsData = ssdfYearsData;
     }
 
     @Override
@@ -30,6 +37,13 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
         this.view.setEventNotificationTimeSelection(settingsProvider.getEventsNotificationAdvanceTimeSeconds());
         this.updateHackerPanelAndIndicator();
         this.updateCustomYearFields();
+    }
+
+    @Override
+    public void stop() {
+        if (this.ssdfYearsObs != null) {
+            ssdfYearsObs.dispose();
+        }
     }
 
     @Override
@@ -61,8 +75,7 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     public void createTestNotification(String id, String name, long startTime, long notifyTime) {
         if (startTime == 0) startTime = notifyTime;
         if (notifyTime == 0) notifyTime = startTime;
-        Log.d("++++++++++", String.format("%d", startTime));
-        Log.d("++++++++++", String.format("%d", notifyTime));
+
         this.settingsProvider.subscribeForEvent(
                 id,
                 name,
@@ -72,6 +85,13 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
 
     private void updateHackerPanelAndIndicator() {
         if (this.volatileSettingsProvider.isHackerModeEnabled()) {
+            if (this.ssdfYearsObs == null) {
+                this.ssdfYearsObs = this.ssdfYearsData.getSsdfYears()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(years -> this.view.setSsdfYears(years));
+            }
+
             this.view.showHackerModeEnabledIndicator();
             this.view.showHackerPanel();
         }

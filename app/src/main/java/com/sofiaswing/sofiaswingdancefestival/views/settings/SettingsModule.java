@@ -1,7 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.settings;
 
+import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,7 +15,8 @@ public class SettingsModule {
     @Provides
     SettingsInterfaces.IPresenter providePresenter(
             ProvidersInterfaces.ISettingsProvider settingsProvider,
-            ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
-        return new SettingsPresenter(settingsProvider, volatileSettingsProvider);
+            ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider,
+            DataInterfaces.ISsdfYearsData ssdfYearsData) {
+        return new SettingsPresenter(settingsProvider, volatileSettingsProvider, ssdfYearsData);
     }
 }

@@ -46,4 +46,8 @@ public class DataInterfaces {
     public interface ICurrentSsdfYearData {
         Observable<String> getCurrentSsdfYear();
     }
+
+    public interface ISsdfYearsData {
+        Observable<List<String>> getSsdfYears();
+    }
 }

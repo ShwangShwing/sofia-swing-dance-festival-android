@@ -90,18 +90,15 @@ public class PartiesFirebaseData implements DataInterfaces.IPartiesData {
                             parties.add(newParty);
                         }
 
-                        Collections.sort(parties, new Comparator<PartyModel>() {
-                            @Override
-                            public int compare(PartyModel o1, PartyModel o2) {
-                                if (o1.getStartTime() == null) {
-                                    return -1;
-                                }
-                                else if (o2.getStartTime() == null) {
-                                    return 1;
-                                }
-
-                                return (int)(o1.getStartTime().getTime() - o2.getStartTime().getTime());
+                        Collections.sort(parties, (o1, o2) -> {
+                            if (o1.getStartTime() == null) {
+                                return -1;
                             }
+                            else if (o2.getStartTime() == null) {
+                                return 1;
+                            }
+
+                            return (int)(o1.getStartTime().getTime() - o2.getStartTime().getTime());
                         });
 
                         e.onNext(parties);
