@@ -7,13 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
-import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.utils.DrawerItemInfo;
 import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
@@ -30,17 +27,12 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-
 public class MainActivity extends AppCompatActivity implements UiInterfaces.INavigationActivity {
 
     private static final String CURRENT_TITLE = "current_title_key";
     private static final String CURRENT_SELECTION = "current_selection";
     @Inject
     public UiInterfaces.IDrawerNavigationFactory drawerNavigationFactory;
-    @Inject
-    public DataInterfaces.ICurrentSsdfYearData currentSsdfYearData;
 
     private Drawer drawer;
 
@@ -67,14 +59,6 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
             setTitle(currentTitle);
             drawer.setSelectionAtPosition(savedInstanceState.getInt(CURRENT_SELECTION));
         }
-
-        currentSsdfYearData.getCurrentSsdfYear()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(currentSsdfYear -> {
-                    DatabaseReference curentYearRef = FirebaseDatabase.getInstance().getReference(currentSsdfYear);
-                    curentYearRef.keepSynced(true);
-                });
 
         this.handleIntent(getIntent());
     }

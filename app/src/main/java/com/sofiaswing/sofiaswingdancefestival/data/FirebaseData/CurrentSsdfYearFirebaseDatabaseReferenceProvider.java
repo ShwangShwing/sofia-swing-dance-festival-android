@@ -26,13 +26,10 @@ public class CurrentSsdfYearFirebaseDatabaseReferenceProvider {
         Observable<DatabaseReference> observable = this.currentSsdfYearProvider.getCurrentSsdfYear()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<String, DatabaseReference>() {
-                    @Override
-                    public DatabaseReference apply(String currentSsdfYear) throws Exception {
-                        String collectionPath = String.format("%s/%s", currentSsdfYear, collectionName);
-                        DatabaseReference databaseRef = database.getReference(collectionPath);
-                        return databaseRef;
-                    }
+                .map(currentSsdfYear -> {
+                    String collectionPath = String.format("%s/%s", currentSsdfYear, collectionName);
+                    DatabaseReference databaseRef = database.getReference(collectionPath);
+                    return databaseRef;
                 });
         return observable;
     }
