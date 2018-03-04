@@ -17,7 +17,9 @@ public class ClassesModule {
     ClassesInterfaces.IPresenter provideNewsPresenter(
             DataInterfaces.IClassLevelsData classLevelsFirebaseData,
             DataInterfaces.IEventsData eventsData,
+            DataInterfaces.IVenuesData venuesData,
+            DataInterfaces.IInstructorsData instructorsData,
             ProvidersInterfaces.ISettingsProvider settingsProvider) {
-        return new ClassesPresenter(classLevelsFirebaseData, eventsData, settingsProvider);
+        return new ClassesPresenter(classLevelsFirebaseData, venuesData, eventsData, instructorsData, settingsProvider);
     }
 }

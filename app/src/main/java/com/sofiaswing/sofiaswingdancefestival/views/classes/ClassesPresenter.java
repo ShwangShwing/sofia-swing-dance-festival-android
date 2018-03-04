@@ -1,8 +1,9 @@
 package com.sofiaswing.sofiaswingdancefestival.views.classes;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.models.ClassLevelModel;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
+import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
+import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.List;
@@ -11,7 +12,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -20,17 +20,21 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ClassesPresenter implements ClassesInterfaces.IPresenter {
     private ClassesInterfaces.IView view;
-    private final DataInterfaces.IClassLevelsData classLevelsFirebaseData;
+    private final DataInterfaces.IClassLevelsData classLevelsData;
+    private final DataInterfaces.IVenuesData venuesData;
     private final DataInterfaces.IEventsData eventsData;
+    private final DataInterfaces.IInstructorsData instructorsData;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
     private final CompositeDisposable disposables;
 
-    public ClassesPresenter(DataInterfaces.IClassLevelsData classLevelsFirebaseData,
-                            DataInterfaces.IEventsData eventsData,
-                            ProvidersInterfaces.ISettingsProvider settingsProvider) {
+    public ClassesPresenter(DataInterfaces.IClassLevelsData classLevelsData,
+                            DataInterfaces.IVenuesData venuesData, DataInterfaces.IEventsData eventsData,
+                            DataInterfaces.IInstructorsData instructorsData, ProvidersInterfaces.ISettingsProvider settingsProvider) {
+        this.venuesData = venuesData;
         this.eventsData = eventsData;
+        this.instructorsData = instructorsData;
         this.settingsProvider = settingsProvider;
-        this.classLevelsFirebaseData = classLevelsFirebaseData;
+        this.classLevelsData = classLevelsData;
 
         this.disposables = new CompositeDisposable();
     }
@@ -42,7 +46,7 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
 
     @Override
     public void start() {
-        Disposable subscription = this.classLevelsFirebaseData.getAll()
+        Disposable subscription = this.classLevelsData.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(classLevels -> view.setClassesTabs(classLevels));
@@ -63,6 +67,16 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
     @Override
     public Observable<List<ClassModel>> getTasterClasses() {
         return this.eventsData.getTasterClasses();
+    }
+
+    @Override
+    public Observable<VenueModel> getVenue(String id) {
+        return this.venuesData.getById(id);
+    }
+
+    @Override
+    public Observable<InstructorModel> getInstructor(String id) {
+        return this.instructorsData.getById(id);
     }
 
     @Override

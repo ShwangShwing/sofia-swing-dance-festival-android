@@ -61,7 +61,7 @@ public class PartiesFirebaseData implements DataInterfaces.IPartiesData {
                             Date startTime = null;
                             Date endTime = null;
                             String name = "";
-                            VenueModel venue = null;
+                            String venueId = "";
 
                             try {
                                 id = partySnapshot.getKey();
@@ -69,11 +69,7 @@ public class PartiesFirebaseData implements DataInterfaces.IPartiesData {
                                 endTime = new Date(Long.parseLong(partySnapshot.child("end").getValue().toString()) * 1000);
                                 name = partySnapshot.child("name").getValue().toString();
 
-                                DataSnapshot venueSnapshot = partySnapshot.child("venue").getChildren().iterator().next();
-                                venue = new VenueModel(venueSnapshot.getKey(),
-                                        venueSnapshot.child("name").getValue().toString(),
-                                        venueSnapshot.child("address").getValue().toString(),
-                                        null);
+                                venueId = partySnapshot.child("venueId").getValue().toString();
                             }
                             catch (Exception e) {
 
@@ -84,7 +80,7 @@ public class PartiesFirebaseData implements DataInterfaces.IPartiesData {
                                     startTime,
                                     endTime,
                                     name,
-                                    venue
+                                    venueId
                             );
 
                             parties.add(newParty);

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
+import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -134,8 +135,11 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             ((TextView) partyRow.findViewById(R.id.tvName))
                     .setText(partyItem.getName());
 
-            ((TextView) partyRow.findViewById(R.id.tvVenue))
-                    .setText(partyItem.getVenue().getName());
+            VenueModel partyVenue = partyItem.getVenue();
+            if (partyVenue != null) {
+                ((TextView) partyRow.findViewById(R.id.tvVenue))
+                        .setText(partyVenue.getName());
+            }
 
             if (partyItem.isSubscribed()) {
                 partyRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);

@@ -3,6 +3,8 @@ package com.sofiaswing.sofiaswingdancefestival.models;
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * Created by shwangshwing on 10/11/17.
  */
@@ -14,18 +16,18 @@ public class ClassModel {
     private final String level;
     private final String levelName;
     private final String name;
-    private final VenueModel venue;
-    private final List<InstructorModel> instructors;
+    private final String venueId;
+    private final List<String> instructorIds;
 
-    public ClassModel(String id, Date startTime, Date endTime, String level, String levelName, String name, VenueModel venue, List<InstructorModel> instructors) {
+    public ClassModel(String id, Date startTime, Date endTime, String level, String levelName, String name, String venueId, List<String> instructorIds) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.level = level;
         this.levelName = levelName;
         this.name = name;
-        this.venue = venue;
-        this.instructors = instructors;
+        this.venueId = venueId;
+        this.instructorIds = instructorIds;
     }
 
     public String getId() {
@@ -52,11 +54,11 @@ public class ClassModel {
         return name;
     }
 
-    public VenueModel getVenue() {
-        return venue;
+    public String getVenueId() {
+        return venueId;
     }
 
-    public List<InstructorModel> getInstructors() {
-        return instructors;
+    public List<String> getInstructorIds() {
+        return instructorIds;
     }
 }

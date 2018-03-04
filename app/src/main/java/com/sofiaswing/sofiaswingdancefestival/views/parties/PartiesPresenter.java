@@ -2,6 +2,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.parties;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
+import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.ArrayList;
@@ -19,14 +20,16 @@ import io.reactivex.schedulers.Schedulers;
 public class PartiesPresenter implements PartiesInterfaces.IPresenter {
     private PartiesInterfaces.IView view;
     private final DataInterfaces.IPartiesData partiesData;
+    private final DataInterfaces.IVenuesData venuesData;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
     private final List<PartyViewModel> partyViewModels;
 
     private final CompositeDisposable subscriptions;
 
     public PartiesPresenter(DataInterfaces.IPartiesData partiesData,
-                            ProvidersInterfaces.ISettingsProvider settingsProvider) {
+                            DataInterfaces.IVenuesData venuesData, ProvidersInterfaces.ISettingsProvider settingsProvider) {
         this.partiesData = partiesData;
+        this.venuesData = venuesData;
         this.settingsProvider = settingsProvider;
         this.partyViewModels = new ArrayList<>();
 
@@ -47,18 +50,29 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
                 .subscribe(parties -> {
                     partyViewModels.clear();
                     for (PartyModel party : parties) {
-                        partyViewModels.add(new PartyViewModel(
+                        final PartyViewModel partyViewModel = new PartyViewModel(
                                 party.getId(),
                                 party.getStartTime(),
                                 party.getEndTime(),
                                 party.getName(),
-                                party.getVenue(),
+                                null,
                                 settingsProvider.isSubscribedForEvent(party.getId())
-                        ));
+                        );
+                        partyViewModels.add(partyViewModel);
+
+                        this.venuesData.getById(party.getVenueId())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Consumer<VenueModel>() {
+                                    @Override
+                                    public void accept(VenueModel venueModel) throws Exception {
+                                        partyViewModel.setVenue(venueModel);
+                                        view.setParties(partyViewModels);
+                                    }
+                                });
                     }
                     view.setParties(partyViewModels);
-                })
-        );
+                }));
     }
 
     @Override

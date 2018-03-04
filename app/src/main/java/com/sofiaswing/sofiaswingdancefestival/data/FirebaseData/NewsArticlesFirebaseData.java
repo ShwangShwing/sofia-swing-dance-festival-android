@@ -59,8 +59,7 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
 
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                int rootUrlLength = dataSnapshot.getRef().getRoot().toString().length();
-                                String articlePath = dataSnapshot.getRef().toString().substring(rootUrlLength + 1);
+                                String articlePath = FirebaseHelpers.getNodePathFromSnapshot(dataSnapshot);
 
                                 DataSnapshot postedOnSnapshot = dataSnapshot.child("postedOn");
                                 DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
@@ -118,38 +117,33 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference newsArticlesRef = database.getReference(id);
 
-        Observable<NewsArticleModel> observable = Observable.create(new ObservableOnSubscribe<NewsArticleModel>() {
+        Observable<NewsArticleModel> observable = Observable.create(e -> newsArticlesRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void subscribe(@NonNull final ObservableEmitter<NewsArticleModel> e) throws Exception {
-                newsArticlesRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String articleKey = dataSnapshot.getKey();
-                        DataSnapshot postedOnSnapshot = dataSnapshot.child("postedOn");
-                        DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
-                        DataSnapshot textSnapshot = dataSnapshot.child("text");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String articleKey = dataSnapshot.getKey();
+                DataSnapshot postedOnSnapshot = dataSnapshot.child("postedOn");
+                DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
+                DataSnapshot textSnapshot = dataSnapshot.child("text");
 
-                        NewsArticleModel article = new NewsArticleModel(
-                                articleKey,
-                                postedOnSnapshot.exists() ?
-                                        new Date(Long.parseLong(postedOnSnapshot.getValue().toString()) * 1000)
-                                        : null,
-                                imageUrlSnapshot.exists() ?
-                                        imageUrlSnapshot.getValue().toString()
-                                        : "",
-                                textSnapshot.exists() ?
-                                        textSnapshot.getValue().toString()
-                                        : "No text. Problem with the database!");
-                        e.onNext(article);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                NewsArticleModel article = new NewsArticleModel(
+                        articleKey,
+                        postedOnSnapshot.exists() ?
+                                new Date(Long.parseLong(postedOnSnapshot.getValue().toString()) * 1000)
+                                : null,
+                        imageUrlSnapshot.exists() ?
+                                imageUrlSnapshot.getValue().toString()
+                                : "",
+                        textSnapshot.exists() ?
+                                textSnapshot.getValue().toString()
+                                : "No text. Problem with the database!");
+                e.onNext(article);
             }
-        });
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        }));
 
         return observable;
     }

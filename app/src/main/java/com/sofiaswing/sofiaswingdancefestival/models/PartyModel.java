@@ -11,14 +11,14 @@ public class PartyModel {
     private final Date startTime;
     private final Date endTime;
     private final String name;
-    private final VenueModel venue;
+    private final String venueId;
 
-    public PartyModel(String id, Date startTime, Date endTime, String name, VenueModel venue) {
+    public PartyModel(String id, Date startTime, Date endTime, String name, String venueId) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.name = name;
-        this.venue = venue;
+        this.venueId = venueId;
     }
 
     public String getId() {
@@ -37,7 +37,7 @@ public class PartyModel {
         return name;
     }
 
-    public VenueModel getVenue() {
-        return venue;
+    public String getVenueId() {
+        return venueId;
     }
 }

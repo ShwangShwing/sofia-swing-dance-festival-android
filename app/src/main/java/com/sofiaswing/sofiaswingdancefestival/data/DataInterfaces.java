@@ -28,6 +28,7 @@ public class DataInterfaces {
 
     public interface IVenuesData {
         Observable<List<VenueModel>> getAll();
+        Observable<VenueModel> getById(String id);
     }
 
     public interface IClassLevelsData {

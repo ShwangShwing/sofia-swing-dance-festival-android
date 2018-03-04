@@ -13,7 +13,7 @@ public class PartyViewModel {
     private final Date startTime;
     private final Date endTime;
     private final String name;
-    private final VenueModel venue;
+    private VenueModel venue;
     private boolean isSubscribed;
 
     public PartyViewModel(String id, Date startTime, Date endTime, String name, VenueModel venue, boolean isSubscribed) {
@@ -43,6 +43,9 @@ public class PartyViewModel {
 
     public VenueModel getVenue() {
         return venue;
+    }
+    public void setVenue(VenueModel venue) {
+        this.venue = venue;
     }
 
     public boolean isSubscribed() {

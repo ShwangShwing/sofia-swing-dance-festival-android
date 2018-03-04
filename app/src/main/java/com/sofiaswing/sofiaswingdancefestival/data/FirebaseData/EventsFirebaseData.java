@@ -20,7 +20,6 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -79,8 +78,8 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                         Date endTime = null;
                                         String levelName = "";
                                         String name = "";
-                                        VenueModel venue = null;
-                                        List<InstructorModel> instructors = new ArrayList();
+                                        String venueId = "";
+                                        List<String> instructorIds = new ArrayList();
 
                                         try {
                                             int rootUrlLength = classSnapshot.getRef().getRoot().toString().length();
@@ -92,22 +91,16 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                                             classSnapshot.child("levelName").getValue().toString()
                                                             : "";
                                             name = classSnapshot.child("name").getValue().toString();
+                                            if (classSnapshot.child("venueId").exists())
+                                            {
+                                                venueId = classSnapshot.child("venueId").getValue().toString();
+                                            }
 
-                                            DataSnapshot venueSnapshot = classSnapshot.child("venue").getChildren().iterator().next();
-                                            venue = new VenueModel(venueSnapshot.getKey(),
-                                                    venueSnapshot.child("name").getValue().toString(),
-                                                    venueSnapshot.child("address").getValue().toString(),
-                                                    null);
-                                            DataSnapshot instructorsSnapshot = classSnapshot.child("instructors");
+                                            DataSnapshot instructorsSnapshot = classSnapshot.child("instructorIds");
                                             Iterator<DataSnapshot> instructorsIterator = instructorsSnapshot.getChildren().iterator();
                                             while(instructorsIterator.hasNext()) {
                                                 DataSnapshot instructorSnapshot = instructorsIterator.next();
-
-                                                instructors.add(new InstructorModel(
-                                                        instructorSnapshot.getKey(),
-                                                        instructorSnapshot.child("name").getValue().toString(),
-                                                        instructorSnapshot.child("imageUrl").getValue().toString()
-                                                ));
+                                                instructorIds.add(instructorSnapshot.getValue().toString());
                                             }
                                         }
                                         catch (Exception e1) {
@@ -121,8 +114,8 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                                 level,
                                                 levelName,
                                                 name,
-                                                venue,
-                                                instructors
+                                                venueId,
+                                                instructorIds
                                         );
 
                                         classes.add(newClass);

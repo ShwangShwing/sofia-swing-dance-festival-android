@@ -1,6 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.parties;
 
 import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
+import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.util.List;
 
