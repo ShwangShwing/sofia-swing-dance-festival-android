@@ -65,11 +65,6 @@ public class FirebaseDataModule {
     }
 
     @Provides
-    DataInterfaces.IPartiesData provideFirebasePartiesData(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
-        return new PartiesFirebaseData(currentSsdfYearProvider);
-    }
-
-    @Provides
     DataInterfaces.ISsdfYearsData provideSsdfYearsData() {
         return new SsdfYearsFirebaseData();
     }

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.location.Location;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 
 /**
@@ -38,6 +40,8 @@ public class ProvidersInterfaces {
         void setEventsNotificationAdvanceTimeSeconds(long seconds);
 
         void setupAllNotificationAlarms();
+
+        List<String> getSubscribedEventsIds();
     }
 
     public interface IVolatileSettingsProvider {

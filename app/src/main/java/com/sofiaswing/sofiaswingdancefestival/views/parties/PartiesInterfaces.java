@@ -12,6 +12,10 @@ import java.util.List;
 public class PartiesInterfaces {
     public interface IView {
         void setParties(List<PartyViewModel> parties);
+
+        void setEventVenue(int position, VenueModel venue);
+
+        void setEventSubscriptionState(int position, boolean isSubscribed);
     }
 
     public interface IPresenter {

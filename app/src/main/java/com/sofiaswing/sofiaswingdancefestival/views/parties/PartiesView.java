@@ -70,11 +70,9 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
 
                 if (partyItem.isSubscribed()) {
                     presenter.setPartySubscription(position, false);
-                    root.findViewById(R.id.tvIsSubscribed).setVisibility(View.GONE);
                 }
                 else {
                     presenter.setPartySubscription(position, true);
-                    root.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -98,6 +96,20 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
     public void setParties(List<PartyViewModel> parties) {
         partiesAdapter.clear();
         partiesAdapter.addAll(parties);
+    }
+
+    @Override
+    public void setEventVenue(int position, VenueModel venue) {
+        PartyViewModel party = this.partiesAdapter.getItem(position);
+        party.setVenue(venue);
+        this.partiesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setEventSubscriptionState(int position, boolean isSubscribed) {
+        PartyViewModel party = this.partiesAdapter.getItem(position);
+        party.setSubscribed(isSubscribed);
+        this.partiesAdapter.notifyDataSetChanged();
     }
 
     private void inject() {
