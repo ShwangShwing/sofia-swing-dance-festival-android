@@ -22,12 +22,15 @@ import io.reactivex.schedulers.Schedulers;
 public class NewsPresenter implements NewsInterfaces.IPresenter {
     public NewsInterfaces.IView view;
     private final DataInterfaces.INewsArticlesData newsArticlesData;
+    private final ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
     private List<NewsArticleModel> newsArticles;
 
     private final CompositeDisposable subscriptions;
 
-    public NewsPresenter(DataInterfaces.INewsArticlesData newsArticlesData) {
+    public NewsPresenter(DataInterfaces.INewsArticlesData newsArticlesData,
+                         ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
         this.newsArticlesData = newsArticlesData;
+        this.volatileSettingsProvider = volatileSettingsProvider;
         this.newsArticles = new ArrayList<>();
         this.subscriptions = new CompositeDisposable();
     }
@@ -40,7 +43,7 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
     @Override
     public void start() {
         this.subscriptions.add(
-                this.newsArticlesData.getAll()
+                this.newsArticlesData.getAll(volatileSettingsProvider.isHackerModeEnabled())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(incomingNewsArticles -> {

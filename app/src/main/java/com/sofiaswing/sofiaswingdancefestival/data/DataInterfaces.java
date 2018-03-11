@@ -18,7 +18,10 @@ import io.reactivex.Observable;
 
 public class DataInterfaces {
     public interface INewsArticlesData {
-        Observable<List<NewsArticleModel>> getAll();
+        default Observable<List<NewsArticleModel>> getAll() {
+            return this.getAll(false);
+        }
+        Observable<List<NewsArticleModel>> getAll(boolean includeUnpublished);
         Observable<NewsArticleModel> getById(String id);
     }
 

@@ -39,7 +39,7 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
     }
 
     @Override
-    public Observable<List<NewsArticleModel>> getAll() {
+    public Observable<List<NewsArticleModel>> getAll(final boolean includeUnpublished) {
         Observable<List<NewsArticleModel>> observable = Observable.create(new ObservableOnSubscribe<List<NewsArticleModel>>() {
             private DatabaseReference activeArticlesDbRef = null;
             private ChildEventListener activeChildEventListener = null;
@@ -59,6 +59,16 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
 
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                if (!includeUnpublished) {
+                                    if (!dataSnapshot.hasChild("isPublished")) {
+                                        return;
+                                    }
+
+                                    if (!(Boolean.parseBoolean(dataSnapshot.child("isPublished").getValue().toString()))) {
+                                        return;
+                                    }
+                                }
+
                                 String articlePath = FirebaseHelpers.getNodePathFromSnapshot(dataSnapshot);
 
                                 DataSnapshot postedOnSnapshot = dataSnapshot.child("postedOn");
