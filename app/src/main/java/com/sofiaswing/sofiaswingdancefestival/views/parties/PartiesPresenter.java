@@ -2,6 +2,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.parties;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
+import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.ArrayList;
@@ -18,19 +19,23 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PartiesPresenter implements PartiesInterfaces.IPresenter {
     private PartiesInterfaces.IView view;
-    private final DataInterfaces.IPartiesData partiesData;
+    private final DataInterfaces.IEventsData partiesData;
+    private final DataInterfaces.IVenuesData venuesData;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
     private final List<PartyViewModel> partyViewModels;
 
-    private final CompositeDisposable subscriptions;
+    private final CompositeDisposable partiesSubscriptions;
+    private final CompositeDisposable venuesSubscriptions;
 
-    public PartiesPresenter(DataInterfaces.IPartiesData partiesData,
-                            ProvidersInterfaces.ISettingsProvider settingsProvider) {
+    public PartiesPresenter(DataInterfaces.IEventsData partiesData,
+                            DataInterfaces.IVenuesData venuesData, ProvidersInterfaces.ISettingsProvider settingsProvider) {
         this.partiesData = partiesData;
+        this.venuesData = venuesData;
         this.settingsProvider = settingsProvider;
         this.partyViewModels = new ArrayList<>();
 
-        this.subscriptions = new CompositeDisposable();
+        this.partiesSubscriptions = new CompositeDisposable();
+        this.venuesSubscriptions = new CompositeDisposable();
     }
 
     @Override
@@ -40,30 +45,43 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
 
     @Override
     public void start() {
-        this.subscriptions.add(
+        this.partiesSubscriptions.add(
             this.partiesData.getParties()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(parties -> {
                     partyViewModels.clear();
+                    venuesSubscriptions.clear();
                     for (PartyModel party : parties) {
-                        partyViewModels.add(new PartyViewModel(
+                        final PartyViewModel partyViewModel = new PartyViewModel(
                                 party.getId(),
                                 party.getStartTime(),
                                 party.getEndTime(),
                                 party.getName(),
-                                party.getVenue(),
+                                null,
                                 settingsProvider.isSubscribedForEvent(party.getId())
-                        ));
+                        );
+                        partyViewModels.add(partyViewModel);
+                        final int partyPosition = partyViewModels.size() - 1;
+
+                        venuesSubscriptions.add(this.venuesData.getById(party.getVenueId())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Consumer<VenueModel>() {
+                                    @Override
+                                    public void accept(VenueModel venueModel) throws Exception {
+                                        view.setEventVenue(partyPosition, venueModel);
+                                    }
+                                }));
                     }
                     view.setParties(partyViewModels);
-                })
-        );
+                }));
     }
 
     @Override
     public void stop() {
-        this.subscriptions.clear();
+        this.partiesSubscriptions.clear();
+        this.venuesSubscriptions.clear();
     }
 
     @Override
@@ -74,11 +92,11 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
                     party.getId(),
                     party.getName(),
                     party.getStartTime().getTime() / 1000, 0);
-            party.setSubscribed(true);
         }
         else {
             this.settingsProvider.unsubscribeFromEvent(party.getId());
-            party.setSubscribed(false);
         }
+
+        this.view.setEventSubscriptionState(position, subscriptionStatus);
     }
 }

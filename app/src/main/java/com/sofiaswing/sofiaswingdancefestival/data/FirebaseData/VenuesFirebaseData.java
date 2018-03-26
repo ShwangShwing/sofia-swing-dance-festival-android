@@ -6,11 +6,14 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -54,36 +57,7 @@ public class VenuesFirebaseData implements DataInterfaces.IVenuesData {
 
                                 @Override
                                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                    String venueKey = dataSnapshot.getKey();
-                                    DataSnapshot venueNameSnapshot = dataSnapshot.child("name");
-                                    DataSnapshot addressSnapshot = dataSnapshot.child("address");
-                                    DataSnapshot latitudeSnapshot = dataSnapshot.child("latitude");
-                                    DataSnapshot longitudeSnapshot = dataSnapshot.child("longitude");
-
-                                    Location location = null;
-                                    try {
-                                        double latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
-                                        double longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
-
-                                        location = new Location(String.format("%f, %f", latitude, longitude));
-                                        location.setLatitude(latitude);
-                                        location.setLongitude(longitude);
-                                    } catch (NumberFormatException ex) {
-                                        location = null;
-                                    } catch (NullPointerException ex) {
-                                        location = null;
-                                    }
-
-                                    VenueModel venue = new VenueModel(
-                                            venueKey,
-                                            venueNameSnapshot.exists() ? venueNameSnapshot.getValue().toString()
-                                                    : "No name in the database!",
-                                            addressSnapshot.exists() ? addressSnapshot.getValue().toString()
-                                                    : "",
-                                            location
-                                    );
-
-                                    venues.add(venue);
+                                    venues.add(getVenueModelFromDataSnapshot(dataSnapshot));
 
                                     e.onNext(venues);
                                 }
@@ -115,5 +89,60 @@ public class VenuesFirebaseData implements DataInterfaces.IVenuesData {
         });
 
         return observable;
+    }
+
+    @Override
+    public Observable<VenueModel> getById(final String venueId) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference venueRef = database.getReference(venueId);
+
+        Observable<VenueModel> observable = Observable.create(e -> venueRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                VenueModel venue = getVenueModelFromDataSnapshot(dataSnapshot);
+                e.onNext(venue);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        }));
+
+        return observable;
+    }
+
+    private VenueModel getVenueModelFromDataSnapshot(final DataSnapshot dataSnapshot) {
+        String venueId = FirebaseHelpers.getNodePathFromSnapshot(dataSnapshot);
+
+        DataSnapshot venueNameSnapshot = dataSnapshot.child("name");
+        DataSnapshot addressSnapshot = dataSnapshot.child("address");
+        DataSnapshot latitudeSnapshot = dataSnapshot.child("latitude");
+        DataSnapshot longitudeSnapshot = dataSnapshot.child("longitude");
+
+        Location location = null;
+        try {
+            double latitude = Double.parseDouble(latitudeSnapshot.getValue().toString());
+            double longitude = Double.parseDouble(longitudeSnapshot.getValue().toString());
+
+            location = new Location(String.format("%f, %f", latitude, longitude));
+            location.setLatitude(latitude);
+            location.setLongitude(longitude);
+        } catch (NumberFormatException ex) {
+            location = null;
+        } catch (NullPointerException ex) {
+            location = null;
+        }
+
+        VenueModel venue = new VenueModel(
+                venueId,
+                venueNameSnapshot.exists() ? venueNameSnapshot.getValue().toString()
+                        : "No name in the database!",
+                addressSnapshot.exists() ? addressSnapshot.getValue().toString()
+                        : "",
+                location
+        );
+
+        return venue;
     }
 }

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
+import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -69,11 +70,9 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
 
                 if (partyItem.isSubscribed()) {
                     presenter.setPartySubscription(position, false);
-                    root.findViewById(R.id.tvIsSubscribed).setVisibility(View.GONE);
                 }
                 else {
                     presenter.setPartySubscription(position, true);
-                    root.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -97,6 +96,20 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
     public void setParties(List<PartyViewModel> parties) {
         partiesAdapter.clear();
         partiesAdapter.addAll(parties);
+    }
+
+    @Override
+    public void setEventVenue(int position, VenueModel venue) {
+        PartyViewModel party = this.partiesAdapter.getItem(position);
+        party.setVenue(venue);
+        this.partiesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setEventSubscriptionState(int position, boolean isSubscribed) {
+        PartyViewModel party = this.partiesAdapter.getItem(position);
+        party.setSubscribed(isSubscribed);
+        this.partiesAdapter.notifyDataSetChanged();
     }
 
     private void inject() {
@@ -134,8 +147,11 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             ((TextView) partyRow.findViewById(R.id.tvName))
                     .setText(partyItem.getName());
 
-            ((TextView) partyRow.findViewById(R.id.tvVenue))
-                    .setText(partyItem.getVenue().getName());
+            VenueModel partyVenue = partyItem.getVenue();
+            if (partyVenue != null) {
+                ((TextView) partyRow.findViewById(R.id.tvVenue))
+                        .setText(partyVenue.getName());
+            }
 
             if (partyItem.isSubscribed()) {
                 partyRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);

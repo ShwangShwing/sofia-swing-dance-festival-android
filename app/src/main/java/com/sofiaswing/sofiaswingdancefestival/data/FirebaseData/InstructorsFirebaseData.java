@@ -56,8 +56,7 @@ public class InstructorsFirebaseData implements DataInterfaces.IInstructorsData 
 
                                 @Override
                                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                    int rootUrlLength = dataSnapshot.getRef().getRoot().toString().length();
-                                    String instructorPath = dataSnapshot.getRef().toString().substring(rootUrlLength + 1);
+                                    String instructorPath = FirebaseHelpers.getNodePathFromSnapshot(dataSnapshot);
                                     DataSnapshot nameSnapshot = dataSnapshot.child("name");
                                     DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
                                     DataSnapshot typeSnapshot = dataSnapshot.child("type");

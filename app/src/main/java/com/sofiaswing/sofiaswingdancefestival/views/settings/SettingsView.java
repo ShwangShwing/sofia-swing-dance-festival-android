@@ -16,11 +16,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
@@ -28,7 +26,6 @@ import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication
 import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -62,6 +59,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
             "right",
             "left",
             "right"};
+    private ArrayAdapter<String> ssdfYearsAdapter;
 
     public static SettingsView newInstance() {
         SettingsView fragment = new SettingsView();
@@ -191,12 +189,15 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
             }
         });
 
+        this.ssdfYearsAdapter = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_dropdown_item);
+        ((Spinner)root.findViewById(R.id.sp_custom_year)).setAdapter(this.ssdfYearsAdapter);
+
         Button btnSetCustomYear = root.findViewById(R.id.btn_set_custom_year);
         btnSetCustomYear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText et = root.findViewById(R.id.et_custom_year);
-                String customYear = et.getText().toString();
+                Spinner sp = root.findViewById(R.id.sp_custom_year);
+                String customYear = sp.getSelectedItem().toString();
                 presenter.setCustomYear(customYear);
             }
         });
@@ -309,8 +310,17 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
 
     @Override
     public void setCustomYear(String customYear) {
-        EditText et = this.getView().findViewById(R.id.et_custom_year);
-        et.setText(customYear);
+        Spinner sp = this.getView().findViewById(R.id.sp_custom_year);
+        int index = this.ssdfYearsAdapter.getPosition(customYear);
+        if (index >= 0) {
+            sp.setSelection(index);
+        }
+    }
+
+    @Override
+    public void setSsdfYears(List<String> ssdfYears) {
+        ssdfYearsAdapter.clear();
+        ssdfYearsAdapter.addAll(ssdfYears);
     }
 
     private void inject() {

@@ -21,11 +21,13 @@ public class SettingsInterfaces {
 
         void setYearFromDatabase(boolean isSet);
         void setCustomYear(String customYear);
+        void setSsdfYears(List<String> ssdfYears);
     }
 
     public interface IPresenter {
         void setView(IView view);
         void start();
+        void stop();
 
         void setEventsNotificationAdvanceTimeSeconds(long seconds);
         void enableHackerMode();

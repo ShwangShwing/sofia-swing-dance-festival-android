@@ -1,4 +1,4 @@
-package com.sofiaswing.sofiaswingdancefestival.views.parties;
+package com.sofiaswing.sofiaswingdancefestival.views.myEvents;
 
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
@@ -8,16 +8,18 @@ import java.util.Date;
  * Created by shwangshwing on 10/11/17.
  */
 
-public class PartyViewModel {
+public class EventViewModel {
     private final String id;
+    private final String eventType;
     private final Date startTime;
     private final Date endTime;
     private final String name;
     private VenueModel venue;
     private boolean isSubscribed;
 
-    public PartyViewModel(String id, Date startTime, Date endTime, String name, VenueModel venue, boolean isSubscribed) {
+    public EventViewModel(String id, String eventType, Date startTime, Date endTime, String name, VenueModel venue, boolean isSubscribed) {
         this.id = id;
+        this.eventType = eventType;
         this.startTime = startTime;
         this.endTime = endTime;
         this.name = name;
@@ -27,6 +29,10 @@ public class PartyViewModel {
 
     public String getId() {
         return id;
+    }
+
+    public String getEventType() {
+        return this.eventType;
     }
 
     public Date getStartTime() {

@@ -13,6 +13,9 @@ import android.provider.BaseColumns;
 
 import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by shwangshwing on 10/11/17.
  */
@@ -154,8 +157,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
     }
 
     @Override
-    public void setupAllNotificationAlarms() {
-        synchronized (this) {
+    public synchronized void setupAllNotificationAlarms() {
             while (this.database == null) {
                 try {
                     wait();
@@ -199,7 +201,45 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
             }
 
             cursor.close();
+    }
+
+    @Override
+    public synchronized List<String> getSubscribedEventsIds() {
+        List<String> result = new ArrayList<>();
+
+        while (this.database == null) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                return result;
+            }
         }
+
+        String[] projection = {
+                SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_ID,
+        };
+
+        Cursor cursor = this.database.query(
+                SettingsContract.EventSubscriptions.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                null,                                // The columns for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+
+        while (cursor.moveToNext()) {
+            String eventId = cursor.getString(
+                    cursor.getColumnIndexOrThrow(
+                            SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_ID));
+
+            result.add(eventId);
+        }
+
+        cursor.close();
+
+        return result;
     }
 
     private String getSettingValueById(String settingId) {

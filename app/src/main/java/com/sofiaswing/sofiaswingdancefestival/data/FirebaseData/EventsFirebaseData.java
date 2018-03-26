@@ -3,10 +3,14 @@ package com.sofiaswing.sofiaswingdancefestival.data.FirebaseData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
+import com.sofiaswing.sofiaswingdancefestival.models.EventModel;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
+import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
@@ -20,6 +24,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -37,6 +42,96 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
     }
 
     @Override
+    public Observable<List<PartyModel>> getParties() {
+        Observable<List<PartyModel>> observable = Observable.create(new ObservableOnSubscribe<List<PartyModel>>() {
+            private DatabaseReference activePartiesDbRef = null;
+            private ValueEventListener activeValueEventListener = null;
+
+
+            @Override
+            public void subscribe(@NonNull final ObservableEmitter<List<PartyModel>> e) throws Exception {
+                ssdfYearFbDbRefProvider.getDatabaseReference("events")
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(databaseReference -> {
+                            if (activePartiesDbRef != null && activeValueEventListener != null)
+                            {
+                                activePartiesDbRef.removeEventListener(activeValueEventListener);
+                            }
+
+                            activePartiesDbRef = databaseReference;
+
+                            activeValueEventListener = new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
+
+                                    List<PartyModel> parties = new ArrayList<PartyModel>();
+
+                                    while (i.hasNext()) {
+                                        DataSnapshot partySnapshot = i.next();
+
+                                        String id = "";
+                                        Date startTime = null;
+                                        Date endTime = null;
+                                        String name = "";
+                                        String venueId = "";
+
+                                        try {
+                                            int rootUrlLength = partySnapshot.getRef().getRoot().toString().length();
+                                            id = partySnapshot.getRef().toString().substring(rootUrlLength + 1);
+                                            startTime = new Date(Long.parseLong(partySnapshot.child("start").getValue().toString()) * 1000);
+                                            endTime = new Date(Long.parseLong(partySnapshot.child("end").getValue().toString()) * 1000);
+                                            name = partySnapshot.child("name").getValue().toString();
+
+                                            venueId = partySnapshot.child("venueId").getValue().toString();
+                                        }
+                                        catch (Exception e1) {
+
+                                        }
+
+                                        PartyModel newParty = new PartyModel(
+                                                id,
+                                                startTime,
+                                                endTime,
+                                                name,
+                                                venueId
+                                        );
+
+                                        parties.add(newParty);
+                                    }
+
+                                    Collections.sort(parties, (o1, o2) -> {
+                                        if (o1.getStartTime() == null) {
+                                            return -1;
+                                        }
+                                        else if (o2.getStartTime() == null) {
+                                            return 1;
+                                        }
+
+                                        return (int)(o1.getStartTime().getTime() - o2.getStartTime().getTime());
+                                    });
+
+                                    e.onNext(parties);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            };
+
+                            activePartiesDbRef
+                                    .orderByChild("type")
+                                    .equalTo("party")
+                                    .addValueEventListener(activeValueEventListener);
+                        });
+            }
+        });
+
+        return observable;
+    }
+
+    @Override
     public Observable<List<ClassModel>> getClassesByLevel(final String level) {
         String eventTypeFullString = String.format("class_%s", level);
 
@@ -46,6 +141,101 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
     @Override
     public Observable<List<ClassModel>> getTasterClasses() {
         return this.getClass("taster_class", "");
+    }
+
+    @Override
+    public Observable<List<EventModel>> getEventsByIds(List<String> eventIds) {
+        Observable<List<EventModel>> observable = Observable.create(new ObservableOnSubscribe<List<EventModel>>() {
+            private DatabaseReference activePartiesDbRef = null;
+            private ValueEventListener activeValueEventListener = null;
+
+
+            @Override
+            public void subscribe(@NonNull final ObservableEmitter<List<EventModel>> e) throws Exception {
+                ssdfYearFbDbRefProvider.getDatabaseReference("events")
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(databaseReference -> {
+                            if (activePartiesDbRef != null && activeValueEventListener != null)
+                            {
+                                activePartiesDbRef.removeEventListener(activeValueEventListener);
+                            }
+
+                            activePartiesDbRef = databaseReference;
+
+                            activeValueEventListener = new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
+
+                                    List<EventModel> events = new ArrayList<EventModel>();
+
+                                    while (i.hasNext()) {
+                                        DataSnapshot eventSnapshot = i.next();
+
+                                        String id = "";
+                                        Date startTime = null;
+                                        Date endTime = null;
+                                        String name = "";
+                                        String venueId = "";
+                                        String eventType = "";
+
+                                        try {
+                                            int rootUrlLength = eventSnapshot.getRef().getRoot().toString().length();
+                                            id = eventSnapshot.getRef().toString().substring(rootUrlLength + 1);
+
+                                            if (eventIds.contains(id)) {
+                                                startTime = new Date(Long.parseLong(eventSnapshot.child("start").getValue().toString()) * 1000);
+                                                endTime = new Date(Long.parseLong(eventSnapshot.child("end").getValue().toString()) * 1000);
+                                                name = eventSnapshot.child("name").getValue().toString();
+                                                eventType = eventSnapshot.child("type").getValue().toString();
+
+                                                venueId = eventSnapshot.child("venueId").getValue().toString();
+
+                                                EventModel newEvent = new EventModel(
+                                                        id,
+                                                        startTime,
+                                                        endTime,
+                                                        name,
+                                                        venueId,
+                                                        eventType
+                                                );
+
+                                                events.add(newEvent);
+                                            }
+                                        }
+                                        catch (Exception e1) {
+
+                                        }
+                                    }
+
+                                    Collections.sort(events, (o1, o2) -> {
+                                        if (o1.getStartTime() == null) {
+                                            return -1;
+                                        }
+                                        else if (o2.getStartTime() == null) {
+                                            return 1;
+                                        }
+
+                                        return (int)(o1.getStartTime().getTime() - o2.getStartTime().getTime());
+                                    });
+
+                                    e.onNext(events);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            };
+
+                            activePartiesDbRef
+                                    .orderByChild("type")
+                                    .addValueEventListener(activeValueEventListener);
+                        });
+            }
+        });
+
+        return observable;
     }
 
     private Observable<List<ClassModel>> getClass(final String typeFullString, final String level) {
@@ -79,35 +269,25 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                         Date endTime = null;
                                         String levelName = "";
                                         String name = "";
-                                        VenueModel venue = null;
-                                        List<InstructorModel> instructors = new ArrayList();
+                                        String venueId = "";
+                                        List<String> instructorIds = new ArrayList();
 
                                         try {
                                             int rootUrlLength = classSnapshot.getRef().getRoot().toString().length();
                                             id = classSnapshot.getRef().toString().substring(rootUrlLength + 1);
                                             startTime = new Date(Long.parseLong(classSnapshot.child("start").getValue().toString()) * 1000);
                                             endTime = new Date(Long.parseLong(classSnapshot.child("end").getValue().toString()) * 1000);
-                                            levelName =
-                                                    classSnapshot.child("levelName").exists() ?
-                                                            classSnapshot.child("levelName").getValue().toString()
-                                                            : "";
                                             name = classSnapshot.child("name").getValue().toString();
+                                            if (classSnapshot.child("venueId").exists())
+                                            {
+                                                venueId = classSnapshot.child("venueId").getValue().toString();
+                                            }
 
-                                            DataSnapshot venueSnapshot = classSnapshot.child("venue").getChildren().iterator().next();
-                                            venue = new VenueModel(venueSnapshot.getKey(),
-                                                    venueSnapshot.child("name").getValue().toString(),
-                                                    venueSnapshot.child("address").getValue().toString(),
-                                                    null);
-                                            DataSnapshot instructorsSnapshot = classSnapshot.child("instructors");
+                                            DataSnapshot instructorsSnapshot = classSnapshot.child("instructorIds");
                                             Iterator<DataSnapshot> instructorsIterator = instructorsSnapshot.getChildren().iterator();
                                             while(instructorsIterator.hasNext()) {
                                                 DataSnapshot instructorSnapshot = instructorsIterator.next();
-
-                                                instructors.add(new InstructorModel(
-                                                        instructorSnapshot.getKey(),
-                                                        instructorSnapshot.child("name").getValue().toString(),
-                                                        instructorSnapshot.child("imageUrl").getValue().toString()
-                                                ));
+                                                instructorIds.add(instructorSnapshot.getValue().toString());
                                             }
                                         }
                                         catch (Exception e1) {
@@ -119,10 +299,9 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                                 startTime,
                                                 endTime,
                                                 level,
-                                                levelName,
                                                 name,
-                                                venue,
-                                                instructors
+                                                venueId,
+                                                instructorIds
                                         );
 
                                         classes.add(newClass);

@@ -15,8 +15,9 @@ public class PartiesModule {
 
     @Provides
     PartiesInterfaces.IPresenter provideNewsPresenter(
-            DataInterfaces.IPartiesData partiesData,
+            DataInterfaces.IEventsData partiesData,
+            DataInterfaces.IVenuesData venuesData,
             ProvidersInterfaces.ISettingsProvider settingsProvider) {
-        return new PartiesPresenter(partiesData, settingsProvider);
+        return new PartiesPresenter(partiesData, venuesData, settingsProvider);
     }
 }

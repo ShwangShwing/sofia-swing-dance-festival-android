@@ -7,7 +7,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +18,22 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
+import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 // TODO: The presenter should put data here, this is a view, it should not request data! Fix it!
+// I tried doing that and it turned out extremely unreadable... Sometimes good patterns make
+// the code extremely unredable instead of more easily readable. Go figure...
 
 public class ClassScheduleFragment extends Fragment {
     private ClassesInterfaces.IPresenter presenter;
@@ -150,13 +153,15 @@ public class ClassScheduleFragment extends Fragment {
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View classRow = convertView;
+            View classRowIn = convertView;
 
-            if (classRow == null) {
+            if (classRowIn == null) {
                 LayoutInflater inflater;
                 inflater = LayoutInflater.from(this.getContext());
-                classRow = inflater.inflate(R.layout.layout_class_row, null);
+                classRowIn = inflater.inflate(R.layout.layout_class_row, null);
             }
+
+            final View classRow = classRowIn;
 
             ClassModel classItem = getItem(position);
 
@@ -194,20 +199,42 @@ public class ClassScheduleFragment extends Fragment {
                         .setText(classItem.getName());
             }
 
-            String instructorsNames = "";
-            for (InstructorModel instructor: classItem.getInstructors()) {
-                if (instructorsNames != "") {
-                    instructorsNames += ", ";
-                }
 
-                instructorsNames += instructor.getName();
+            ArrayList<Observable<InstructorModel>> instructorObservables = new ArrayList<Observable<InstructorModel>>();
+            for (String instructorId: classItem.getInstructorIds()) {
+                instructorObservables.add(presenter.getInstructor(instructorId));
             }
 
-            ((TextView) classRow.findViewById(R.id.tvInstructors))
-                    .setText(instructorsNames);
+            Observable.combineLatest(instructorObservables, objects -> {
+                String instructorsNames = "";
+                for (Object instructorObject : objects) {
+                    InstructorModel instructor = (InstructorModel)instructorObject;
 
-            ((TextView) classRow.findViewById(R.id.tvVenue))
-                    .setText(classItem.getVenue().getName());
+                    if (instructorsNames != "") {
+                        instructorsNames += ", ";
+                    }
+
+                    instructorsNames += instructor.getName();
+                }
+
+
+                ((TextView) classRow.findViewById(R.id.tvInstructors))
+                        .setText(instructorsNames);
+
+                return "Ne znam kvo da varna, brat, ama ako varna null mi garmi!!!";
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+
+
+            presenter.getVenue(classItem.getVenueId())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<VenueModel>() {
+                        @Override
+                        public void accept(VenueModel venueModel) throws Exception {
+                            ((TextView) classRow.findViewById(R.id.tvVenue))
+                                    .setText(venueModel.getName());
+                        }
+                    });
 
             if (subscribedClasses.get(position)) {
                 subscribedClasses.set(position, true);
