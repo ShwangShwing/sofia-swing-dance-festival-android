@@ -45,6 +45,7 @@ dependencies {
         transitive = true
     }
     compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     testImplementation 'junit:junit:4.12'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
 }

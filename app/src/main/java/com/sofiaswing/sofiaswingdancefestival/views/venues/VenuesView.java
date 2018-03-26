@@ -77,6 +77,11 @@ public class VenuesView extends Fragment implements VenuesInterfaces.IView {
         ListView lvVenues = root.findViewById(R.id.lvVenues);
         this.venuesAdapter = new VenuesAdapter(root.getContext(), android.R.layout.simple_list_item_1);
         lvVenues.setAdapter(this.venuesAdapter);
+        lvVenues.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(getContext(), MapsActivity.class);
+            intent.putExtra(MapsActivity.SELECTED_VENUE_INDEX, position);
+            startActivity(intent);
+        });
 
         return root;
     }

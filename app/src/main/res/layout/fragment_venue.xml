@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/md_white_1000"
+              android:elevation="5dp"
+              android:orientation="vertical"
+              tools:context="com.sofiaswing.sofiaswingdancefestival.views.map.VenueFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:baselineAligned="false">
+        <ImageView
+            android:id="@+id/imgVenue"
+            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_height="match_parent"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/transparent_to_black_gradient"/>
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:padding="10dp"
+            android:textColor="@color/md_white_1000"
+            android:textSize="21sp"
+            />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
