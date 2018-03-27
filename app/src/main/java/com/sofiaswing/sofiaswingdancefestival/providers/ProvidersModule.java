@@ -17,16 +17,6 @@ public class ProvidersModule {
     private ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
     private ProvidersInterfaces.ISettingsProvider settingsProvider;
     private ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
-    private ProvidersInterfaces.IImageProvider imageProvider;
-
-    @Provides
-    ProvidersInterfaces.IImageProvider provideImageProvider() {
-        if (this.imageProvider == null) {
-            this.imageProvider = new ImageProvider();
-        }
-
-        return this.imageProvider;
-    }
 
     @Provides
     synchronized ProvidersInterfaces.ILocationProvider provideLocationProvider(Context context) {

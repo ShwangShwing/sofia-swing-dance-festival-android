@@ -10,7 +10,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:background="#231E1F">
         <ImageView
             android:id="@+id/imgVenue"
             android:layout_width="match_parent"

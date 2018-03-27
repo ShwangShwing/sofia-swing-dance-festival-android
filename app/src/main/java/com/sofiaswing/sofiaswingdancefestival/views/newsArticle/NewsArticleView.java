@@ -1,10 +1,9 @@
 package com.sofiaswing.sofiaswingdancefestival.views.newsArticle;
 
 
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,13 @@ import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.Locale;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +28,6 @@ public class NewsArticleView extends Fragment
     implements NewsArticleInterfaces.IView {
 
     private NewsArticleInterfaces.IPresenter presenter;
-    private ProvidersInterfaces.IImageProvider imageProvider;
 
     private CompositeDisposable subscriptions;
 
@@ -73,10 +69,6 @@ public class NewsArticleView extends Fragment
         this.presenter = presenter;
     }
 
-    @Override
-    public void setImageProvider(ProvidersInterfaces.IImageProvider imageProvider) {
-        this.imageProvider = imageProvider;
-    }
 
     @Override
     public void setNewsArticle(NewsArticleModel newsArticle) {
@@ -93,26 +85,22 @@ public class NewsArticleView extends Fragment
         final ProgressBar progressBar = this.getActivity().findViewById(R.id.pbNewsArticleImageLoading);
         progressBar.setVisibility(View.VISIBLE);
 
-        this.subscriptions.add(
-                imageProvider.getImageFromUrl(newsArticle.getImageUrl())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bitmap -> {
-                    image.setImageBitmap(bitmap);
-                    image.setAlpha(1f);
-                    progressBar.setVisibility(View.GONE);
-                }, new Consumer<Throwable>() {
+        Picasso.with(getContext())
+                .load(Uri.parse(newsArticle.getImageUrl()))
+                .placeholder(R.drawable.newsarticleplaceholderimage)
+                .error(R.drawable.newsarticleplaceholderimage)
+                .into(image, new Callback() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        // Image not found. Fail silently
-                        Log.d("IMAGE_DOWNLOAD_FAIL",
-                                String.format("Image downloading has filed: %s, %s",
-                                        throwable.getClass(),
-                                        throwable.getMessage()));
+                    public void onSuccess() {
                         image.setAlpha(1f);
                         progressBar.setVisibility(View.GONE);
                     }
-                })
-        );
+
+                    @Override
+                    public void onError() {
+                        image.setAlpha(1f);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 }

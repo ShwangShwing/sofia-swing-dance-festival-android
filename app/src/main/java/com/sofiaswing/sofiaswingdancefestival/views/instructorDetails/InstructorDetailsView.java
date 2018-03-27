@@ -1,10 +1,9 @@
 package com.sofiaswing.sofiaswingdancefestival.views.instructorDetails;
 
 
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,8 @@ import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +22,6 @@ import io.reactivex.schedulers.Schedulers;
 public class InstructorDetailsView extends Fragment
     implements InstructorDetailsInterfaces.IView {
     private InstructorDetailsInterfaces.IPresenter presenter;
-    private ProvidersInterfaces.IImageProvider imageProvider;
 
     public InstructorDetailsView() {
         // Required empty public constructor
@@ -64,11 +59,6 @@ public class InstructorDetailsView extends Fragment
     }
 
     @Override
-    public void setImageProvider(ProvidersInterfaces.IImageProvider imageProvider) {
-        this.imageProvider = imageProvider;
-    }
-
-    @Override
     public void setInstructor(InstructorModel instructor) {
         ((TextView) this.getActivity().findViewById(R.id.tvInstructorName))
                 .setText(instructor.getName());
@@ -88,27 +78,24 @@ public class InstructorDetailsView extends Fragment
                     .setText(instructor.getDescription());
 
         final ImageView image = this.getActivity().findViewById(R.id.ivInstructorImage);
-        image.setImageResource(R.drawable.newsarticleplaceholderimage);
         image.setAlpha(0.5f);
 
         final ProgressBar progressBar = this.getActivity().findViewById(R.id.pbInstructorImageLoading);
         progressBar.setVisibility(View.VISIBLE);
 
-        imageProvider.getImageFromUrl(instructor.getImageUrl())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bitmap -> {
-                    image.setImageBitmap(bitmap);
-                    image.setAlpha(1f);
-                    progressBar.setVisibility(View.GONE);
-                }, new Consumer<Throwable>() {
+        Picasso.with(getContext())
+                .load(Uri.parse(instructor.getImageUrl()))
+                .placeholder(R.drawable.newsarticleplaceholderimage)
+                .error(R.drawable.newsarticleplaceholderimage)
+                .into(image, new Callback() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        // Image not found. Fail silently
-                        Log.d("IMAGE_DOWNLOAD_FAIL",
-                                String.format("Image downloading has filed: %s, %s",
-                                        throwable.getClass(),
-                                        throwable.getMessage()));
+                    public void onSuccess() {
+                        image.setAlpha(1f);
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError() {
                         image.setAlpha(1f);
                         progressBar.setVisibility(View.GONE);
                     }
