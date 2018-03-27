@@ -117,6 +117,8 @@ public class VenuesFirebaseData implements DataInterfaces.IVenuesData {
 
         DataSnapshot venueNameSnapshot = dataSnapshot.child("name");
         DataSnapshot addressSnapshot = dataSnapshot.child("address");
+        DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
+        DataSnapshot youTubeUrlSnapshot = dataSnapshot.child("youtubeUrl");
         DataSnapshot latitudeSnapshot = dataSnapshot.child("latitude");
         DataSnapshot longitudeSnapshot = dataSnapshot.child("longitude");
 
@@ -139,6 +141,10 @@ public class VenuesFirebaseData implements DataInterfaces.IVenuesData {
                 venueNameSnapshot.exists() ? venueNameSnapshot.getValue().toString()
                         : "No name in the database!",
                 addressSnapshot.exists() ? addressSnapshot.getValue().toString()
+                        : "",
+                imageUrlSnapshot.exists() ? imageUrlSnapshot.getValue().toString()
+                        : "https://sofiaswing.com/wp-content/uploads/2017/11/SSDF2017-logo-6.png",
+                youTubeUrlSnapshot.exists() ? youTubeUrlSnapshot.getValue().toString()
                         : "",
                 location
         );

@@ -28,14 +28,63 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:padding="10dp"
+            android:textStyle="bold"
             android:textColor="@color/md_white_1000"
             android:textSize="21sp"
             />
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/tvDistance"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="wrap_content"
+            android:drawableLeft="@drawable/ic_location"
+            android:drawableTint="#7B3D2C"
+            android:drawablePadding="10dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:textColor="#7B3D2C"
+            android:layout_height="wrap_content" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom">
+        <Button
+            android:id="@+id/btnYouTube"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:backgroundTint="#c76f6f"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="2dp"
+            android:textColor="@color/md_white_1000"
+            android:drawableLeft="@drawable/ic_youtube"
+            android:drawablePadding="4dp"
+            android:text="Watch video"/>
+
+        <Button
+            android:id="@+id/btnNavigateMe"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:backgroundTint="#6f84b3"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:textColor="@color/md_white_1000"
+            android:drawableLeft="@drawable/ic_google_maps"
+            android:drawablePadding="4dp"
+            android:text="Navigate me"/>
+    </LinearLayout>
 </LinearLayout>

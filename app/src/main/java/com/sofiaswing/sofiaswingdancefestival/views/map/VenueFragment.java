@@ -1,10 +1,13 @@
 package com.sofiaswing.sofiaswingdancefestival.views.map;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,9 +46,24 @@ public class VenueFragment extends Fragment {
                            Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.fragment_venue, container, false);
     TextView tvTitle = root.findViewById(R.id.tvTitle);
+    TextView tvAddress = root.findViewById(R.id.tvAddress);
     ImageView venueImage = root.findViewById(R.id.imgVenue);
-    Picasso.with(getContext()).load("https://i0.wp.com/rossiwrites.com/wp-content/uploads/2016/08/NDK-with-the-fountains-Sofia-Bulgaria-www.rossiwrites.com_.jpg").into(venueImage);
+    Picasso.with(getContext()).load(this.mVenue.getImageUrl()).into(venueImage);
     tvTitle.setText(this.mVenue.getName());
+    tvAddress.setText(this.mVenue.getAddress());
+
+    Button btnYouTube = root.findViewById(R.id.btnYouTube);
+    if (this.mVenue.getYouTubeUrl().isEmpty()) {
+      btnYouTube.setVisibility(View.GONE);
+    }
+    btnYouTube.setOnClickListener(v ->
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(this.mVenue.getYouTubeUrl()))));
+
+    Button btnNavigateMe = root.findViewById(R.id.btnNavigateMe);
+    btnNavigateMe.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW,
+            Uri.parse("google.navigation:q=" + this.mVenue.getLocation().getLatitude() + "," +
+              this.mVenue.getLocation().getLongitude()))));
+
     return root;
   }
 }
