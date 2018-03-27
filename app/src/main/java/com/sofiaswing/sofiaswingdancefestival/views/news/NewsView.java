@@ -146,7 +146,6 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
                     .setText(article.getText());
 
             final ImageView image = newsArticleRow.findViewById(R.id.ivNewsArticleImage);
-            image.setImageResource(R.drawable.newsarticleplaceholderimage);
             image.setAlpha(0.5f);
 
             final ProgressBar progressBar = newsArticleRow.findViewById(R.id.pbNewsArticleImageLoading);
@@ -154,8 +153,8 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
 
             Picasso.with(getContext())
                     .load(Uri.parse(article.getImageUrl()))
-                    .placeholder(R.drawable.newsarticleplaceholderimage)
-                    .error(R.drawable.newsarticleplaceholderimage)
+                    .placeholder(R.drawable.sofia_swing_logo)
+                    .error(R.drawable.sofia_swing_logo)
                     .into(image, new Callback() {
                         @Override
                         public void onSuccess() {

@@ -152,7 +152,6 @@ public class InstructorsView extends Fragment implements InstructorsInterfaces.I
 //                    .setText(instructor.getDescription());
 
             final ImageView image = instructorRow.findViewById(R.id.ivInstructorImage);
-            image.setImageResource(R.drawable.newsarticleplaceholderimage);
             image.setAlpha(0.5f);
 
             final ProgressBar progressBar = instructorRow.findViewById(R.id.pbInstructorImageLoading);
@@ -160,8 +159,8 @@ public class InstructorsView extends Fragment implements InstructorsInterfaces.I
 
             Picasso.with(getContext())
                     .load(Uri.parse(instructor.getImageUrl()))
-                    .placeholder(R.drawable.newsarticleplaceholderimage)
-                    .error(R.drawable.newsarticleplaceholderimage)
+                    .placeholder(R.drawable.sofia_swing_logo)
+                    .error(R.drawable.sofia_swing_logo)
                     .into(image, new Callback() {
                         @Override
                         public void onSuccess() {

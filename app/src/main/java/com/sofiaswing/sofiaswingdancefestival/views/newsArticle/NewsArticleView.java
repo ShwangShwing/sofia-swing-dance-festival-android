@@ -79,7 +79,6 @@ public class NewsArticleView extends Fragment
                 .setText(newsArticle.getText());
 
         final ImageView image = this.getActivity().findViewById(R.id.ivNewsArticleImage);
-        image.setImageResource(R.drawable.newsarticleplaceholderimage);
         image.setAlpha(0.5f);
 
         final ProgressBar progressBar = this.getActivity().findViewById(R.id.pbNewsArticleImageLoading);
@@ -87,8 +86,8 @@ public class NewsArticleView extends Fragment
 
         Picasso.with(getContext())
                 .load(Uri.parse(newsArticle.getImageUrl()))
-                .placeholder(R.drawable.newsarticleplaceholderimage)
-                .error(R.drawable.newsarticleplaceholderimage)
+                .placeholder(R.drawable.sofia_swing_logo)
+                .error(R.drawable.sofia_swing_logo)
                 .into(image, new Callback() {
                     @Override
                     public void onSuccess() {

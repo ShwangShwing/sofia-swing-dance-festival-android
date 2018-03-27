@@ -71,8 +71,7 @@ public class EventSubscriptionAlarmReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.drawable.sofiaswinglogo)
-                        .setBadgeIconType(R.drawable.sofiaswinglogo)
+                        .setSmallIcon(R.drawable.sofia_swing_logo)
                         .setContentTitle(eventName)
                         .setContentText(eventStartTime)
                         .setVibrate(shaveAndHaircutVibPattern)

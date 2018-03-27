@@ -85,8 +85,8 @@ public class InstructorDetailsView extends Fragment
 
         Picasso.with(getContext())
                 .load(Uri.parse(instructor.getImageUrl()))
-                .placeholder(R.drawable.newsarticleplaceholderimage)
-                .error(R.drawable.newsarticleplaceholderimage)
+                .placeholder(R.drawable.sofia_swing_logo)
+                .error(R.drawable.sofia_swing_logo)
                 .into(image, new Callback() {
                     @Override
                     public void onSuccess() {
