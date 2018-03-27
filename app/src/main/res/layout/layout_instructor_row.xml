@@ -12,8 +12,8 @@
             android:id="@+id/ivInstructorImage"
             android:layout_width="117dp"
             android:layout_height="117dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/newsarticleplaceholderimage" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/sofia_swing_logo" />
         <ProgressBar
             android:id="@+id/pbInstructorImageLoading"
             android:layout_width="wrap_content"
@@ -25,7 +25,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="10dp">
 
         <TextView
             android:id="@+id/tvInstructorName"

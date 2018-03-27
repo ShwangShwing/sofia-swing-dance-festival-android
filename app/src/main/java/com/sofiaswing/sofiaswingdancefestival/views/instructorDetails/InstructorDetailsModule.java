@@ -1,7 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.views.instructorDetails;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,8 +19,7 @@ public class InstructorDetailsModule {
     @Provides
     InstructorDetailsInterfaces.IPresenter providePresenter(
         InstructorDetailsInterfaces.IView view,
-        DataInterfaces.IInstructorsData instructorsData,
-        ProvidersInterfaces.IImageProvider imageProvider) {
-        return new InstructorDetailsPresenter(view, instructorsData, imageProvider);
+        DataInterfaces.IInstructorsData instructorsData) {
+        return new InstructorDetailsPresenter(view, instructorsData);
     }
 }

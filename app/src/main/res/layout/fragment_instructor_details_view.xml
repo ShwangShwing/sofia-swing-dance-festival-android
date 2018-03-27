@@ -13,51 +13,62 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/ivInstructorImage"
-                    android:layout_width="117dp"
-                    android:layout_height="117dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/newsarticleplaceholderimage" />
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/sofia_swing_logo" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/transparent_to_black_gradient"/>
 
                 <ProgressBar
                     android:id="@+id/pbInstructorImageLoading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:indeterminate="true" />
-            </RelativeLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvInstructorName"
-                    style="@style/InstructorName"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Instructor name not loaded!" />
+                    android:orientation="vertical"
+                    android:layout_gravity="bottom"
+                    android:padding="10dp">
 
-                <TextView
-                    android:id="@+id/tvInstructorType"
-                    style="@style/InstructorType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="main or taster insructor" />
+                    <TextView
+                        android:id="@+id/tvInstructorName"
+                        style="@style/InstructorName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Instructor name not loaded!" />
 
-                <TextView
-                    android:id="@+id/tvInstructorDescription"
-                    style="@style/InstructorDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Instructor description not loaded!" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvInstructorType"
+                        style="@style/InstructorType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="main or taster insructor" />
+
+                </LinearLayout>
+            </FrameLayout>
+
+
+            <TextView
+                android:id="@+id/tvInstructorDescription"
+                style="@style/InstructorDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Instructor description not loaded!" />
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

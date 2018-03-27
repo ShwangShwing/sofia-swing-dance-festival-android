@@ -1,7 +1,5 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
 import android.location.Location;
 
 import java.util.List;
@@ -13,9 +11,6 @@ import io.reactivex.Observable;
  */
 
 public class ProvidersInterfaces {
-    public interface IImageProvider {
-        Observable<Bitmap> getImageFromUrl(String url);
-    }
 
     public interface ILocationProvider {
         void startLocationService();

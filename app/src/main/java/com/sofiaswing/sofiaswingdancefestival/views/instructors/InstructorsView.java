@@ -3,13 +3,12 @@ package com.sofiaswing.sofiaswingdancefestival.views.instructors;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,17 +22,15 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,8 +38,6 @@ import io.reactivex.schedulers.Schedulers;
 public class InstructorsView extends Fragment implements InstructorsInterfaces.IView {
     @Inject
     public InstructorsInterfaces.IPresenter presenter;
-    @Inject
-    public ProvidersInterfaces.IImageProvider imageProvider;
 
     private ArrayAdapter<InstructorModel> instructorsAdapter;
     private CompositeDisposable subscriptions;
@@ -157,34 +152,28 @@ public class InstructorsView extends Fragment implements InstructorsInterfaces.I
 //                    .setText(instructor.getDescription());
 
             final ImageView image = instructorRow.findViewById(R.id.ivInstructorImage);
-            image.setImageResource(R.drawable.newsarticleplaceholderimage);
             image.setAlpha(0.5f);
 
             final ProgressBar progressBar = instructorRow.findViewById(R.id.pbInstructorImageLoading);
             progressBar.setVisibility(View.VISIBLE);
 
-            subscriptions.add(
-                    imageProvider.getImageFromUrl(instructor.getImageUrl())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(bitmap -> {
-                        //TODO: need to unsubscribe if views are reused then remove
-                        image.setImageBitmap(bitmap);
-                        image.setAlpha(1f);
-                        progressBar.setVisibility(View.GONE);
-                    }, new Consumer<Throwable>() {
+            Picasso.with(getContext())
+                    .load(Uri.parse(instructor.getImageUrl()))
+                    .placeholder(R.drawable.sofia_swing_logo)
+                    .error(R.drawable.sofia_swing_logo)
+                    .into(image, new Callback() {
                         @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            // Image not found. Fail silently
-                            Log.d("IMAGE_DOWNLOAD_FAIL",
-                                    String.format("Image downloading has filed: %s, %s",
-                                            throwable.getClass(),
-                                            throwable.getMessage()));
+                        public void onSuccess() {
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
                         }
-                    })
-            );
+
+                        @Override
+                        public void onError() {
+                            image.setAlpha(1f);
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
 
             return instructorRow;
         }

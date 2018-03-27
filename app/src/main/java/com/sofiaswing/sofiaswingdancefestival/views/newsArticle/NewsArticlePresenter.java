@@ -2,12 +2,9 @@ package com.sofiaswing.sofiaswingdancefestival.views.newsArticle;
 
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -22,12 +19,10 @@ public class NewsArticlePresenter implements NewsArticleInterfaces.IPresenter{
     private final CompositeDisposable subscriptions;
 
     public NewsArticlePresenter(NewsArticleInterfaces.IView view,
-                                ProvidersInterfaces.IImageProvider imageProvider,
                                 DataInterfaces.INewsArticlesData newsArticlesData) {
         this.view = view;
         this.newsArticleData = newsArticlesData;
         this.view.setPresenter(this);
-        this.view.setImageProvider(imageProvider);
         this.subscriptions = new CompositeDisposable();
     }
 

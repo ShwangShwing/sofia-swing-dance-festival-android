@@ -1,7 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.views.newsArticle;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,9 +18,8 @@ public class NewsArticleModule {
 
     @Provides
     public NewsArticleInterfaces.IPresenter providePresenter(NewsArticleInterfaces.IView view,
-                                                             ProvidersInterfaces.IImageProvider imageProvider,
                                                              DataInterfaces.INewsArticlesData newsArticlesData)
     {
-        return new NewsArticlePresenter(view, imageProvider, newsArticlesData);
+        return new NewsArticlePresenter(view, newsArticlesData);
     }
 }
