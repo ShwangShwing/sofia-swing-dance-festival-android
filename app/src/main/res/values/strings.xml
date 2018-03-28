@@ -38,4 +38,6 @@
     <string name="taster_class">Taster class</string>
     <string name="dance_class">Class</string>
     <string name="party">Party</string>
+    <string name="navigate_me">Navigate me</string>
+    <string name="watch_video">Watch video</string>
 </resources>

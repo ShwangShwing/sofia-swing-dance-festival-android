@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -52,14 +51,14 @@ public class VenueFragment extends Fragment {
     tvTitle.setText(this.mVenue.getName());
     tvAddress.setText(this.mVenue.getAddress());
 
-    Button btnYouTube = root.findViewById(R.id.btnYouTube);
+    View btnYouTube = root.findViewById(R.id.btnYouTube);
     if (this.mVenue.getYouTubeUrl().isEmpty()) {
       btnYouTube.setVisibility(View.GONE);
     }
     btnYouTube.setOnClickListener(v ->
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(this.mVenue.getYouTubeUrl()))));
 
-    Button btnNavigateMe = root.findViewById(R.id.btnNavigateMe);
+    View btnNavigateMe = root.findViewById(R.id.btnNavigateMe);
     btnNavigateMe.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW,
             Uri.parse("google.navigation:q=" + this.mVenue.getLocation().getLatitude() + "," +
               this.mVenue.getLocation().getLongitude()))));
