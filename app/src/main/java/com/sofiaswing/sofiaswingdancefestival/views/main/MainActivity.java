@@ -21,6 +21,7 @@ import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsView;
 import com.sofiaswing.sofiaswingdancefestival.views.myEvents.MyEventsView;
 import com.sofiaswing.sofiaswingdancefestival.views.news.NewsView;
 import com.sofiaswing.sofiaswingdancefestival.views.parties.PartiesView;
+import com.sofiaswing.sofiaswingdancefestival.views.schedule.ScheduleView;
 import com.sofiaswing.sofiaswingdancefestival.views.settings.SettingsView;
 import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesView;
 
@@ -154,6 +155,9 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
                         break;
                     case MENU_ITEM_MY_EVENTS_ID:
                         setContentView(MyEventsView.newInstance(), getString(R.string.my_events));
+                        break;
+                    case MENU_ITEM_SCHEDULE_ID:
+                        setContentView(ScheduleView.newInstance(), getString(R.string.schedule));
                         break;
                     case MENU_ITEM_VENUES_ID:
                         setContentView(VenuesView.newInstance(), getString(R.string.venues));

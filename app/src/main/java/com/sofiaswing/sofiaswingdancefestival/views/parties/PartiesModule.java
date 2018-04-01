@@ -12,7 +12,6 @@ import dagger.Provides;
 
 @Module
 public class PartiesModule {
-
     @Provides
     PartiesInterfaces.IPresenter provideNewsPresenter(
             DataInterfaces.IEventsData partiesData,

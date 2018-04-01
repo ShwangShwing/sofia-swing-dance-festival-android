@@ -28,6 +28,8 @@ import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActiv
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleModule;
 import com.sofiaswing.sofiaswingdancefestival.views.parties.PartiesModule;
 import com.sofiaswing.sofiaswingdancefestival.views.parties.PartiesView;
+import com.sofiaswing.sofiaswingdancefestival.views.schedule.ScheduleModule;
+import com.sofiaswing.sofiaswingdancefestival.views.schedule.ScheduleView;
 import com.sofiaswing.sofiaswingdancefestival.views.settings.SettingsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.settings.SettingsView;
 import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesModule;
@@ -67,6 +69,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
             ClassesModule.class,
             PartiesModule.class,
             MyEventsModule.class,
+            ScheduleModule.class,
             VenuesModule.class,
             ContactUsModule.class,
             SettingsModule.class,
@@ -87,6 +90,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
         void inject(EventSubscriptionAlarmReceiver eventSubscriptionAlarmReceiver);
         void inject(PartiesView partiesView);
         void inject(MyEventsView myEventsView);
+        void inject(ScheduleView shceduleView);
         void inject(AboutView aboutView);
         void inject(ContactUsView contactUsView);
         void inject(SettingsView settingsView);
