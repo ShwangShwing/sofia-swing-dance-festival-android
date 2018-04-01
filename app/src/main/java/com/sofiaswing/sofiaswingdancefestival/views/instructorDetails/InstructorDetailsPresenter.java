@@ -1,12 +1,9 @@
 package com.sofiaswing.sofiaswingdancefestival.views.instructorDetails;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
-import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -22,13 +19,11 @@ public class InstructorDetailsPresenter implements InstructorDetailsInterfaces.I
 
     public InstructorDetailsPresenter(
             InstructorDetailsInterfaces.IView view,
-            DataInterfaces.IInstructorsData instructorsData,
-            ProvidersInterfaces.IImageProvider imageProvider) {
+            DataInterfaces.IInstructorsData instructorsData) {
         this.view = view;
         this.instructorsData = instructorsData;
 
         this.view.setPresenter(this);
-        this.view.setImageProvider(imageProvider);
 
         this.subscriptions = new CompositeDisposable();
     }

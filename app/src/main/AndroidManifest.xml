@@ -9,17 +9,16 @@
     <application
         android:name=".SofiaSwingDanceFestivalApplication"
         android:allowBackup="true"
-        android:icon="@drawable/sofiaswinglogo"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/sofiaswinglogo"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".views.newsArticle.NewsArticleActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:name=".views.newsArticle.NewsArticleActivity"/>
         <activity
-            android:name=".views.instructorDetails.InstructorDetailsActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:name=".views.instructorDetails.InstructorDetailsActivity"/>
+
         <receiver
             android:name=".utils.EventSubscriptionAlarmReceiver"
             android:enabled="true"
@@ -34,12 +33,20 @@
             android:name=".views.main.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/AppTheme.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".views.map.MapsActivity"
+            android:label="@string/title_activity_maps">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sofiaswing.sofiaswingdancefestival.views.main.MainActivity"/>
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -52,14 +59,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
-
-        <activity
-            android:name=".views.map.MapsActivity"
-            android:label="@string/title_activity_maps">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sofiaswing.sofiaswingdancefestival.views.main.MainActivity"/>
-        </activity>
     </application>
 
 </manifest>

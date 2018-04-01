@@ -1,0 +1,105 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/md_white_1000"
+              android:elevation="5dp"
+              android:orientation="vertical"
+              tools:context="com.sofiaswing.sofiaswingdancefestival.views.map.VenueFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:baselineAligned="false"
+        android:background="#231E1F">
+        <ImageView
+            android:id="@+id/imgVenue"
+            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_height="match_parent"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/transparent_to_black_gradient"/>
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/md_white_1000"
+            android:textSize="21sp"
+            />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="wrap_content"
+            android:drawableLeft="@drawable/ic_location"
+            android:drawableTint="#7B3D2C"
+            android:drawablePadding="10dp"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:textColor="#7B3D2C"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom">
+
+        <LinearLayout
+            android:id="@+id/btnYouTube"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:background="#c76f6f">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_youtube"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/md_white_1000"
+                android:text="@string/watch_video" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnNavigateMe"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:background="#6f84b3">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_google_maps"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/md_white_1000"
+                android:text="@string/navigate_me" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -3,14 +3,12 @@ package com.sofiaswing.sofiaswingdancefestival.views.news;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +22,9 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -33,12 +32,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-
-import static android.R.attr.name;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,9 +41,6 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
     private ArrayAdapter<NewsArticleModel> lvNewsAdapter;
 
     private CompositeDisposable subscriptions;
-
-    @Inject
-    public ProvidersInterfaces.IImageProvider imageProvider;
 
     @Inject
     public NewsInterfaces.IPresenter presenter;
@@ -155,34 +146,28 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
                     .setText(article.getText());
 
             final ImageView image = newsArticleRow.findViewById(R.id.ivNewsArticleImage);
-            image.setImageResource(R.drawable.newsarticleplaceholderimage);
             image.setAlpha(0.5f);
 
             final ProgressBar progressBar = newsArticleRow.findViewById(R.id.pbNewsArticleImageLoading);
             progressBar.setVisibility(View.VISIBLE);
 
-            subscriptions.add(
-                    imageProvider.getImageFromUrl(article.getImageUrl())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(bitmap -> {
-                        //TODO: need to unsubscribe if views are reused then remove
-                        image.setImageBitmap(bitmap);
-                        image.setAlpha(1f);
-                        progressBar.setVisibility(View.GONE);
-                    }, new Consumer<Throwable>() {
+            Picasso.with(getContext())
+                    .load(Uri.parse(article.getImageUrl()))
+                    .placeholder(R.drawable.sofia_swing_logo)
+                    .error(R.drawable.sofia_swing_logo)
+                    .into(image, new Callback() {
                         @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            // Image not found. Fail silently
-                            Log.d("IMAGE_DOWNLOAD_FAIL",
-                                    String.format("Image downloading has filed: %s, %s",
-                                            throwable.getClass(),
-                                            throwable.getMessage()));
+                        public void onSuccess() {
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
                         }
-                    })
-            );
+
+                        @Override
+                        public void onError() {
+                            image.setAlpha(1f);
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
 
             return newsArticleRow;
         }
