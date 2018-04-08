@@ -3,15 +3,11 @@ package com.sofiaswing.sofiaswingdancefestival.data.FirebaseData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
 import com.sofiaswing.sofiaswingdancefestival.models.EventModel;
-import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
 import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
-import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.ArrayList;
@@ -25,7 +21,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -144,9 +139,9 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
     }
 
     @Override
-    public Observable<List<EventModel>> getEventsByIds(List<String> eventIds) {
+    public Observable<List<EventModel>> getEvents(List<String> filterEventIds) {
         Observable<List<EventModel>> observable = Observable.create(new ObservableOnSubscribe<List<EventModel>>() {
-            private DatabaseReference activePartiesDbRef = null;
+            private DatabaseReference activeEventsDbRef = null;
             private ValueEventListener activeValueEventListener = null;
 
 
@@ -155,12 +150,12 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                 ssdfYearFbDbRefProvider.getDatabaseReference("events")
                         .subscribeOn(Schedulers.io())
                         .subscribe(databaseReference -> {
-                            if (activePartiesDbRef != null && activeValueEventListener != null)
+                            if (activeEventsDbRef != null && activeValueEventListener != null)
                             {
-                                activePartiesDbRef.removeEventListener(activeValueEventListener);
+                                activeEventsDbRef.removeEventListener(activeValueEventListener);
                             }
 
-                            activePartiesDbRef = databaseReference;
+                            activeEventsDbRef = databaseReference;
 
                             activeValueEventListener = new ValueEventListener() {
                                 @Override
@@ -183,7 +178,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                             int rootUrlLength = eventSnapshot.getRef().getRoot().toString().length();
                                             id = eventSnapshot.getRef().toString().substring(rootUrlLength + 1);
 
-                                            if (eventIds.contains(id)) {
+                                            if (filterEventIds == null || filterEventIds.contains(id)) {
                                                 startTime = new Date(Long.parseLong(eventSnapshot.child("start").getValue().toString()) * 1000);
                                                 endTime = new Date(Long.parseLong(eventSnapshot.child("end").getValue().toString()) * 1000);
                                                 name = eventSnapshot.child("name").getValue().toString();
@@ -228,7 +223,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                 }
                             };
 
-                            activePartiesDbRef
+                            activeEventsDbRef
                                     .orderByChild("type")
                                     .addValueEventListener(activeValueEventListener);
                         });

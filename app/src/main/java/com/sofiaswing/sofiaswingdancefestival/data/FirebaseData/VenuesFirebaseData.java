@@ -83,7 +83,7 @@ public class VenuesFirebaseData implements DataInterfaces.IVenuesData {
                                 }
                             };
 
-                            activeVenuesDbRef.orderByKey().addChildEventListener(activeChildEventListener);
+                            activeVenuesDbRef.orderByChild("position").addChildEventListener(activeChildEventListener);
                         });
             }
         });

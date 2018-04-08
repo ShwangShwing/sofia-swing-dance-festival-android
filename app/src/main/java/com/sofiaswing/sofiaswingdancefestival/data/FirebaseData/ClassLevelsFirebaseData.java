@@ -78,8 +78,6 @@ public class ClassLevelsFirebaseData implements DataInterfaces.IClassLevelsData 
                                         classLevels.add(new ClassLevelModel(id, name, position));
                                     }
 
-                                    Collections.sort(classLevels);
-
                                     e.onNext(classLevels);
                                 }
 
@@ -89,7 +87,7 @@ public class ClassLevelsFirebaseData implements DataInterfaces.IClassLevelsData 
                                 }
                             };
 
-                            activeClassLevelsDbRef.addValueEventListener(activeChildEventListener);
+                            activeClassLevelsDbRef.orderByChild("position").addValueEventListener(activeChildEventListener);
                         });
             }
         });

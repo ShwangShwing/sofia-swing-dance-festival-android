@@ -43,7 +43,7 @@ public class DataInterfaces {
         Observable<List<PartyModel>> getParties();
         Observable<List<ClassModel>> getClassesByLevel(String level);
         Observable<List<ClassModel>> getTasterClasses();
-        Observable<List<EventModel>> getEventsByIds(List<String> eventIds);
+        Observable<List<EventModel>> getEvents(List<String> eventIds);
     }
 
     public interface ICurrentSsdfYearData {

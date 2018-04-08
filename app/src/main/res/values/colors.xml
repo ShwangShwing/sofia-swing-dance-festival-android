@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="mainBackground">#2F302F</color>
+    <color name="scheduleEventBackground">#555855</color>
     <color name="colorPrimary">#231f20</color>
     <color name="colorPrimaryDark">#231f20</color>
     <color name="colorAccent">#f8a835</color>

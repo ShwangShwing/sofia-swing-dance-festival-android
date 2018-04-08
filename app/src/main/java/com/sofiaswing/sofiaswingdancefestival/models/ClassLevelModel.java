@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
  * Created by shwangshwing on 10/10/17.
  */
 
-public class ClassLevelModel implements Comparable<ClassLevelModel> {
+public class ClassLevelModel {
     private String id;
     private String name;
     private int position;
@@ -27,10 +27,5 @@ public class ClassLevelModel implements Comparable<ClassLevelModel> {
 
     public int getPosition() {
         return position;
-    }
-
-    @Override
-    public int compareTo(@NonNull ClassLevelModel o) {
-        return this.getPosition() - o.getPosition();
     }
 }

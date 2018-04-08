@@ -67,7 +67,7 @@ public class MyEventsPresenter implements MyEventsInterfaces.IPresenter {
 
         List<String> eventIds = this.settingsProvider.getSubscribedEventsIds();
 
-        this.eventSubscriptions.add(this.eventsData.getEventsByIds(eventIds)
+        this.eventSubscriptions.add(this.eventsData.getEvents(eventIds)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(eventModels -> {
@@ -104,7 +104,7 @@ public class MyEventsPresenter implements MyEventsInterfaces.IPresenter {
     @Override
     public void stop() {
         this.eventSubscriptions.clear();
-        classLevelsSubscriptions.clear();
+        this.classLevelsSubscriptions.clear();
         this.venuesSubscriptions.clear();
     }
 

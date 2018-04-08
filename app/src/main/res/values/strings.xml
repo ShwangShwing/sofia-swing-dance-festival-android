@@ -40,4 +40,5 @@
     <string name="party">Party</string>
     <string name="navigate_me">Navigate me</string>
     <string name="watch_video">Watch video</string>
+    <string name="notifyMeShort">N!</string>
 </resources>
