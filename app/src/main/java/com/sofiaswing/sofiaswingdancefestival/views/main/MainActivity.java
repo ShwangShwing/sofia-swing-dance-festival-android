@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
         items.add(new DrawerItemInfo(MENU_ITEM_MY_EVENTS_ID, getString(R.string.my_events)));
         items.add(new DrawerItemInfo(MENU_ITEM_SCHEDULE_ID, getString(R.string.schedule)));
         items.add(new DrawerItemInfo(MENU_ITEM_VENUES_ID, getString(R.string.venues)));
-        items.add(new DrawerItemInfo(MENU_ITEM_MAP_ID, getString(R.string.map)));
+        //items.add(new DrawerItemInfo(MENU_ITEM_MAP_ID, getString(R.string.map)));
         items.add(new DrawerItemInfo(MENU_ITEM_CONTACTS_ID, getString(R.string.contacts)));
         items.add(new DrawerItemInfo(MENU_ITEM_SETTINGS_ID, getString(R.string.settings)));
         items.add(new DrawerItemInfo(MENU_ITEM_ABOUT_ID, getString(R.string.about)));
