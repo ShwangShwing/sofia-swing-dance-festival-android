@@ -39,6 +39,10 @@ public class ProvidersInterfaces {
         List<String> getSubscribedEventsIds();
     }
 
+    public interface ICurrentTimeProvider {
+        long getCurrentTimeMs();
+    }
+
     public interface IVolatileSettingsProvider {
         boolean isHackerModeEnabled();
         void enableHackerMode();
@@ -47,5 +51,10 @@ public class ProvidersInterfaces {
         String getCurrentCustomSsdfYear();
         void setCurrentSsdfYearFromData();
         void setCurrentSsdfYear(String currentSsdfYear);
+        void setOverrideCurrentTime(boolean override, boolean freezeTime, long overridenTime);
+        boolean isCurrentTimeOverriden();
+        boolean isCurrentOverridenTimeFrozen();
+        long getOverridenTimeMs();
+        long getTimeOverridenAtMs();
     }
 }

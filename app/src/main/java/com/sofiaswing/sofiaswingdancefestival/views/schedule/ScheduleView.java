@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
+import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.text.DateFormat;
 import java.time.format.DateTimeFormatter;
@@ -38,10 +39,14 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
 
     @Inject
     public ScheduleInterfaces.IPresenter presenter;
+    @Inject
+    public ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
     private int previousScreenOrientation;
     private RelativeLayout schedule;
     private long minScheduleTimestampMs;
     private long maxScheduleTimestampMs;
+    private View verticalLine = null;
+    private boolean isRunning = false;
 
     public static ScheduleView newInstance() {
         ScheduleView fragment = new ScheduleView();
@@ -73,16 +78,16 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
     @Override
     public void onResume() {
         super.onResume();
+        this.isRunning = true;
         this.schedule = this.getView().findViewById(R.id.rl_shedule_container);
         this.previousScreenOrientation = this.getActivity().getRequestedOrientation();
-        this.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         this.presenter.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        this.getActivity().setRequestedOrientation(this.previousScreenOrientation);
+        this.isRunning = false;
         this.presenter.stop();
     }
 
@@ -108,6 +113,8 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                 // Something wrong... no such venue row
             }
         }
+
+        this.putVerticalTimeline();
     }
 
     private void inject() {
@@ -242,6 +249,42 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                 cellWidth,
                 cellHeight,
                 eventView);
+    }
+
+    private void putVerticalTimeline() {
+        if (!this.isRunning) {
+            return;
+        }
+
+        if (this.verticalLine != null) {
+            schedule.removeView(this.verticalLine);
+        }
+
+        long currentTimeMs = this.currentTimeProvider.getCurrentTimeMs();
+        if (currentTimeMs < this.maxScheduleTimestampMs) {
+            long delayAfterMs;
+            if (this.minScheduleTimestampMs < currentTimeMs) {
+                delayAfterMs = (long) (60d * 1000d / DIP_PER_MINUTE);
+            } else {
+                delayAfterMs = (this.minScheduleTimestampMs - currentTimeMs);
+            }
+
+            new android.os.Handler().postDelayed(() -> this.putVerticalTimeline(), delayAfterMs);
+        }
+
+        if (this.minScheduleTimestampMs < currentTimeMs && currentTimeMs < this.maxScheduleTimestampMs) {
+            this.verticalLine = new View(this.getContext());
+            this.schedule.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int scheduleHeight = this.schedule.getMeasuredHeight();
+            RelativeLayout.LayoutParams params =
+                    new RelativeLayout.LayoutParams((int) DIP_PER_MINUTE, scheduleHeight);
+            params.leftMargin = VENUE_WIDTH + (int)(DIP_PER_MINUTE * (currentTimeMs - this.minScheduleTimestampMs) / 1000 / 60);
+            params.topMargin = 0;
+            verticalLine.setBackgroundColor(
+                    this.getResources().getColor(R.color.scheduleCurrentTimeLine));
+            verticalLine.setLayoutParams(params);
+            schedule.addView(verticalLine, params);
+        }
     }
 
     private void addViewToSchedule(int leftMargin, int topMargin, int width, int height, View newView) {

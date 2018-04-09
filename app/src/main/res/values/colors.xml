@@ -2,6 +2,7 @@
 <resources>
     <color name="mainBackground">#2F302F</color>
     <color name="scheduleEventBackground">#555855</color>
+    <color name="scheduleCurrentTimeLine">#44e9d427</color>
     <color name="colorPrimary">#231f20</color>
     <color name="colorPrimaryDark">#231f20</color>
     <color name="colorAccent">#f8a835</color>

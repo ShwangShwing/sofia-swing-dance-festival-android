@@ -75,16 +75,17 @@
                 </LinearLayout>
 
                 <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:id="@+id/btn_toggle_notif"
-                    android:text="@string/notification_test_panel"/>
-                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:orientation="vertical"
+                    android:text="@string/notification_test_panel" />
+
+                <LinearLayout
                     android:id="@+id/notification_test_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp"
                     android:visibility="gone">
 
                     <DatePicker
@@ -92,19 +93,91 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:calendarViewShown="true"
-                        android:datePickerMode="calendar"/>
+                        android:datePickerMode="calendar" />
 
                     <TimePicker
                         android:id="@+id/notif_time_picker"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:timePickerMode="spinner"/>
+                        android:timePickerMode="spinner" />
 
                     <Button
                         android:id="@+id/btn_create_test_notification"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/test_notif" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_toggle_curtime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_time_test_panel" />
+
+                <LinearLayout
+                    android:id="@+id/current_time_test_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/btn_test_curtime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Test current time" />
+
+                    <DatePicker
+                        android:id="@+id/curtime_date_picker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:calendarViewShown="true"
+                        android:datePickerMode="calendar" />
+
+                    <TimePicker
+                        android:id="@+id/curtime_time_picker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:timePickerMode="spinner" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/override_time" />
+
+                        <CheckBox
+                            android:id="@+id/cb_override_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/freeze_overriden_time" />
+
+                        <CheckBox
+                            android:id="@+id/cb_freeze_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_set_override"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_time_override_settings" />
                 </LinearLayout>
             </LinearLayout>
 

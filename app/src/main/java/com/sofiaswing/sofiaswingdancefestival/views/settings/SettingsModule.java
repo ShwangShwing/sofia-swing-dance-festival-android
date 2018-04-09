@@ -16,7 +16,8 @@ public class SettingsModule {
     SettingsInterfaces.IPresenter providePresenter(
             ProvidersInterfaces.ISettingsProvider settingsProvider,
             ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider,
-            DataInterfaces.ISsdfYearsData ssdfYearsData) {
-        return new SettingsPresenter(settingsProvider, volatileSettingsProvider, ssdfYearsData);
+            DataInterfaces.ISsdfYearsData ssdfYearsData,
+            ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider) {
+        return new SettingsPresenter(settingsProvider, volatileSettingsProvider, ssdfYearsData, currentTimeProvider);
     }
 }

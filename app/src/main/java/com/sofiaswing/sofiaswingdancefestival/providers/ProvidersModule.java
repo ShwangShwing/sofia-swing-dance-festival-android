@@ -55,4 +55,9 @@ public class ProvidersModule {
 
         return this.volatileSettingsProvider;
     }
+
+    @Provides
+    ProvidersInterfaces.ICurrentTimeProvider provideCurrentTimeProvider(ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
+        return new CurrentTimeProvider(volatileSettingsProvider);
+    }
 }

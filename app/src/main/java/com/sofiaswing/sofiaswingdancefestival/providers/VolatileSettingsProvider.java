@@ -1,6 +1,8 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
 
+import java.util.Date;
+
 /**
  * Created by shwangshwing on 2/1/18.
  */
@@ -10,6 +12,10 @@ public class VolatileSettingsProvider implements ProvidersInterfaces.IVolatileSe
 
     private boolean isHackerEnabled = false;
     private boolean isSsdfYearFromDatabase = true;
+    private boolean isCurrentTimeOverriden = false;
+    private boolean isCurrentOverridenTimeFrozen = false;
+    private long overridenTimeMs;
+    private long timeOverridenAtMs;
     private String customSsdfYear = "";
 
     VolatileSettingsProvider(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
@@ -52,5 +58,33 @@ public class VolatileSettingsProvider implements ProvidersInterfaces.IVolatileSe
         this.isSsdfYearFromDatabase = false;
         this.customSsdfYear = currentSsdfYear;
         this.currentSsdfYearProvider.setCurrentSsdfYear(currentSsdfYear);
+    }
+
+    @Override
+    public void setOverrideCurrentTime(boolean override, boolean freezeTime, long overridenTime) {
+        this.isCurrentTimeOverriden = override;
+        this.isCurrentOverridenTimeFrozen = freezeTime;
+        this.overridenTimeMs = overridenTime;
+        this.timeOverridenAtMs = new Date().getTime();
+    }
+
+    @Override
+    public boolean isCurrentTimeOverriden() {
+        return this.isCurrentTimeOverriden;
+    }
+
+    @Override
+    public boolean isCurrentOverridenTimeFrozen() {
+        return this.isCurrentOverridenTimeFrozen;
+    }
+
+    @Override
+    public long getOverridenTimeMs() {
+        return this.overridenTimeMs;
+    }
+
+    @Override
+    public long getTimeOverridenAtMs() {
+        return this.timeOverridenAtMs;
     }
 }

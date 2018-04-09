@@ -336,6 +336,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
             long startTimestamp,
             long notifyTimestamp) {
 
+        this.cancelNotificationAlarm(eventId);
         if (System.currentTimeMillis() / 1000 > startTimestamp) {
             // The event has already started. Don't notify.
             return;

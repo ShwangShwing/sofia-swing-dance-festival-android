@@ -22,6 +22,8 @@ public class SettingsInterfaces {
         void setYearFromDatabase(boolean isSet);
         void setCustomYear(String customYear);
         void setSsdfYears(List<String> ssdfYears);
+        void notifyCurrentTimeMs(long currentTimeMs);
+        void setNotifyOverrideTimeState(boolean isOverriden, boolean isFrozen);
     }
 
     public interface IPresenter {
@@ -35,5 +37,7 @@ public class SettingsInterfaces {
         void setCustomYear(String customYear);
 
         void createTestNotification(String id, String name, long startTime, long notifyTime);
+        void notifyCurrentTime();
+        void setTimeOverride(boolean override, boolean freezeOverridenTime, long overridenTime);
     }
 }

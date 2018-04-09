@@ -41,4 +41,8 @@
     <string name="navigate_me">Navigate me</string>
     <string name="watch_video">Watch video</string>
     <string name="notifyMeShort">N!</string>
+    <string name="current_time_test_panel">CURRENT TIME TEST PANEL</string>
+    <string name="freeze_overriden_time">Freeze overriden time</string>
+    <string name="override_time">Override time</string>
+    <string name="set_time_override_settings">Set time override settings</string>
 </resources>
