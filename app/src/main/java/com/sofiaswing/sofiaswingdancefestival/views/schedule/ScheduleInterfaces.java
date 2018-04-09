@@ -12,7 +12,10 @@ import java.util.Map;
 
 public class ScheduleInterfaces {
     public interface IView {
-        void setSchedule(List<VenueModel> venues, List<EventModel> events, Map<String, String> classLevelStrings);
+        void setSchedule(
+                List<VenueModel> venues,
+                List<ScheduleEventViewModel> events,
+                Map<String, String> classLevelStrings);
     }
 
     public interface IPresenter {

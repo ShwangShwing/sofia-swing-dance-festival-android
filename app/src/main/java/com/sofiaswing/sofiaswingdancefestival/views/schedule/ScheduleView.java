@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
-import com.sofiaswing.sofiaswingdancefestival.models.EventModel;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.text.DateFormat;
@@ -88,7 +87,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
     }
 
     @Override
-    public void setSchedule(List<VenueModel> venues, List<EventModel> events, Map<String, String> classLevelStrings) {
+    public void setSchedule(List<VenueModel> venues, List<ScheduleEventViewModel> events, Map<String, String> classLevelStrings) {
         schedule.removeAllViews();
         Map<String, Integer> venueRowMap = new HashMap<>();
         int curVenueRow = 0;
@@ -100,7 +99,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
 
         this.calculateScheduleConstraints(events);
         this.populateHeader();
-        for (EventModel event : events) {
+        for (ScheduleEventViewModel event : events) {
             Integer venueRowIndex = venueRowMap.get(event.getVenueId());
             if (venueRowIndex != null) {
                 this.putEventInSchedule(venueRowIndex, event, classLevelStrings);
@@ -117,11 +116,11 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                 .inject(this);
     }
 
-    private void calculateScheduleConstraints(List<EventModel> events) {
+    private void calculateScheduleConstraints(List<ScheduleEventViewModel> events) {
         this.minScheduleTimestampMs = Long.MAX_VALUE;
         this.maxScheduleTimestampMs = 0;
 
-        for (EventModel event : events) {
+        for (ScheduleEventViewModel event : events) {
             this.minScheduleTimestampMs = Math.min(this.minScheduleTimestampMs, event.getStartTime().getTime());
             this.maxScheduleTimestampMs = Math.max(this.maxScheduleTimestampMs, event.getEndTime().getTime());
         }
@@ -194,7 +193,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                 venueView);
     }
 
-    private void putEventInSchedule(int venueRowIndex, EventModel event, Map<String, String> classLevelStrings) {
+    private void putEventInSchedule(int venueRowIndex, ScheduleEventViewModel event, Map<String, String> classLevelStrings) {
         View eventView = getLayoutInflater().inflate(R.layout.layout_schedule_event, null);
 
         DateFormat dateFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
@@ -227,6 +226,9 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         ((TextView) eventView.findViewById(R.id.tvEventType))
                 .setText(eventTypeStr);
 
+        if (event.isSubscribed()) {
+            eventView.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
+        }
 
         int eventLengthInMinutes = (int)(event.getEndTime().getTime() - event.getStartTime().getTime()) / (60 * 1000);
         int eventStartRelativeToFirstInMinutes = (int)(event.getStartTime().getTime() - this.minScheduleTimestampMs) / (60 * 1000);
