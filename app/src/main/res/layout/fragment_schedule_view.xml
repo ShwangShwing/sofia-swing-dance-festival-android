@@ -4,20 +4,29 @@
     android:layout_height="match_parent"
     tools:context="com.sofiaswing.sofiaswingdancefestival.views.schedule.ScheduleView">
 
-    <HorizontalScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
             <RelativeLayout
-                android:id="@+id/rl_shedule_container"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"></RelativeLayout>
-        </ScrollView>
-    </HorizontalScrollView>
+                android:layout_height="wrap_content"
+                android:id="@+id/rl_venues_container"
+                android:orientation="vertical"></RelativeLayout>
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none">
+                <RelativeLayout
+                    android:id="@+id/rl_shedule_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"></RelativeLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+    </ScrollView>
 
 
 </FrameLayout>

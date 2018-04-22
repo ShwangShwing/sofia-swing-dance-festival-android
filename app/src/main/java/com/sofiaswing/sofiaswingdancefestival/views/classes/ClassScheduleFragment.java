@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
@@ -23,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -167,6 +167,7 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
       ClassPresenterModel classPresenterModel = list.get(position);
 
       DateFormat dateTimeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+      dateTimeFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
       itemHolder.tvName.setText(classPresenterModel.getClassModel().getName());
       itemHolder.tvTime.setText(String.format("%s - %s",
@@ -231,7 +232,7 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
     private final View rootView;
     private final TextView tvTitle;
 //    private final ImageView imgArrow;
-
+    
     HeaderViewHolder(View view) {
       super(view);
 

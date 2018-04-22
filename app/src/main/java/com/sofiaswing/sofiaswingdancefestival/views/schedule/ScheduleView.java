@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -131,6 +133,10 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             this.minScheduleTimestampMs = Math.min(this.minScheduleTimestampMs, event.getStartTime().getTime());
             this.maxScheduleTimestampMs = Math.max(this.maxScheduleTimestampMs, event.getEndTime().getTime());
         }
+
+        // Set the schedule to start and end on a round hour
+        this.minScheduleTimestampMs -= this.minScheduleTimestampMs % (60 * 60 * 1000);
+        this.maxScheduleTimestampMs -= this.maxScheduleTimestampMs % (60 * 60 * 1000);
     }
 
     private void populateHeader() {
@@ -143,6 +149,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             View dayView = getLayoutInflater().inflate(R.layout.layout_schedule_date, null);
             TextView tvScheduleView = dayView.findViewById(R.id.tvScheduleDate);
             DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+            dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
             String dateAsString = dateFormatter.format(curDayStartTimestamp);
             tvScheduleView.setText(dateAsString);
 
@@ -150,7 +157,6 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                     (int)(SECONDS_IN_A_DAY / 60 * DIP_PER_MINUTE),
                     (int)((this.maxScheduleTimestampMs - curDayStartTimestamp) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE));
             this.addViewToSchedule(
-                    VENUE_WIDTH +
                             (int)((curDayStartTimestamp - this.minScheduleTimestampMs) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE),
                     0,
                     width,
@@ -158,7 +164,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                     dayView);
 
             curDayStartTimestamp += MILISECONDS_IN_A_DAY;
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Sofia"));
             cal.setTimeInMillis(curDayStartTimestamp);
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
@@ -174,12 +180,12 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             View timeView = getLayoutInflater().inflate(R.layout.layout_schedule_time, null);
             TextView tvScheduleTime = timeView.findViewById(R.id.tvScheduleTime);
             DateFormat dateFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+            dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
             String timeAsString = dateFormatter.format(curDayStartTimestamp);
             tvScheduleTime.setText(timeAsString);
 
             this.addViewToSchedule(
-                    VENUE_WIDTH +
-                            (int)((curDayStartTimestamp - this.minScheduleTimestampMs) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE),
+                    (int)((curDayStartTimestamp - this.minScheduleTimestampMs) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE),
                     HEADER_HEIGHT / 2,
                     (int)(HEADER_TIME_INTERVAL_MINUTES * DIP_PER_MINUTE),
                     HEADER_HEIGHT / 2,
@@ -192,18 +198,20 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         TextView tvVenueName = venueView.findViewById(R.id.tvScheduleVenueName);
         tvVenueName.setText(venue.getName());
 
-        this.addViewToSchedule(
-                0,
-                HEADER_HEIGHT + venueRowIndex * EVENT_HEIGHT,
-                VENUE_WIDTH,
-                EVENT_HEIGHT,
-                venueView);
+        RelativeLayout.LayoutParams params =
+                new RelativeLayout.LayoutParams(VENUE_WIDTH, EVENT_HEIGHT);
+        params.leftMargin = 0;
+        params.topMargin = HEADER_HEIGHT + venueRowIndex * EVENT_HEIGHT;
+
+        RelativeLayout lvVenuesContainer = this.getView().findViewById(R.id.rl_venues_container);
+        lvVenuesContainer.addView(venueView, params);
     }
 
     private void putEventInSchedule(int venueRowIndex, ScheduleEventViewModel event, Map<String, String> classLevelStrings) {
         View eventView = getLayoutInflater().inflate(R.layout.layout_schedule_event, null);
 
         DateFormat dateFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
         ((TextView) eventView.findViewById(R.id.tvTime))
                 .setText(String.format("%s - %s",
@@ -239,7 +247,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
 
         int eventLengthInMinutes = (int)(event.getEndTime().getTime() - event.getStartTime().getTime()) / (60 * 1000);
         int eventStartRelativeToFirstInMinutes = (int)(event.getStartTime().getTime() - this.minScheduleTimestampMs) / (60 * 1000);
-        int cellLeftMargin = VENUE_WIDTH + (int)(eventStartRelativeToFirstInMinutes * DIP_PER_MINUTE);
+        int cellLeftMargin = (int)(eventStartRelativeToFirstInMinutes * DIP_PER_MINUTE);
         int cellWidth = (int)(DIP_PER_MINUTE * eventLengthInMinutes);
         int cellHeight = EVENT_HEIGHT;
 
@@ -278,7 +286,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             int scheduleHeight = this.schedule.getMeasuredHeight();
             RelativeLayout.LayoutParams params =
                     new RelativeLayout.LayoutParams((int) DIP_PER_MINUTE, scheduleHeight);
-            params.leftMargin = VENUE_WIDTH + (int)(DIP_PER_MINUTE * (currentTimeMs - this.minScheduleTimestampMs) / 1000 / 60);
+            params.leftMargin = (int)(DIP_PER_MINUTE * (currentTimeMs - this.minScheduleTimestampMs) / 1000 / 60);
             params.topMargin = 0;
             verticalLine.setBackgroundColor(
                     this.getResources().getColor(R.color.scheduleCurrentTimeLine));
