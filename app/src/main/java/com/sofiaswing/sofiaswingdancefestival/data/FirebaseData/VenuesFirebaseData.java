@@ -101,6 +101,7 @@ public class VenuesFirebaseData implements DataInterfaces.IVenuesData {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 VenueModel venue = getVenueModelFromDataSnapshot(dataSnapshot);
                 e.onNext(venue);
+                e.onComplete();
             }
 
             @Override

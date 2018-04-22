@@ -86,6 +86,7 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
                 classLevels, getString(R.string.taster)));
 
         PagerSlidingTabStrip tabs = rootView.findViewById(R.id.tabs);
+        tabs.setTextColor(getResources().getColor(R.color.md_white_1000));
         tabs.setViewPager(pager);
     }
 
@@ -108,11 +109,11 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
 
             this.fragments = new ArrayList<>();
             for (ClassLevelModel classLevel : this.classLevels) {
-                Fragment fragment = ClassScheduleFragment.newInstance(presenter, classLevel.getId(), false);
+                Fragment fragment = ClassScheduleFragment.newInstance(classLevel.getId(), false);
                 this.fragments.add(fragment);
             }
 
-            this.tasterFramgent = ClassScheduleFragment.newInstance(presenter, "", true);
+            this.tasterFramgent = ClassScheduleFragment.newInstance("", true);
         }
 
         @Override
