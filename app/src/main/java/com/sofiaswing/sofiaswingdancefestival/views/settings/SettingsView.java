@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -180,6 +181,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     @Override
     public void notifyCurrentTimeMs(long currentTimeMs) {
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.getDefault());
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
         Date curDateTime = new Date(currentTimeMs);
         this.popupCreator.popup(this.getContext(), dateFormatter.format(curDateTime));
     }
@@ -345,13 +347,12 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
                 String name = "Test notification";
                 DatePicker datePicker = root.findViewById(R.id.notif_date_picker);
                 TimePicker timePicker = root.findViewById(R.id.notif_time_picker);
-                GregorianCalendar dateTime = new GregorianCalendar(
-                        datePicker.getYear(),
+                GregorianCalendar dateTime = new GregorianCalendar(TimeZone.getTimeZone("Europe/Sofia"));
+                dateTime.set(datePicker.getYear(),
                         datePicker.getMonth(),
                         datePicker.getDayOfMonth(),
                         timePicker.getCurrentHour(),
-                        timePicker.getCurrentMinute()
-                );
+                        timePicker.getCurrentMinute());
                 long startTime = 0;
                 long notifyTime = dateTime.getTimeInMillis() / 1000;
                 presenter.createTestNotification(id, name, startTime, notifyTime);
@@ -387,13 +388,13 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
 
             DatePicker datePicker = root.findViewById(R.id.curtime_date_picker);
             TimePicker timePicker = root.findViewById(R.id.curtime_time_picker);
-            GregorianCalendar dateTime = new GregorianCalendar(
-                    datePicker.getYear(),
+            GregorianCalendar dateTime = new GregorianCalendar(TimeZone.getTimeZone("Europe/Sofia"));
+            dateTime.set(datePicker.getYear(),
                     datePicker.getMonth(),
                     datePicker.getDayOfMonth(),
                     timePicker.getCurrentHour(),
-                    timePicker.getCurrentMinute()
-            );
+                    timePicker.getCurrentMinute());
+
             long overridenTime = dateTime.getTimeInMillis();
 
             this.presenter.setTimeOverride(overrideTime, overridenTimeFrozen, overridenTime);

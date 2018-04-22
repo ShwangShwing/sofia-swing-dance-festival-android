@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -148,6 +149,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             View dayView = getLayoutInflater().inflate(R.layout.layout_schedule_date, null);
             TextView tvScheduleView = dayView.findViewById(R.id.tvScheduleDate);
             DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+            dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
             String dateAsString = dateFormatter.format(curDayStartTimestamp);
             tvScheduleView.setText(dateAsString);
 
@@ -162,7 +164,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                     dayView);
 
             curDayStartTimestamp += MILISECONDS_IN_A_DAY;
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Sofia"));
             cal.setTimeInMillis(curDayStartTimestamp);
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
@@ -178,6 +180,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             View timeView = getLayoutInflater().inflate(R.layout.layout_schedule_time, null);
             TextView tvScheduleTime = timeView.findViewById(R.id.tvScheduleTime);
             DateFormat dateFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+            dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
             String timeAsString = dateFormatter.format(curDayStartTimestamp);
             tvScheduleTime.setText(timeAsString);
 
@@ -208,6 +211,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         View eventView = getLayoutInflater().inflate(R.layout.layout_schedule_event, null);
 
         DateFormat dateFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
         ((TextView) eventView.findViewById(R.id.tvTime))
                 .setText(String.format("%s - %s",

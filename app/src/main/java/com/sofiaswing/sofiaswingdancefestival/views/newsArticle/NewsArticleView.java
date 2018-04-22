@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -73,6 +74,7 @@ public class NewsArticleView extends Fragment
     @Override
     public void setNewsArticle(NewsArticleModel newsArticle) {
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
         ((TextView) this.getActivity().findViewById(R.id.tvNewsArticleDate))
                 .setText(dateFormatter.format(newsArticle.getPostedOn()));
         ((TextView) this.getActivity().findViewById(R.id.tvNewsArticleText))

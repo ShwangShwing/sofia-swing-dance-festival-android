@@ -24,6 +24,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -138,6 +139,7 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             PartyViewModel partyItem = getItem(position);
 
             DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+            dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
             ((TextView) partyRow.findViewById(R.id.tvTime))
                     .setText(String.format("%s - %s",

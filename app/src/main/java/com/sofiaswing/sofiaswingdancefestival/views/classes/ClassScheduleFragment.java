@@ -24,6 +24,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -168,6 +169,7 @@ public class ClassScheduleFragment extends Fragment {
             {
                 // Fill date separator
                 DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault());
+                dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
                 if (this.itemDates.size() <= position) {
                     this.itemDates.add(dateFormatter.format(classItem.getStartTime()));
@@ -189,6 +191,7 @@ public class ClassScheduleFragment extends Fragment {
 
             {
                 DateFormat dateTimeFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+                dateTimeFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
                 ((TextView) classRow.findViewById(R.id.tvTime))
                         .setText(String.format("%s - %s",

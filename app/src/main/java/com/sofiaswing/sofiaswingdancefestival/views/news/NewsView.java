@@ -29,6 +29,7 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -140,6 +141,7 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
             NewsArticleModel article = this.getItem(position);
 
             DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+            dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
             ((TextView) newsArticleRow.findViewById(R.id.tvNewsArticleDate))
                     .setText(dateFormatter.format(article.getPostedOn()));
             ((TextView) newsArticleRow.findViewById(R.id.tvNewsArticleText))

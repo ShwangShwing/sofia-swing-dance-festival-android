@@ -17,6 +17,7 @@ import com.sofiaswing.sofiaswingdancefestival.views.main.MainActivity;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -44,6 +45,7 @@ public class EventSubscriptionAlarmReceiver extends BroadcastReceiver {
         String eventName = intent.getStringExtra(EVENT_NAME_KEY);
 
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
         long eventStartTimeIn = intent.getLongExtra(EVENT_START_TIME_KEY, 0);
         String eventStartTime = "Start time unknown! Error!";
         if (eventStartTimeIn > 0) {

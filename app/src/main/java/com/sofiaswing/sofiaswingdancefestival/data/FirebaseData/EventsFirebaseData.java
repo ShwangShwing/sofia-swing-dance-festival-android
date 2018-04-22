@@ -262,7 +262,6 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                         String id = "";
                                         Date startTime = null;
                                         Date endTime = null;
-                                        String levelName = "";
                                         String name = "";
                                         String venueId = "";
                                         List<String> instructorIds = new ArrayList();

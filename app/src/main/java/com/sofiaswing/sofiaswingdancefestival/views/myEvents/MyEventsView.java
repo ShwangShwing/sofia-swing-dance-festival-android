@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -140,6 +141,7 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
             EventViewModel eventItem = getItem(position);
 
             DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+            dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
             ((TextView) eventRow.findViewById(R.id.tvTime))
                     .setText(String.format("%s - %s",
