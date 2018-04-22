@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,12 +17,15 @@ import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TimeZone;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 
@@ -39,15 +43,18 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
     public ScheduleInterfaces.IPresenter presenter;
     @Inject
     public ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
-    private int previousScreenOrientation;
     private RelativeLayout schedule;
     private long minScheduleTimestampMs;
     private long maxScheduleTimestampMs;
     private View verticalLine = null;
     private boolean isRunning = false;
+    // every event must change color when it expires. The key is the timestamp in ms when it should
+    // expire and the contents is the layout itself that should change color
+    private SortedMap<Long, List<LinearLayout>> eventContainerWithExpireTime;
 
     public static ScheduleView newInstance() {
         ScheduleView fragment = new ScheduleView();
+        fragment.eventContainerWithExpireTime = new TreeMap<>();
         return fragment;
     }
 
@@ -78,7 +85,6 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         super.onResume();
         this.isRunning = true;
         this.schedule = this.getView().findViewById(R.id.rl_shedule_container);
-        this.previousScreenOrientation = this.getActivity().getRequestedOrientation();
         this.presenter.start();
     }
 
@@ -102,6 +108,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
 
         this.calculateScheduleConstraints(events);
         this.populateHeader();
+        this.eventContainerWithExpireTime.clear();
         for (ScheduleEventViewModel event : events) {
             Integer venueRowIndex = venueRowMap.get(event.getVenueId());
             if (venueRowIndex != null) {
@@ -112,7 +119,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             }
         }
 
-        this.putVerticalTimeline();
+        this.putVerticalTimelineAndMarkPassedEvents();
     }
 
     private void inject() {
@@ -209,6 +216,20 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         DateFormat dateFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
         dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
+        LinearLayout llEventContainer = eventView.findViewById(R.id.ll_event_container);
+        long eventEndTimestampMs = event.getEndTime().getTime();
+        if (this.currentTimeProvider.getCurrentTimeMs() >= eventEndTimestampMs) {
+            llEventContainer.setBackgroundResource(R.color.pastEventBackground);
+        }
+        else {
+            if (!this.eventContainerWithExpireTime.containsKey(eventEndTimestampMs)) {
+                this.eventContainerWithExpireTime.put(
+                        eventEndTimestampMs,
+                        new ArrayList<>());
+            }
+            this.eventContainerWithExpireTime.get(eventEndTimestampMs).add(llEventContainer);
+        }
+
         ((TextView) eventView.findViewById(R.id.tvTime))
                 .setText(String.format("%s - %s",
                         dateFormatter.format(event.getStartTime()),
@@ -255,7 +276,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                 eventView);
     }
 
-    private void putVerticalTimeline() {
+    private void putVerticalTimelineAndMarkPassedEvents() {
         if (!this.isRunning) {
             return;
         }
@@ -273,7 +294,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                 delayAfterMs = (this.minScheduleTimestampMs - currentTimeMs);
             }
 
-            new android.os.Handler().postDelayed(() -> this.putVerticalTimeline(), delayAfterMs);
+            new android.os.Handler().postDelayed(() -> this.putVerticalTimelineAndMarkPassedEvents(), delayAfterMs);
         }
 
         if (this.minScheduleTimestampMs < currentTimeMs && currentTimeMs < this.maxScheduleTimestampMs) {
@@ -288,6 +309,20 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                     this.getResources().getColor(R.color.scheduleCurrentTimeLine));
             verticalLine.setLayoutParams(params);
             schedule.addView(verticalLine, params);
+        }
+
+        // Mark passed events
+        while (!this.eventContainerWithExpireTime.isEmpty()) {
+            long earliestEndTimestamp = this.eventContainerWithExpireTime.firstKey();
+            if (currentTimeMs < earliestEndTimestamp) {
+                break;
+            }
+
+            for (LinearLayout currentEventContainer: this.eventContainerWithExpireTime.get(earliestEndTimestamp)) {
+                currentEventContainer.setBackgroundResource(R.color.pastEventBackground);
+            }
+
+            this.eventContainerWithExpireTime.remove(earliestEndTimestamp);
         }
     }
 

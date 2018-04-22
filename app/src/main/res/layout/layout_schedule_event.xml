@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/scheduleEventBackground"
+        android:background="@color/pendingEventBackground"
+        android:id="@+id/ll_event_container"
         android:padding="2dp">
 
         <LinearLayout

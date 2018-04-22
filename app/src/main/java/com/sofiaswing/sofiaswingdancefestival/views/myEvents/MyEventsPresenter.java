@@ -24,6 +24,7 @@ public class MyEventsPresenter implements MyEventsInterfaces.IPresenter {
     private final DataInterfaces.IEventsData eventsData;
     private final DataInterfaces.IVenuesData venuesData;
     private final DataInterfaces.IClassLevelsData classLevelsData;
+    private final ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
 
     private final List<EventViewModel> events;
 
@@ -35,11 +36,13 @@ public class MyEventsPresenter implements MyEventsInterfaces.IPresenter {
             ProvidersInterfaces.ISettingsProvider settingsProvider,
             DataInterfaces.IEventsData eventsData,
             DataInterfaces.IVenuesData venuesData,
-            DataInterfaces.IClassLevelsData classLevelsData) {
+            DataInterfaces.IClassLevelsData classLevelsData,
+            ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider) {
         this.settingsProvider = settingsProvider;
         this.eventsData = eventsData;
         this.venuesData = venuesData;
         this.classLevelsData = classLevelsData;
+        this.currentTimeProvider = currentTimeProvider;
 
         this.events = new ArrayList<>();
 
@@ -55,6 +58,8 @@ public class MyEventsPresenter implements MyEventsInterfaces.IPresenter {
 
     @Override
     public void start() {
+        this.view.setCurrentTimestampMs(this.currentTimeProvider.getCurrentTimeMs());
+
         this.classLevelsSubscriptions.add(this.classLevelsData.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

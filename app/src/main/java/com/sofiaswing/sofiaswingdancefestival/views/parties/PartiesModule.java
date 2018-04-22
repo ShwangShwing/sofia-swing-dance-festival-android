@@ -16,7 +16,11 @@ public class PartiesModule {
     PartiesInterfaces.IPresenter provideNewsPresenter(
             DataInterfaces.IEventsData partiesData,
             DataInterfaces.IVenuesData venuesData,
-            ProvidersInterfaces.ISettingsProvider settingsProvider) {
-        return new PartiesPresenter(partiesData, venuesData, settingsProvider);
+            ProvidersInterfaces.ISettingsProvider settingsProvider,
+            ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider) {
+        return new PartiesPresenter(partiesData,
+                venuesData,
+                settingsProvider,
+                currentTimeProvider);
     }
 }

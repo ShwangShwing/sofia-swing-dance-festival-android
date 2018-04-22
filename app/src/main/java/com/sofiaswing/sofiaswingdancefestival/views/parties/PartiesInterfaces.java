@@ -11,6 +11,7 @@ import java.util.List;
 
 public class PartiesInterfaces {
     public interface IView {
+        void setCurrentTimestampMs(long currentTimestampMs);
         void setParties(List<PartyViewModel> parties);
 
         void setEventVenue(int position, VenueModel venue);

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
 
     private EventsAdapter myEventsAdapter;
     private Map<String, String> classLevelStrings;
+    private long currentTimestampMs;
 
     public MyEventsView() {
         // Required empty public constructor
@@ -121,6 +123,12 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
         this.myEventsAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void setCurrentTimestampMs(long currentTimestampMs) {
+        this.currentTimestampMs = currentTimestampMs;
+        this.myEventsAdapter.notifyDataSetChanged();
+    }
+
     private class EventsAdapter extends ArrayAdapter<EventViewModel> {
 
         public EventsAdapter(@NonNull Context context, @LayoutRes int resource) {
@@ -139,6 +147,14 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
             }
 
             EventViewModel eventItem = getItem(position);
+
+            LinearLayout llEventContainer = eventRow.findViewById(R.id.ll_event_container);
+            if (eventItem.getEndTime().getTime() <= currentTimestampMs) {
+                llEventContainer.setBackgroundResource(R.color.pastEventBackground);
+            }
+            else {
+                llEventContainer.setBackgroundResource(R.color.pendingEventBackground);
+            }
 
             DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
     public PartiesInterfaces.IPresenter presenter;
 
     private ArrayAdapter<PartyViewModel> partiesAdapter;
+    private long currentTimestampMs;
 
     public static PartiesView newInstance() {
         PartiesView fragment = new PartiesView();
@@ -94,6 +96,12 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
     }
 
     @Override
+    public void setCurrentTimestampMs(long currentTimestampMs) {
+        this.currentTimestampMs = currentTimestampMs;
+        this.partiesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void setParties(List<PartyViewModel> parties) {
         partiesAdapter.clear();
         partiesAdapter.addAll(parties);
@@ -137,6 +145,14 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             }
 
             PartyViewModel partyItem = getItem(position);
+
+            LinearLayout llEventContainer = partyRow.findViewById(R.id.ll_event_container);
+            if (partyItem.getEndTime().getTime() <= currentTimestampMs) {
+                llEventContainer.setBackgroundResource(R.color.pastEventBackground);
+            }
+            else {
+                llEventContainer.setBackgroundResource(R.color.pendingEventBackground);
+            }
 
             DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));

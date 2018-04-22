@@ -10,11 +10,13 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
+import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,6 +42,8 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
     private static final String CLASS_LEVEL_KEY = "class_level";
     @Inject
     public ClassesInterfaces.IClassesLevelPresenter presenter;
+    @Inject
+    public ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
     private String classLevel;
     private SectionedRecyclerViewAdapter classScheduleAdapter;
     private boolean isTaster;
@@ -183,6 +187,14 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
 
             ClassPresenterModel classPresenterModel = list.get(position);
 
+            if (classPresenterModel.getClassModel().getEndTime().getTime() <=
+                    currentTimeProvider.getCurrentTimeMs()) {
+                itemHolder.llEventContainer.setBackgroundResource(R.color.pastEventBackground);
+            }
+            else {
+                itemHolder.llEventContainer.setBackgroundResource(R.color.pendingEventBackground);
+            }
+
             DateFormat dateTimeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
             dateTimeFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
@@ -262,6 +274,7 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
     private class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private final View rootView;
+        private final LinearLayout llEventContainer;
         private final TextView tvName;
         private final TextView tvTime;
         private final TextView tvVenue;
@@ -271,6 +284,7 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
         ItemViewHolder(View view) {
             super(view);
             rootView = view;
+            llEventContainer = view.findViewById(R.id.ll_event_container);
             tvName = view.findViewById(R.id.tvName);
             tvTime = view.findViewById(R.id.tvTime);
             tvVenue = view.findViewById(R.id.tvVenue);

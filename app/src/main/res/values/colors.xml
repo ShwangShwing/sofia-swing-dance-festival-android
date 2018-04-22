@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="mainBackground">#2F302F</color>
-    <color name="scheduleEventBackground">#555855</color>
+    <color name="pendingEventBackground">#555855</color>
+    <color name="pastEventBackground">#1a1b1a</color>
     <color name="scheduleCurrentTimeLine">#44e9d427</color>
     <color name="colorPrimary">#231f20</color>
     <color name="colorPrimaryDark">#231f20</color>

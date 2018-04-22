@@ -22,16 +22,20 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
     private final DataInterfaces.IEventsData partiesData;
     private final DataInterfaces.IVenuesData venuesData;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
+    private final ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
     private final List<PartyViewModel> partyViewModels;
 
     private final CompositeDisposable partiesSubscriptions;
     private final CompositeDisposable venuesSubscriptions;
 
     public PartiesPresenter(DataInterfaces.IEventsData partiesData,
-                            DataInterfaces.IVenuesData venuesData, ProvidersInterfaces.ISettingsProvider settingsProvider) {
+                            DataInterfaces.IVenuesData venuesData,
+                            ProvidersInterfaces.ISettingsProvider settingsProvider,
+                            ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider) {
         this.partiesData = partiesData;
         this.venuesData = venuesData;
         this.settingsProvider = settingsProvider;
+        this.currentTimeProvider = currentTimeProvider;
         this.partyViewModels = new ArrayList<>();
 
         this.partiesSubscriptions = new CompositeDisposable();
@@ -45,6 +49,7 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
 
     @Override
     public void start() {
+        this.view.setCurrentTimestampMs(this.currentTimeProvider.getCurrentTimeMs());
         this.partiesSubscriptions.add(
             this.partiesData.getParties()
                 .subscribeOn(Schedulers.io())

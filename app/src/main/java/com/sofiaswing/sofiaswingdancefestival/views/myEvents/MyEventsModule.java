@@ -17,7 +17,12 @@ public class MyEventsModule {
             ProvidersInterfaces.ISettingsProvider settingsProvider,
             DataInterfaces.IEventsData eventsData,
             DataInterfaces.IVenuesData venuesData,
-            DataInterfaces.IClassLevelsData classLevelsData) {
-        return new MyEventsPresenter(settingsProvider, eventsData, venuesData, classLevelsData);
+            DataInterfaces.IClassLevelsData classLevelsData,
+            ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider) {
+        return new MyEventsPresenter(settingsProvider,
+                eventsData,
+                venuesData,
+                classLevelsData,
+                currentTimeProvider);
     }
 }

@@ -17,6 +17,8 @@ public class MyEventsInterfaces {
         void setEventVenue(int eventPosition, VenueModel venueModel);
 
         void setEventSubscriptionState(int position, boolean subscriptionStatus);
+
+        void setCurrentTimestampMs(long currentTimestampMs);
     }
 
     public interface IPresenter {
