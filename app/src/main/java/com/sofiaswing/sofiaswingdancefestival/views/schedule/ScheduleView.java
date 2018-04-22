@@ -217,7 +217,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         ((TextView) eventView.findViewById(R.id.tvName))
                 .setText(event.getName());
 
-        String eventTypeStr = "Error! Unknown event type!";
+        String eventTypeStr = getString(R.string.misc_event);
         String eventType = event.getEventType();
         if (eventType.equals("taster_class")) {
             eventTypeStr = getString(R.string.taster_class);

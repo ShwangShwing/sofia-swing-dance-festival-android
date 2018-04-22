@@ -151,7 +151,7 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
             ((TextView) eventRow.findViewById(R.id.tvName))
                     .setText(eventItem.getName());
 
-            String eventTypeStr = "Error! Unknown event type!";
+            String eventTypeStr = getString(R.string.misc_event);
             String eventType = eventItem.getEventType();
             if (eventType.equals("taster_class")) {
                 eventTypeStr = getString(R.string.taster_class);
