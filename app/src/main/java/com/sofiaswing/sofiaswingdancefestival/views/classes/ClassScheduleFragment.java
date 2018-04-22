@@ -1,251 +1,263 @@
 package com.sofiaswing.sofiaswingdancefestival.views.classes;
 
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
-import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
+import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
-import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import javax.inject.Inject;
 
-// TODO: The presenter should put data here, this is a view, it should not request data! Fix it!
-// I tried doing that and it turned out extremely unreadable... Sometimes good patterns make
-// the code extremely unredable instead of more easily readable. Go figure...
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
-public class ClassScheduleFragment extends Fragment {
-    private ClassesInterfaces.IPresenter presenter;
-    private String classLevel;
-    private ArrayAdapter<ClassModel> classScheduleAdapter;
-    private boolean isTaster;
 
-    private List<Boolean> subscribedClasses = new ArrayList<>();
-    private CompositeDisposable subscriptions = new CompositeDisposable();
+public class ClassScheduleFragment extends Fragment implements ClassesInterfaces.IClassesLevelView {
+  private static final String IS_TASTER_KEY = "is_taster";
+  private static final String CLASS_LEVEL_KEY = "class_level";
+  @Inject
+  public ClassesInterfaces.IClassesLevelPresenter presenter;
+  private String classLevel;
+  private SectionedRecyclerViewAdapter classScheduleAdapter;
+  private boolean isTaster;
 
-    public ClassScheduleFragment() {
-        // Required empty public constructor
+  public ClassScheduleFragment() {
+    // Required empty public constructor
+  }
+
+  public static ClassScheduleFragment newInstance(String classLevel, boolean isTaster) {
+    ClassScheduleFragment fragment = new ClassScheduleFragment();
+    Bundle args = new Bundle();
+    args.putBoolean(IS_TASTER_KEY, isTaster);
+    args.putString(CLASS_LEVEL_KEY, classLevel);
+    fragment.setArguments(args);
+    return fragment;
+  }
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    inject();
+    presenter.setView(this);
+
+    this.isTaster = getArguments().getBoolean(IS_TASTER_KEY);
+    this.classLevel = getArguments().getString(CLASS_LEVEL_KEY);
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    this.presenter.start();
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    this.presenter.stop();
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
+    // Inflate the layout for this fragment
+    final View root = inflater.inflate(R.layout.fragment_class_schedule, container, false);
+
+    setRetainInstance(true);
+
+    RecyclerView lvClasses = root.findViewById(R.id.rvClassSchedule);
+    this.classScheduleAdapter = new SectionedRecyclerViewAdapter();
+    lvClasses.setLayoutManager(new LinearLayoutManager(getContext()));
+    lvClasses.setAdapter(this.classScheduleAdapter);
+
+    return root;
+  }
+
+  private void inject() {
+    ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
+            .getComponent()
+            .inject(this);
+  }
+
+  @Override
+  public boolean isTaster() {
+    return this.isTaster;
+  }
+
+  @Override
+  public String getClassLevel() {
+    return this.classLevel;
+  }
+
+  @Override
+  public void setClasses(List<ClassPresenterModel> classes) {
+    Map<String, List<ClassPresenterModel>> sectionsMap = new HashMap<>();
+    for (ClassPresenterModel classModel : classes) {
+      SimpleDateFormat fmt = new SimpleDateFormat("d MMM yyyy");
+      String startDate = fmt.format(classModel.getClassModel().getStartTime());
+      if (sectionsMap.containsKey(startDate)) {
+        sectionsMap.get(startDate).add(classModel);
+      } else {
+        List<ClassPresenterModel> newList = new ArrayList<>();
+        newList.add(classModel);
+        sectionsMap.put(startDate, newList);
+      }
     }
+    this.classScheduleAdapter.removeAllSections();
+    for (Map.Entry<String, List<ClassPresenterModel>> entry : sectionsMap.entrySet()) {
+      this.classScheduleAdapter.addSection(new ExpandableDaySection(entry.getKey(), entry.getValue()));
+    }
+    classScheduleAdapter.notifyDataSetChanged();
+  }
 
-    public static ClassScheduleFragment newInstance(
-            ClassesInterfaces.IPresenter presenter,
-            String classLevel,
-            boolean isTaster) {
-        ClassScheduleFragment fragment = new ClassScheduleFragment();
 
-        fragment.presenter = presenter;
-        fragment.classLevel = classLevel;
-        fragment.isTaster = isTaster;
+  private class ExpandableDaySection extends StatelessSection {
 
-        return fragment;
+    String title;
+    List<ClassPresenterModel> list;
+    boolean expanded = true;
+
+    ExpandableDaySection(String title, List<ClassPresenterModel> list) {
+      super(SectionParameters.builder()
+              .itemResourceId(R.layout.layout_class_row)
+              .headerResourceId(R.layout.day_header_row)
+              .build());
+
+      this.title = title;
+      this.list = list;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public int getContentItemsTotal() {
+      return expanded ? list.size() : 0;
+    }
 
-        if (!this.isTaster) {
-            this.subscriptions.add(presenter.getClassesByLevel(classLevel)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(classes -> {
-                        classScheduleAdapter.clear();
-                        subscribedClasses.clear();
-                        for (int i = 0; i < classes.size(); i++) {
-                            subscribedClasses.add(i,
-                                    presenter.isSubscribedForEvent(classes.get(i).getId()));
-                        }
+    @Override
+    public RecyclerView.ViewHolder getItemViewHolder(View view) {
+      return new ItemViewHolder(view);
+    }
 
-                        classScheduleAdapter.addAll(classes);
-                    }));
+    @Override
+    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
+      final ItemViewHolder itemHolder = (ItemViewHolder) holder;
+
+      ClassPresenterModel classPresenterModel = list.get(position);
+
+      DateFormat dateTimeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+
+      itemHolder.tvName.setText(classPresenterModel.getClassModel().getName());
+      itemHolder.tvTime.setText(String.format("%s - %s",
+              dateTimeFormatter.format(classPresenterModel.getClassModel().getStartTime()),
+              dateTimeFormatter.format(classPresenterModel.getClassModel().getEndTime())));
+
+      String instructorsNames = "";
+      for (InstructorModel instructor : classPresenterModel.getInstructors()) {
+        if (instructorsNames != "") {
+          instructorsNames += ", ";
         }
-        else {
-            this.subscriptions.add(presenter.getTasterClasses()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(classes -> {
-                        classScheduleAdapter.clear();
-                        subscribedClasses.clear();
-                        for (int i = 0; i < classes.size(); i++) {
-                            subscribedClasses.add(i,
-                                    presenter.isSubscribedForEvent(classes.get(i).getId()));
-                        }
+        instructorsNames += instructor.getName();
+      }
+      itemHolder.tvInstructors.setText(instructorsNames);
+      itemHolder.tvVenue.setText(classPresenterModel.getVenue().getName());
+      itemHolder.tvIsSubscribed.setVisibility(classPresenterModel.isSubscribed() ? View.VISIBLE : View.GONE);
 
-                        classScheduleAdapter.addAll(classes);
-                    }));
-        }
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        this.subscriptions.clear();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final View root = inflater.inflate(R.layout.fragment_class_schedule, container, false);
-
-        setRetainInstance(true);
-
-        ListView lvClasses = root.findViewById(R.id.lvClassSchedule);
-        this.classScheduleAdapter = new ClassScheduleAdapter(root.getContext(), android.R.layout.simple_list_item_1);
-        lvClasses.setAdapter(this.classScheduleAdapter);
-        lvClasses.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (subscribedClasses.get(position)) {
-                    subscribedClasses.set(position, false);
-                    view.findViewById(R.id.tvIsSubscribed).setVisibility(View.GONE);
-                    presenter.unsubscribeFromEvent(classScheduleAdapter.getItem(position).getId());
-                }
-                else {
-                    subscribedClasses.set(position, true);
-                    view.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
-                    presenter.subscribeForEvent(
-                            classScheduleAdapter.getItem(position).getId(),
-                            classScheduleAdapter.getItem(position).getName(),
-                            (int)(classScheduleAdapter.getItem(position).getStartTime().getTime() / 1000));
-
-                }
-            }
-        });
-
-        return root;
-    }
-
-    private class ClassScheduleAdapter extends ArrayAdapter<ClassModel> {
-        private ArrayList<String> itemDates;
-
-        public ClassScheduleAdapter(@NonNull Context context, @LayoutRes int resource) {
-            super(context, resource);
-            itemDates = new ArrayList<>();
-        }
-
-        @NonNull
+      itemHolder.rootView.setOnClickListener(new View.OnClickListener() {
         @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View classRowIn = convertView;
-
-            if (classRowIn == null) {
-                LayoutInflater inflater;
-                inflater = LayoutInflater.from(this.getContext());
-                classRowIn = inflater.inflate(R.layout.layout_class_row, null);
-            }
-
-            final View classRow = classRowIn;
-
-            ClassModel classItem = getItem(position);
-
-            {
-                // Fill date separator
-                DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault());
-
-                if (this.itemDates.size() <= position) {
-                    this.itemDates.add(dateFormatter.format(classItem.getStartTime()));
-                }
-                else {
-                    this.itemDates.set(position, dateFormatter.format(classItem.getStartTime()));
-                }
-
-
-                TextView tvDateSeparator = classRow.findViewById(R.id.tvDateSeparator);
-                if (position == 0 || !this.itemDates.get(position).equals(this.itemDates.get(position - 1))) {
-                    tvDateSeparator.setVisibility(View.VISIBLE);
-                    tvDateSeparator.setText(String.format("%s", this.itemDates.get(position)));
-                }
-                else {
-                    tvDateSeparator.setVisibility(View.GONE);
-                }
-            }
-
-            {
-                DateFormat dateTimeFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
-
-                ((TextView) classRow.findViewById(R.id.tvTime))
-                        .setText(String.format("%s - %s",
-                                dateTimeFormatter.format(classItem.getStartTime()),
-                                dateTimeFormatter.format(classItem.getEndTime())));
-
-                ((TextView) classRow.findViewById(R.id.tvName))
-                        .setText(classItem.getName());
-            }
-
-
-            ArrayList<Observable<InstructorModel>> instructorObservables = new ArrayList<Observable<InstructorModel>>();
-            for (String instructorId: classItem.getInstructorIds()) {
-                instructorObservables.add(presenter.getInstructor(instructorId));
-            }
-
-            Observable.combineLatest(instructorObservables, objects -> {
-                String instructorsNames = "";
-                for (Object instructorObject : objects) {
-                    InstructorModel instructor = (InstructorModel)instructorObject;
-
-                    if (instructorsNames != "") {
-                        instructorsNames += ", ";
-                    }
-
-                    instructorsNames += instructor.getName();
-                }
-
-
-                ((TextView) classRow.findViewById(R.id.tvInstructors))
-                        .setText(instructorsNames);
-
-                return "Ne znam kvo da varna, brat, ama ako varna null mi garmi!!!";
-            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe();
-
-
-            presenter.getVenue(classItem.getVenueId())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<VenueModel>() {
-                        @Override
-                        public void accept(VenueModel venueModel) throws Exception {
-                            ((TextView) classRow.findViewById(R.id.tvVenue))
-                                    .setText(venueModel.getName());
-                        }
-                    });
-
-            if (subscribedClasses.get(position)) {
-                subscribedClasses.set(position, true);
-                classRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
-            }
-            else {
-                subscribedClasses.set(position, false);
-                classRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.GONE);
-            }
-
-            return classRow;
+        public void onClick(View v) {
+          if (classPresenterModel.isSubscribed()) {
+            classPresenterModel.setSubscribed(false);
+            presenter.unsubscribeFromEvent(classPresenterModel.getClassModel().getId());
+          } else {
+            classPresenterModel.setSubscribed(true);
+            presenter.subscribeForEvent(classPresenterModel.getClassModel().getId(),
+                    classPresenterModel.getClassModel().getName(),
+                    (int) (classPresenterModel.getClassModel().getStartTime().getTime() / 1000));
+          }
+          classScheduleAdapter.notifyDataSetChanged();
         }
+      });
     }
+
+    @Override
+    public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
+      return new HeaderViewHolder(view);
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
+      final HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
+
+      headerHolder.tvTitle.setText(title);
+
+      headerHolder.rootView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          expanded = !expanded;
+//          headerHolder.imgArrow.setImageResource(
+//                  expanded ? R.drawable.ic_keyboard_arrow_up_black_18dp : R.drawable.ic_keyboard_arrow_down_black_18dp
+//          );
+          classScheduleAdapter.notifyDataSetChanged();
+        }
+      });
+    }
+  }
+
+  private class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+    private final View rootView;
+    private final TextView tvTitle;
+//    private final ImageView imgArrow;
+
+    HeaderViewHolder(View view) {
+      super(view);
+
+      rootView = view;
+      tvTitle = view.findViewById(R.id.tvDayHeader);
+//      imgArrow = (ImageView) view.findViewById(R.id.imgArrow);
+    }
+  }
+
+  private class ItemViewHolder extends RecyclerView.ViewHolder {
+
+    private final View rootView;
+    private final TextView tvName;
+    private final TextView tvTime;
+    private final TextView tvVenue;
+    private final TextView tvInstructors;
+    private final TextView tvIsSubscribed;
+
+    ItemViewHolder(View view) {
+      super(view);
+      rootView = view;
+      tvName = view.findViewById(R.id.tvName);
+      tvTime = view.findViewById(R.id.tvTime);
+      tvVenue = view.findViewById(R.id.tvVenue);
+      tvInstructors = view.findViewById(R.id.tvInstructors);
+      tvIsSubscribed = view.findViewById(R.id.tvIsSubscribed);
+    }
+  }
 }

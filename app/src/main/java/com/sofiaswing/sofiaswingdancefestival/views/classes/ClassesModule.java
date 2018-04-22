@@ -14,12 +14,16 @@ import dagger.Provides;
 public class ClassesModule {
 
     @Provides
-    ClassesInterfaces.IPresenter provideNewsPresenter(
-            DataInterfaces.IClassLevelsData classLevelsFirebaseData,
+    ClassesInterfaces.IPresenter provideClassesPresenter(DataInterfaces.IClassLevelsData classLevelsFirebaseData) {
+        return new ClassesPresenter(classLevelsFirebaseData);
+    }
+
+    @Provides
+    ClassesInterfaces.IClassesLevelPresenter provideClassesLevelPresenter(
             DataInterfaces.IEventsData eventsData,
             DataInterfaces.IVenuesData venuesData,
             DataInterfaces.IInstructorsData instructorsData,
             ProvidersInterfaces.ISettingsProvider settingsProvider) {
-        return new ClassesPresenter(classLevelsFirebaseData, venuesData, eventsData, instructorsData, settingsProvider);
+        return new ClassesLevelPresenter(venuesData, eventsData, instructorsData, settingsProvider);
     }
 }

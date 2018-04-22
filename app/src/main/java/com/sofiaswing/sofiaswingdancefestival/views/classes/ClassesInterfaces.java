@@ -19,22 +19,23 @@ public class ClassesInterfaces {
         void setClassesTabs(List<ClassLevelModel> classLevels);
     }
 
+    public interface IClassesLevelView {
+        boolean isTaster();
+        String getClassLevel();
+        void setClasses(List<ClassPresenterModel> classes);
+    }
+
     public interface IPresenter {
         void setView(IView view);
         void start();
         void stop();
+    }
 
-        Observable<List<ClassModel>> getClassesByLevel(String type);
-
-        Observable<List<ClassModel>> getTasterClasses();
-
-        Observable<VenueModel> getVenue(String id);
-        Observable<InstructorModel> getInstructor(String id);
-
+    public interface IClassesLevelPresenter {
+        void setView(IClassesLevelView view);
+        void start();
+        void stop();
         void subscribeForEvent(String eventId, String eventName, int startTimestamp);
-
         void unsubscribeFromEvent(String eventId);
-
-        boolean isSubscribedForEvent(String eventId);
     }
 }

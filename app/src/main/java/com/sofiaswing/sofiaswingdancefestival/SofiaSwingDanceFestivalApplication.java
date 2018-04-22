@@ -9,6 +9,7 @@ import com.sofiaswing.sofiaswingdancefestival.ui.UiModule;
 import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
 import com.sofiaswing.sofiaswingdancefestival.views.about.AboutModule;
 import com.sofiaswing.sofiaswingdancefestival.views.about.AboutView;
+import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassScheduleFragment;
 import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesModule;
 import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesView;
 import com.sofiaswing.sofiaswingdancefestival.views.contactUs.ContactUsModule;
@@ -95,6 +96,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
         void inject(ContactUsView contactUsView);
         void inject(SettingsView settingsView);
         void inject(MapsActivity mapsActivity);
+        void inject(ClassScheduleFragment classScheduleFragment);
     }
 }
 

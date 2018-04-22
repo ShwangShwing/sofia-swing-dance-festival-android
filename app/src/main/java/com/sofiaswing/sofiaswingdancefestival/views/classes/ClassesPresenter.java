@@ -21,21 +21,10 @@ import io.reactivex.schedulers.Schedulers;
 public class ClassesPresenter implements ClassesInterfaces.IPresenter {
     private ClassesInterfaces.IView view;
     private final DataInterfaces.IClassLevelsData classLevelsData;
-    private final DataInterfaces.IVenuesData venuesData;
-    private final DataInterfaces.IEventsData eventsData;
-    private final DataInterfaces.IInstructorsData instructorsData;
-    private final ProvidersInterfaces.ISettingsProvider settingsProvider;
     private final CompositeDisposable disposables;
 
-    public ClassesPresenter(DataInterfaces.IClassLevelsData classLevelsData,
-                            DataInterfaces.IVenuesData venuesData, DataInterfaces.IEventsData eventsData,
-                            DataInterfaces.IInstructorsData instructorsData, ProvidersInterfaces.ISettingsProvider settingsProvider) {
-        this.venuesData = venuesData;
-        this.eventsData = eventsData;
-        this.instructorsData = instructorsData;
-        this.settingsProvider = settingsProvider;
+    public ClassesPresenter(DataInterfaces.IClassLevelsData classLevelsData) {
         this.classLevelsData = classLevelsData;
-
         this.disposables = new CompositeDisposable();
     }
 
@@ -57,40 +46,5 @@ public class ClassesPresenter implements ClassesInterfaces.IPresenter {
     @Override
     public void stop() {
         this.disposables.clear();
-    }
-
-    @Override
-    public Observable<List<ClassModel>> getClassesByLevel(String type) {
-        return this.eventsData.getClassesByLevel(type);
-    }
-
-    @Override
-    public Observable<List<ClassModel>> getTasterClasses() {
-        return this.eventsData.getTasterClasses();
-    }
-
-    @Override
-    public Observable<VenueModel> getVenue(String id) {
-        return this.venuesData.getById(id);
-    }
-
-    @Override
-    public Observable<InstructorModel> getInstructor(String id) {
-        return this.instructorsData.getById(id);
-    }
-
-    @Override
-    public void subscribeForEvent(String eventId, String eventName, int startTimestamp) {
-        this.settingsProvider.subscribeForEvent(eventId, eventName, startTimestamp, 0);
-    }
-
-    @Override
-    public void unsubscribeFromEvent(String eventId) {
-        this.settingsProvider.unsubscribeFromEvent(eventId);
-    }
-
-    @Override
-    public boolean isSubscribedForEvent(String eventId) {
-        return this.settingsProvider.isSubscribedForEvent(eventId);
     }
 }

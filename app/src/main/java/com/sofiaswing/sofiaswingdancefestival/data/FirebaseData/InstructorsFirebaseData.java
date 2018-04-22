@@ -134,6 +134,7 @@ public class InstructorsFirebaseData implements DataInterfaces.IInstructorsData 
                         );
 
                         e.onNext(instructor);
+                        e.onComplete();
                     }
 
                     @Override
