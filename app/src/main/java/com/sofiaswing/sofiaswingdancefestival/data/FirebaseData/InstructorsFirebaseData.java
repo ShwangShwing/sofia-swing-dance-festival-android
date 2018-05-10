@@ -96,7 +96,7 @@ public class InstructorsFirebaseData implements DataInterfaces.IInstructorsData 
                                 }
                             };
 
-                            activeInstructorsDbRef.orderByKey().addChildEventListener(activeChildEventListener);
+                            activeInstructorsDbRef.orderByChild("position").addChildEventListener(activeChildEventListener);
                         });
             }
         });
