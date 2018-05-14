@@ -6,6 +6,7 @@ import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -93,10 +94,13 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
     public void setPartySubscription(int position, boolean subscriptionStatus) {
         PartyViewModel party = partyViewModels.get(position);
         if (subscriptionStatus) {
-            this.settingsProvider.subscribeForEvent(
-                    party.getId(),
-                    party.getName(),
-                    party.getStartTime().getTime() / 1000, 0);
+            Date startTime = party.getStartTime();
+            if (startTime != null) {
+                this.settingsProvider.subscribeForEvent(
+                        party.getId(),
+                        party.getName(),
+                        party.getStartTime().getTime() / 1000, 0);
+            }
         }
         else {
             this.settingsProvider.unsubscribeFromEvent(party.getId());

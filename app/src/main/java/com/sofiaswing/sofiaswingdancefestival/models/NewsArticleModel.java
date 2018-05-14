@@ -14,6 +14,7 @@ public class NewsArticleModel {
 
     public NewsArticleModel(Date postedOn, String imageUrl, String text) {
         this.postedOn = postedOn;
+        if (postedOn == null) this.postedOn = new Date(0);
         this.imageUrl = imageUrl;
         this.text = text;
     }

@@ -23,6 +23,7 @@ import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -147,7 +148,8 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             PartyViewModel partyItem = getItem(position);
 
             LinearLayout llEventContainer = partyRow.findViewById(R.id.ll_event_container);
-            if (partyItem.getEndTime().getTime() <= currentTimestampMs) {
+            Date endTime = partyItem.getEndTime();
+            if (endTime != null && endTime.getTime() <= currentTimestampMs) {
                 llEventContainer.setBackgroundResource(R.color.pastEventBackground);
             }
             else {
@@ -157,10 +159,13 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
-            ((TextView) partyRow.findViewById(R.id.tvTime))
-                    .setText(String.format("%s - %s",
-                            dateFormatter.format(partyItem.getStartTime()),
-                            dateFormatter.format(partyItem.getEndTime())));
+            Date startTime = partyItem.getStartTime();
+            if (startTime != null && endTime != null) {
+                ((TextView) partyRow.findViewById(R.id.tvTime))
+                        .setText(String.format("%s - %s",
+                                dateFormatter.format(startTime),
+                                dateFormatter.format(endTime)));
+            }
 
             ((TextView) partyRow.findViewById(R.id.tvName))
                     .setText(partyItem.getName());

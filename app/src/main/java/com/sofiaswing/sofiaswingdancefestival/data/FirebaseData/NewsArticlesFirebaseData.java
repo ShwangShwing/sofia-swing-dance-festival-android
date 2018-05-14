@@ -75,11 +75,18 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
                                 DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
                                 DataSnapshot textSnapshot = dataSnapshot.child("text");
 
+                                Date postedOn = null;
+                                if (postedOnSnapshot.exists()) {
+                                    try {
+                                        postedOn = new Date(Long.parseLong(postedOnSnapshot.getValue().toString()) * 1000);
+                                    } catch (Exception e) {
+                                        // Do nothing...
+                                    }
+                                }
+
                                 NewsArticleModel article = new NewsArticleModel(
                                         articlePath,
-                                        postedOnSnapshot.exists() ?
-                                                new Date(Long.parseLong(postedOnSnapshot.getValue().toString()) * 1000)
-                                                : null,
+                                        postedOn,
                                         imageUrlSnapshot.exists() ?
                                                 imageUrlSnapshot.getValue().toString()
                                                 : "",

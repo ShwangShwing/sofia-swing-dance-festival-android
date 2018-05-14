@@ -18,8 +18,8 @@ public class PartyViewModel {
 
     public PartyViewModel(String id, Date startTime, Date endTime, String name, VenueModel venue, boolean isSubscribed) {
         this.id = id;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = startTime != null ? startTime : new Date(0);
+        this.endTime = endTime != null ? endTime : new Date(0);
         this.name = name;
         this.venue = venue;
         this.isSubscribed = isSubscribed;

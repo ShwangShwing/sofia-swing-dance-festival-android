@@ -93,6 +93,7 @@ public class VenuesFirebaseData implements DataInterfaces.IVenuesData {
 
     @Override
     public Observable<VenueModel> getById(final String venueId) {
+        if (venueId == null || venueId == "") return Observable.never();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference venueRef = database.getReference(venueId);
 
