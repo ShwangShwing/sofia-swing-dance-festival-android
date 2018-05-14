@@ -301,18 +301,15 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                         classes.add(newClass);
                                     }
 
-                                    Collections.sort(classes, new Comparator<ClassModel>() {
-                                        @Override
-                                        public int compare(ClassModel o1, ClassModel o2) {
-                                            if (o1.getStartTime() == null) {
-                                                return -1;
-                                            }
-                                            else if (o2.getStartTime() == null) {
-                                                return 1;
-                                            }
-
-                                            return (int)(o1.getStartTime().getTime() - o2.getStartTime().getTime());
+                                    Collections.sort(classes, (o1, o2) -> {
+                                        if (o1.getStartTime() == null) {
+                                            return -1;
                                         }
+                                        else if (o2.getStartTime() == null) {
+                                            return 1;
+                                        }
+
+                                        return (int)(o1.getStartTime().getTime() - o2.getStartTime().getTime());
                                     });
 
                                     e.onNext(classes);
