@@ -11,9 +11,11 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
+import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.utils.DrawerItemInfo;
 import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
+import com.sofiaswing.sofiaswingdancefestival.utils.NewsReceiver;
 import com.sofiaswing.sofiaswingdancefestival.views.about.AboutView;
 import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassesView;
 import com.sofiaswing.sofiaswingdancefestival.views.contactUs.ContactUsView;
@@ -30,7 +32,6 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity implements UiInterfaces.INavigationActivity {
-
     private static final String CURRENT_TITLE = "current_title_key";
     private static final String CURRENT_SELECTION = "current_selection";
 
@@ -50,6 +51,12 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
     @Inject
     public UiInterfaces.IDrawerNavigationFactory drawerNavigationFactory;
 
+    @Inject
+    public ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider;
+
+    @Inject
+    ProvidersInterfaces.ISettingsProvider settingsProvider;
+
     private Drawer drawer;
 
     private String currentTitle;
@@ -62,6 +69,13 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
         setContentView(R.layout.activity_main);
 
         this.inject();
+
+        if (this.settingsProvider.areNewsNotificationsEnabled()) {
+            this.pushNotificationsProvider.subscribeForNews();
+        }
+        else {
+            this.pushNotificationsProvider.unsubscribeFromNews();
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,7 +108,12 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
     }
 
     private void handleIntent(Intent intent) {
-        if (intent.hasExtra(EventSubscriptionAlarmReceiver.EVENT_ID_KEY)) {
+        // TODO: think of a way to remove the magic numbers of positions provided to setSelectionAtPosition
+        if (intent.hasExtra(NewsReceiver.NAVIGATE_TO_NEWS_KEY)) {
+            setContentView(NewsView.newInstance(), getString(R.string.news));
+            drawer.setSelectionAtPosition(0);
+        }
+        else if (intent.hasExtra(EventSubscriptionAlarmReceiver.EVENT_ID_KEY)) {
             setContentView(ClassesView.newInstance(), getString(R.string.classes));
             drawer.setSelectionAtPosition(2);
         }
@@ -122,13 +141,13 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
         ArrayList<DrawerItemInfo> items = new ArrayList<>();
 
         items.add(new DrawerItemInfo(MENU_ITEM_NEWS_ID, getString(R.string.news)));
+        items.add(new DrawerItemInfo(MENU_ITEM_INSTRUCTORS_ID, getString(R.string.instructors)));
         items.add(new DrawerItemInfo(MENU_ITEM_CLASSES_ID, getString(R.string.classes)));
         items.add(new DrawerItemInfo(MENU_ITEM_PARTIES_ID, getString(R.string.parties)));
         items.add(new DrawerItemInfo(MENU_ITEM_MY_EVENTS_ID, getString(R.string.my_events)));
         items.add(new DrawerItemInfo(MENU_ITEM_SCHEDULE_ID, getString(R.string.schedule)));
         items.add(new DrawerItemInfo(MENU_ITEM_VENUES_ID, getString(R.string.venues)));
         //items.add(new DrawerItemInfo(MENU_ITEM_MAP_ID, getString(R.string.map)));
-        items.add(new DrawerItemInfo(MENU_ITEM_INSTRUCTORS_ID, getString(R.string.instructors)));
         items.add(new DrawerItemInfo(MENU_ITEM_CONTACTS_ID, getString(R.string.contacts)));
         items.add(new DrawerItemInfo(MENU_ITEM_SETTINGS_ID, getString(R.string.settings)));
         items.add(new DrawerItemInfo(MENU_ITEM_ABOUT_ID, getString(R.string.about)));

@@ -49,6 +49,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     private ArrayAdapter<String> eventNotifyTimeAdapter;
     private List<Long> eventNotifyTimesSeconds;
     private Spinner spinner;
+    private CheckBox cbEnableNewsNotifications;
     private boolean ignoreNextNotificationTimeCallback;
     //the following variables are for enabling some features for debugging
     private GestureDetectorCompat hackerModeGestureDetector;
@@ -124,6 +125,11 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
             eventNotifyTimeAdapter.add(String.format("%d %s", seconds / 60, this.getString(R.string.minutes)));
             this.spinner.setSelection(eventNotifyTimesSeconds.size() - 1);
         }
+    }
+
+    @Override
+    public void setAreEnabledNewsNotifications(boolean areEnabled) {
+        this.cbEnableNewsNotifications.setChecked(areEnabled);
     }
 
     @Override
@@ -231,6 +237,11 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+        });
+
+        this.cbEnableNewsNotifications = root.findViewById(R.id.cb_enable_news_notifications);
+        this.cbEnableNewsNotifications.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            this.presenter.changeNewsNotificationSetting(isChecked);
         });
     }
 

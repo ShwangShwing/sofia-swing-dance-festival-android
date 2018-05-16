@@ -29,6 +29,23 @@
                     android:layout_height="wrap_content"></Spinner>
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/news_notifications" />
+
+                <CheckBox
+                    android:id="@+id/cb_enable_news_notifications"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/ll_hacker_panel"
                 android:layout_width="match_parent"

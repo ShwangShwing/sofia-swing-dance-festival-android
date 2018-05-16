@@ -37,6 +37,10 @@ public class ProvidersInterfaces {
         void setupAllNotificationAlarms();
 
         List<String> getSubscribedEventsIds();
+
+        boolean areNewsNotificationsEnabled();
+        void enableNewsNotifications();
+        void disableNewsNotifications();
     }
 
     public interface ICurrentTimeProvider {
@@ -56,5 +60,10 @@ public class ProvidersInterfaces {
         boolean isCurrentOverridenTimeFrozen();
         long getOverridenTimeMs();
         long getTimeOverridenAtMs();
+    }
+
+    public interface IPushNotificationsProvider {
+        void subscribeForNews();
+        void unsubscribeFromNews();
     }
 }

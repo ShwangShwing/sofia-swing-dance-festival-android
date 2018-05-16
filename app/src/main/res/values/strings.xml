@@ -46,4 +46,5 @@
     <string name="override_time">Override time</string>
     <string name="set_time_override_settings">Set time override settings</string>
     <string name="misc_event">Miscalaneous event</string>
+    <string name="news_notifications">News notifications</string>
 </resources>

@@ -24,6 +24,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
     private final int DEFAULT_EVENT_NOTIFICATION_TIME_S = 45 * 60;
 
     private final String SETTING_ID_NOTIFICATION_ADVANCE_TIME_SECONDS = "notification_advance_time_seconds";
+    private final String SETTING_ID_ARE_NEWS_NOTIFICATIONS_DISABLED = "news_notifications_enabled";
 
     private final Context context;
     private SettingsDbHelper dbHelper;
@@ -240,6 +241,22 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
         cursor.close();
 
         return result;
+    }
+
+    @Override
+    public boolean areNewsNotificationsEnabled() {
+        // reverse conditions set the initial state of the setting to be "enabled"
+        return !this.getSettingValueById(SETTING_ID_ARE_NEWS_NOTIFICATIONS_DISABLED).equals("true");
+    }
+
+    @Override
+    public void enableNewsNotifications() {
+        this.setSettingValue(SETTING_ID_ARE_NEWS_NOTIFICATIONS_DISABLED, "false");
+    }
+
+    @Override
+    public void disableNewsNotifications() {
+        this.setSettingValue(SETTING_ID_ARE_NEWS_NOTIFICATIONS_DISABLED, "true");
     }
 
     private String getSettingValueById(String settingId) {

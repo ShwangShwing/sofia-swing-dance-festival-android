@@ -3,6 +3,7 @@ package com.sofiaswing.sofiaswingdancefestival.providers;
 import android.content.Context;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
+import com.sofiaswing.sofiaswingdancefestival.providers.Firebase.FirebaseCloudMessagingProvider;
 
 import dagger.Module;
 import dagger.Provides;
@@ -59,5 +60,10 @@ public class ProvidersModule {
     @Provides
     ProvidersInterfaces.ICurrentTimeProvider provideCurrentTimeProvider(ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
         return new CurrentTimeProvider(volatileSettingsProvider);
+    }
+
+    @Provides
+    ProvidersInterfaces.IPushNotificationsProvider providePushNotificationProvider() {
+        return new FirebaseCloudMessagingProvider();
     }
 }

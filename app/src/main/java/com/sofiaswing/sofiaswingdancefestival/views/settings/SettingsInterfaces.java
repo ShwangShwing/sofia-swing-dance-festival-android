@@ -1,7 +1,5 @@
 package com.sofiaswing.sofiaswingdancefestival.views.settings;
 
-import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
-
 import java.util.List;
 
 /**
@@ -11,6 +9,8 @@ import java.util.List;
 public class SettingsInterfaces {
     public interface IView {
         void setEventNotificationTimeSelection(long seconds);
+
+        void setAreEnabledNewsNotifications(boolean areEnabled);
 
         void notifyHackerModeEnabled();
         void showHackerModeEnabledIndicator();
@@ -32,6 +32,7 @@ public class SettingsInterfaces {
         void stop();
 
         void setEventsNotificationAdvanceTimeSeconds(long seconds);
+        void changeNewsNotificationSetting(boolean areEnabled);
         void enableHackerMode();
         void setYearFromDatabase();
         void setCustomYear(String customYear);

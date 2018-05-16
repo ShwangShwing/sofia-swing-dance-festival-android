@@ -17,15 +17,17 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     private final ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
     private final DataInterfaces.ISsdfYearsData ssdfYearsData;
     private final ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
+    private final ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider;
     private Disposable ssdfYearsObs;
 
     public SettingsPresenter(ProvidersInterfaces.ISettingsProvider settingsProvider,
                              ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider,
-                             DataInterfaces.ISsdfYearsData ssdfYearsData, ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider) {
+                             DataInterfaces.ISsdfYearsData ssdfYearsData, ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider, ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider) {
         this.settingsProvider = settingsProvider;
         this.volatileSettingsProvider = volatileSettingsProvider;
         this.ssdfYearsData = ssdfYearsData;
         this.currentTimeProvider = currentTimeProvider;
+        this.pushNotificationsProvider = pushNotificationsProvider;
     }
 
     @Override
@@ -36,6 +38,7 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     @Override
     public void start() {
         this.view.setEventNotificationTimeSelection(settingsProvider.getEventsNotificationAdvanceTimeSeconds());
+        this.view.setAreEnabledNewsNotifications(this.settingsProvider.areNewsNotificationsEnabled());
         this.updateHackerPanelAndIndicator();
         this.updateCustomYearFields();
         this.updateOverrideTimeSettings();
@@ -52,6 +55,18 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     public void setEventsNotificationAdvanceTimeSeconds(long seconds) {
         settingsProvider.setEventsNotificationAdvanceTimeSeconds(seconds);
         settingsProvider.setupAllNotificationAlarms(); // to reacalculate the alarm times
+    }
+
+    @Override
+    public void changeNewsNotificationSetting(boolean areEnabled) {
+        if (areEnabled) {
+            this.settingsProvider.enableNewsNotifications();
+            this.pushNotificationsProvider.subscribeForNews();
+        }
+        else {
+            this.settingsProvider.disableNewsNotifications();
+            this.pushNotificationsProvider.unsubscribeFromNews();
+        }
     }
 
     @Override
