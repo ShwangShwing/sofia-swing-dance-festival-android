@@ -144,7 +144,7 @@ public class VenuesFirebaseData implements DataInterfaces.IVenuesData {
                         : "No name in the database!",
                 addressSnapshot.exists() ? addressSnapshot.getValue().toString()
                         : "",
-                imageUrlSnapshot.exists() ? imageUrlSnapshot.getValue().toString()
+                imageUrlSnapshot.exists() && !imageUrlSnapshot.getValue().toString().isEmpty() ? imageUrlSnapshot.getValue().toString()
                         : "https://sofiaswing.com/wp-content/uploads/2017/11/SSDF2017-logo-6.png",
                 youTubeUrlSnapshot.exists() ? youTubeUrlSnapshot.getValue().toString()
                         : "",

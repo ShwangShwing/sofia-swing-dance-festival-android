@@ -2,6 +2,9 @@ package com.sofiaswing.sofiaswingdancefestival.ui;
 
 import android.app.Activity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -23,6 +26,8 @@ public class DrawerNavigationFactory implements UiInterfaces.IDrawerNavigationFa
         ArrayList<PrimaryDrawerItem> items = new ArrayList<PrimaryDrawerItem>();
         for (DrawerItemInfo itemInfo : activity.getNavigationItems()) {
             items.add(new PrimaryDrawerItem()
+                    .withTextColorRes(R.color.md_white_1000)
+                    .withSelectedColorRes(R.color.selectedDrawerBackground)
                     .withIdentifier(itemInfo.getId())
                     .withName(itemInfo.getDisplayName()));
         }
@@ -33,6 +38,9 @@ public class DrawerNavigationFactory implements UiInterfaces.IDrawerNavigationFa
                 .withOnDrawerItemClickListener(activity.getNavigationItemClickListener())
                 .withSelectedItem(0)
                 .build();
+        View backgroundImage = ((Activity)activity).getLayoutInflater().inflate(R.layout.menu_background, drawer.getContent());
+        RelativeLayout content = drawer.getSlider();
+        content.addView(backgroundImage, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         return drawer;
     }
 }
