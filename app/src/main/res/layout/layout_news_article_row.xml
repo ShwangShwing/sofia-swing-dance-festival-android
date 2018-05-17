@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:textColor="#ffd8b3"
+            android:textColor="@color/colorTime"
             android:text="2014-01-16 13:00" />
 
         <TextView
