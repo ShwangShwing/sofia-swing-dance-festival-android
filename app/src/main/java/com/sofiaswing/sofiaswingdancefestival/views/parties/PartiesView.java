@@ -71,6 +71,10 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PartyViewModel partyItem = partiesAdapter.getItem(position);
+                Date endTime = partyItem.getEndTime();
+                if (endTime != null && endTime.getTime() <= currentTimestampMs) {
+                    return;
+                }
 
                 if (partyItem.isSubscribed()) {
                     presenter.setPartySubscription(position, false);
@@ -148,12 +152,20 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             PartyViewModel partyItem = getItem(position);
 
             LinearLayout llEventContainer = partyRow.findViewById(R.id.ll_event_container);
+            TextView notifyView = partyRow.findViewById(R.id.tvIsSubscribed);
             Date endTime = partyItem.getEndTime();
-            if (endTime != null && endTime.getTime() <= currentTimestampMs) {
+            boolean isPastEvent = endTime != null && endTime.getTime() <= currentTimestampMs;
+            if (isPastEvent) {
                 llEventContainer.setBackgroundResource(R.color.pastEventBackground);
-            }
-            else {
-                llEventContainer.setBackgroundResource(R.color.pendingEventBackground);
+                notifyView.setVisibility(View.VISIBLE);
+                notifyView.setText("Past event");
+            } else if (partyItem.isSubscribed()) {
+                llEventContainer.setBackgroundResource(android.R.color.transparent);
+                notifyView.setVisibility(View.VISIBLE);
+                notifyView.setText("Notify me!");
+            } else {
+                llEventContainer.setBackgroundResource(android.R.color.transparent);
+                notifyView.setVisibility(View.GONE);
             }
 
             DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
@@ -174,13 +186,6 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             if (partyVenue != null) {
                 ((TextView) partyRow.findViewById(R.id.tvVenue))
                         .setText(partyVenue.getName());
-            }
-
-            if (partyItem.isSubscribed()) {
-                partyRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
-            }
-            else {
-                partyRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.GONE);
             }
 
             return partyRow;
