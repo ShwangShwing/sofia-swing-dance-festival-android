@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="venue_card_height">250dp</dimen>
+    <dimen name="material_drawer_item_primary_text">17sp</dimen>
+    <dimen name="material_drawer_vertical_padding">20dp</dimen>
+    <dimen name="material_drawer_item_primary">50dp</dimen>
 </resources>

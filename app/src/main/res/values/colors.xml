@@ -9,4 +9,5 @@
     <color name="colorAccent">#f8a835</color>
     <color name="colorTitle">#113939</color>
     <color name="colorNotifyMe">#FFD600</color>
+    <color name="selectedDrawerBackground">#a6ffffff</color>
 </resources>
