@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,6 +15,7 @@ import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
+import com.sofiaswing.sofiaswingdancefestival.utils.DimensionUtils;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -34,10 +34,10 @@ import javax.inject.Inject;
  * A simple {@link Fragment} subclass.
  */
 public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
-    private final int VENUE_WIDTH = 250;
-    private final int HEADER_HEIGHT = 200;
-    private final int EVENT_HEIGHT = 200;
-    private final float DIP_PER_MINUTE = 10;
+    private final int VENUE_WIDTH = 95;
+    private final int HEADER_HEIGHT = 55;
+    private final int EVENT_HEIGHT = 95;
+    private final float DIP_PER_MINUTE = 3.5f;
     private final int HEADER_TIME_INTERVAL_MINUTES = 30;
 
     @Inject
@@ -52,6 +52,11 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
     // every event must change color when it expires. The key is the timestamp in ms when it should
     // expire and the contents is the layout itself that should change color
     private SortedMap<Long, List<LinearLayout>> eventContainerWithExpireTime;
+
+    private int EVENT_HEIGHT_PX;
+    private int VENUE_WIDTH_PX;
+    private int HEADER_HEIGHT_PX;
+    private int DIP_PER_MINUTE_PX;
 
     public static ScheduleView newInstance() {
         ScheduleView fragment = new ScheduleView();
@@ -68,6 +73,11 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         super.onCreate(savedInstanceState);
         inject();
         presenter.setView(this);
+
+        EVENT_HEIGHT_PX = DimensionUtils.dipToPixels(getContext(), EVENT_HEIGHT);
+        VENUE_WIDTH_PX = DimensionUtils.dipToPixels(getContext(), VENUE_WIDTH);
+        HEADER_HEIGHT_PX = DimensionUtils.dipToPixels(getContext(), HEADER_HEIGHT);
+        DIP_PER_MINUTE_PX = DimensionUtils.dipToPixels(getContext(), DIP_PER_MINUTE);
     }
 
     @Override
@@ -157,13 +167,13 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             tvScheduleView.setText(dateAsString);
 
             int width = Math.min(
-                    (int) (SECONDS_IN_A_DAY / 60 * DIP_PER_MINUTE),
-                    (int) ((this.maxScheduleTimestampMs - curDayStartTimestamp) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE));
+                    (int) (SECONDS_IN_A_DAY / 60 * DIP_PER_MINUTE_PX),
+                    (int) ((this.maxScheduleTimestampMs - curDayStartTimestamp) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE_PX));
             this.addViewToSchedule(
-                    (int) ((curDayStartTimestamp - this.minScheduleTimestampMs) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE),
+                    (int) ((curDayStartTimestamp - this.minScheduleTimestampMs) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE_PX),
                     0,
                     width,
-                    HEADER_HEIGHT / 2,
+                    HEADER_HEIGHT_PX / 2,
                     dayView);
 
             curDayStartTimestamp += MILISECONDS_IN_A_DAY;
@@ -188,10 +198,10 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             tvScheduleTime.setText(timeAsString);
 
             this.addViewToSchedule(
-                    (int) ((curDayStartTimestamp - this.minScheduleTimestampMs) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE),
-                    HEADER_HEIGHT / 2,
-                    (int) (HEADER_TIME_INTERVAL_MINUTES * DIP_PER_MINUTE),
-                    HEADER_HEIGHT / 2,
+                    (int) ((curDayStartTimestamp - this.minScheduleTimestampMs) / MILISECONDS_IN_A_MINUTE * DIP_PER_MINUTE_PX),
+                    HEADER_HEIGHT_PX / 2,
+                    (int) (HEADER_TIME_INTERVAL_MINUTES * DIP_PER_MINUTE_PX),
+                    HEADER_HEIGHT_PX / 2,
                     timeView);
         }
     }
@@ -202,9 +212,9 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         tvVenueName.setText(venue.getName());
 
         RelativeLayout.LayoutParams params =
-                new RelativeLayout.LayoutParams(VENUE_WIDTH, EVENT_HEIGHT);
+                new RelativeLayout.LayoutParams(VENUE_WIDTH_PX, EVENT_HEIGHT_PX);
         params.leftMargin = 0;
-        params.topMargin = HEADER_HEIGHT + venueRowIndex * EVENT_HEIGHT;
+        params.topMargin = HEADER_HEIGHT_PX + venueRowIndex * EVENT_HEIGHT_PX;
 
         RelativeLayout lvVenuesContainer = this.getView().findViewById(R.id.rl_venues_container);
         lvVenuesContainer.addView(venueView, params);
@@ -261,13 +271,13 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
 
         int eventLengthInMinutes = (int) (event.getEndTime().getTime() - event.getStartTime().getTime()) / (60 * 1000);
         int eventStartRelativeToFirstInMinutes = (int) (event.getStartTime().getTime() - this.minScheduleTimestampMs) / (60 * 1000);
-        int cellLeftMargin = (int) (eventStartRelativeToFirstInMinutes * DIP_PER_MINUTE);
-        int cellWidth = (int) (DIP_PER_MINUTE * eventLengthInMinutes);
-        int cellHeight = EVENT_HEIGHT;
+        int cellLeftMargin = eventStartRelativeToFirstInMinutes * DIP_PER_MINUTE_PX;
+        int cellWidth = DIP_PER_MINUTE_PX * eventLengthInMinutes;
+        int cellHeight = EVENT_HEIGHT_PX;
 
         this.addViewToSchedule(
                 cellLeftMargin,
-                HEADER_HEIGHT + EVENT_HEIGHT * venueRowIndex,
+                HEADER_HEIGHT_PX + EVENT_HEIGHT_PX * venueRowIndex,
                 cellWidth,
                 cellHeight,
                 eventView);
@@ -286,7 +296,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         if (currentTimeMs < this.maxScheduleTimestampMs) {
             long delayAfterMs;
             if (this.minScheduleTimestampMs < currentTimeMs) {
-                delayAfterMs = (long) (60d * 1000d / DIP_PER_MINUTE);
+                delayAfterMs = (long) (60d * 1000d / DIP_PER_MINUTE_PX);
             } else {
                 delayAfterMs = (this.minScheduleTimestampMs - currentTimeMs);
             }
@@ -299,8 +309,8 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             this.schedule.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             int scheduleHeight = this.schedule.getMeasuredHeight();
             RelativeLayout.LayoutParams params =
-                    new RelativeLayout.LayoutParams((int) DIP_PER_MINUTE, scheduleHeight);
-            params.leftMargin = (int) (DIP_PER_MINUTE * (currentTimeMs - this.minScheduleTimestampMs) / 1000 / 60);
+                    new RelativeLayout.LayoutParams(DIP_PER_MINUTE_PX, scheduleHeight);
+            params.leftMargin = (int) (DIP_PER_MINUTE_PX * (currentTimeMs - this.minScheduleTimestampMs) / 1000 / 60);
             params.topMargin = 0;
             verticalLine.setBackgroundColor(
                     this.getResources().getColor(R.color.scheduleCurrentTimeLine));
