@@ -20,6 +20,8 @@ import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -149,14 +151,23 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
             EventViewModel eventItem = getItem(position);
 
             LinearLayout llEventContainer = eventRow.findViewById(R.id.ll_event_container);
-            if (eventItem.getEndTime().getTime() <= currentTimestampMs) {
+            TextView notifyView = eventRow.findViewById(R.id.tvIsSubscribed);
+            Date endTime = eventItem.getEndTime();
+            boolean isPastEvent = endTime != null && endTime.getTime() <= currentTimestampMs;
+            if (isPastEvent) {
                 llEventContainer.setBackgroundResource(R.color.pastEventBackground);
-            }
-            else {
-                llEventContainer.setBackgroundResource(R.color.pendingEventBackground);
+                notifyView.setVisibility(View.VISIBLE);
+                notifyView.setText("Past event");
+            } else if (eventItem.isSubscribed()) {
+                llEventContainer.setBackgroundResource(android.R.color.transparent);
+                notifyView.setVisibility(View.VISIBLE);
+                notifyView.setText("Notify me!");
+            } else {
+                llEventContainer.setBackgroundResource(android.R.color.transparent);
+                notifyView.setVisibility(View.GONE);
             }
 
-            DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM d, HH:mm", Locale.getDefault());
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
             ((TextView) eventRow.findViewById(R.id.tvTime))
@@ -191,13 +202,6 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
             if (eventVenue != null) {
                 ((TextView) eventRow.findViewById(R.id.tvVenue))
                         .setText(eventVenue.getName());
-            }
-
-            if (eventItem.isSubscribed()) {
-                eventRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
-            }
-            else {
-                eventRow.findViewById(R.id.tvIsSubscribed).setVisibility(View.GONE);
             }
 
             return eventRow;

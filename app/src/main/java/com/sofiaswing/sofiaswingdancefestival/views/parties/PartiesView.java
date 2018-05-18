@@ -22,6 +22,7 @@ import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -168,7 +169,7 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
                 notifyView.setVisibility(View.GONE);
             }
 
-            DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM d, HH:mm", Locale.getDefault());
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
             Date startTime = partyItem.getStartTime();
