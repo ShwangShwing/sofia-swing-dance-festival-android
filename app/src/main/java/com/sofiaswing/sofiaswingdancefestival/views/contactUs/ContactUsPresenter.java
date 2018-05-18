@@ -22,7 +22,9 @@ public class ContactUsPresenter implements ContactUsInterfaces.IPresenter {
     @Override
     public void start() {
         List<ContactViewModel> contacts = new ArrayList<>();
-        contacts.add(new ContactViewModel("Yavor Kunchev", "+359896878308"));
+        contacts.add(new ContactViewModel("Yavor", "+359888222011"));
+        contacts.add(new ContactViewModel("Damyan", "+359888680233"));
+        contacts.add(new ContactViewModel("Sonia", "+359888615441"));
 
         this.view.setContacts(contacts);
     }

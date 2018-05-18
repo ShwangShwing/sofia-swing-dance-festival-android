@@ -13,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +66,16 @@ public class ContactUsView extends Fragment implements ContactUsInterfaces.IView
         View root = inflater.inflate(R.layout.fragment_contact_us_view, container, false);
 
         this.contactsAdapter = new ContactsAdapter(root.getContext(), android.R.layout.simple_list_item_1);
-        ((ListView) root.findViewById(R.id.lvContacts)).setAdapter(this.contactsAdapter);
+        ListView lvContacts = root.findViewById(R.id.lvContacts);
+        lvContacts.setAdapter(this.contactsAdapter);
+
+        View footer = inflater.inflate(R.layout.contacts_footer_links, container, false);
+        TextView tvLinkSSDF = footer.findViewById(R.id.link_ssdf);
+        tvLinkSSDF.setClickable(true);
+        tvLinkSSDF.setText(Html.fromHtml("<a href=\"http://sofiaswing.com\">Sofia swing dance festival</a>"));
+        tvLinkSSDF.setMovementMethod(LinkMovementMethod.getInstance());
+
+        lvContacts.addFooterView(footer);
 
         return root;
     }
