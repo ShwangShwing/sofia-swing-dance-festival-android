@@ -27,6 +27,7 @@ public class DrawerNavigationFactory implements UiInterfaces.IDrawerNavigationFa
         for (DrawerItemInfo itemInfo : activity.getNavigationItems()) {
             items.add(new PrimaryDrawerItem()
                     .withTextColorRes(R.color.md_white_1000)
+                    .withSelectedTextColorRes(R.color.md_white_1000)
                     .withSelectedColorRes(R.color.selectedDrawerBackground)
                     .withIdentifier(itemInfo.getId())
                     .withName(itemInfo.getDisplayName()));
