@@ -1,8 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sofiaswing.sofiaswingdancefestival.views.settings.SettingsActivity">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -11,6 +9,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -21,6 +21,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="16sp"
                     android:text="@string/saved_events_notifications" />
 
                 <Spinner
@@ -35,15 +36,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/news_notifications" />
-
                 <CheckBox
                     android:id="@+id/cb_enable_news_notifications"
                     android:layout_width="wrap_content"
+                    android:padding="0dp"
+                    android:layout_marginLeft="-7dp"
                     android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="@string/news_notifications" />
             </LinearLayout>
 
             <LinearLayout
@@ -213,6 +217,7 @@
                         android:layout_width="117dp"
                         android:layout_height="117dp"
                         android:scaleType="centerInside"
+                        android:layout_marginTop="50dp"
                         android:src="@drawable/vintage_gramophone" />
 
                     <ImageView
