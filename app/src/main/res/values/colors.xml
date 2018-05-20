@@ -11,4 +11,5 @@
     <color name="colorNotifyMe">#FFD600</color>
     <color name="selectedDrawerBackground">#92fcb044</color>
     <color name="colorTime">#ffd8b3</color>
+    <color name="taxiMeColor">#FFCA06</color>
 </resources>

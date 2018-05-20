@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/taxiMeColor"
+            tools:context=".views.taxiMe.TaxiMeView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgPromoCode"
+            android:layout_width="270dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/taxi_me_promo_code"/>
+
+        <ImageView
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/taxi_me_steps"/>
+
+        <Button
+            android:id="@+id/btnGoToTaxiMe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/md_black_1000"
+            android:text="Go to app"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:textColor="@color/md_black_1000"
+            android:textSize="12sp"
+            android:text="*valid for new clients' first ride"/>
+    </LinearLayout>
+
+</ScrollView>

@@ -25,6 +25,7 @@ import com.sofiaswing.sofiaswingdancefestival.views.news.NewsView;
 import com.sofiaswing.sofiaswingdancefestival.views.parties.PartiesView;
 import com.sofiaswing.sofiaswingdancefestival.views.schedule.ScheduleView;
 import com.sofiaswing.sofiaswingdancefestival.views.settings.SettingsView;
+import com.sofiaswing.sofiaswingdancefestival.views.taxiMe.TaxiMeView;
 import com.sofiaswing.sofiaswingdancefestival.views.venues.VenuesView;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
     private static final int MENU_ITEM_MY_EVENTS_ID = 5;
     private static final int MENU_ITEM_SCHEDULE_ID = 6;
     private static final int MENU_ITEM_VENUES_ID = 7;
-    private static final int MENU_ITEM_MAP_ID = 8;
+    private static final int MENU_ITEM_TAXI_ME_ID = 8;
     private static final int MENU_ITEM_CONTACTS_ID = 9;
     private static final int MENU_ITEM_SETTINGS_ID = 10;
     private static final int MENU_ITEM_ABOUT_ID = 11;
@@ -147,8 +148,8 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
         items.add(new DrawerItemInfo(MENU_ITEM_MY_EVENTS_ID, getString(R.string.my_events)));
         items.add(new DrawerItemInfo(MENU_ITEM_SCHEDULE_ID, getString(R.string.schedule)));
         items.add(new DrawerItemInfo(MENU_ITEM_VENUES_ID, getString(R.string.venues)));
-        //items.add(new DrawerItemInfo(MENU_ITEM_MAP_ID, getString(R.string.map)));
         items.add(new DrawerItemInfo(MENU_ITEM_CONTACTS_ID, getString(R.string.contacts)));
+        items.add(new DrawerItemInfo(MENU_ITEM_TAXI_ME_ID, getString(R.string.taxi_me)));
         items.add(new DrawerItemInfo(MENU_ITEM_SETTINGS_ID, getString(R.string.settings)));
         items.add(new DrawerItemInfo(MENU_ITEM_ABOUT_ID, getString(R.string.about)));
 
@@ -184,6 +185,9 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
                         break;
                     case MENU_ITEM_CONTACTS_ID:
                         setContentView(ContactUsView.newInstance(), getString(R.string.contacts));
+                        break;
+                    case MENU_ITEM_TAXI_ME_ID:
+                        setContentView(TaxiMeView.newInstance(), getString(R.string.taxi_me));
                         break;
                     case MENU_ITEM_SETTINGS_ID:
                         setContentView(SettingsView.newInstance(), getString(R.string.settings));
