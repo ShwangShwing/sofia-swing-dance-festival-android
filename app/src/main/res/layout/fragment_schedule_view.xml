@@ -17,6 +17,7 @@
                 android:id="@+id/rl_venues_container"
                 android:orientation="vertical"></RelativeLayout>
             <HorizontalScrollView
+                android:id="@+id/hsv_schedule_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="none">

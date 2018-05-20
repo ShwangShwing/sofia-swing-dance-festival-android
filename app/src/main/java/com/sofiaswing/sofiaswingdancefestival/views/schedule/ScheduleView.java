@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
     private long maxScheduleTimestampMs;
     private View verticalLine = null;
     private boolean isRunning = false;
+    private boolean isFirstScheduleLoading = true;
     // every event must change color when it expires. The key is the timestamp in ms when it should
     // expire and the contents is the layout itself that should change color
     private SortedMap<Long, List<LinearLayout>> eventContainerWithExpireTime;
@@ -129,7 +131,8 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             }
         }
 
-        this.putVerticalTimelineAndMarkPassedEvents();
+        this.putVerticalTimelineAndMarkPassedEvents(this.isFirstScheduleLoading);
+        this.isFirstScheduleLoading = false;
     }
 
     private void inject() {
@@ -283,7 +286,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                 eventView);
     }
 
-    private void putVerticalTimelineAndMarkPassedEvents() {
+    private void putVerticalTimelineAndMarkPassedEvents(boolean scrollToTime) {
         if (!this.isRunning) {
             return;
         }
@@ -301,7 +304,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                 delayAfterMs = (this.minScheduleTimestampMs - currentTimeMs);
             }
 
-            new android.os.Handler().postDelayed(() -> this.putVerticalTimelineAndMarkPassedEvents(), delayAfterMs);
+            new android.os.Handler().postDelayed(() -> this.putVerticalTimelineAndMarkPassedEvents(false), delayAfterMs);
         }
 
         if (this.minScheduleTimestampMs < currentTimeMs && currentTimeMs < this.maxScheduleTimestampMs) {
@@ -316,6 +319,18 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
                     this.getResources().getColor(R.color.scheduleCurrentTimeLine));
             verticalLine.setLayoutParams(params);
             schedule.addView(verticalLine, params);
+            if (scrollToTime) {
+                HorizontalScrollView hsvScheduleContainer = this.getView().findViewById(R.id.hsv_schedule_container);
+
+                hsvScheduleContainer.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+                    public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                        hsvScheduleContainer.scrollTo(params.leftMargin, 0);
+                        hsvScheduleContainer.removeOnLayoutChangeListener(this);
+                    }
+                });
+
+            }
         }
 
         // Mark passed events
