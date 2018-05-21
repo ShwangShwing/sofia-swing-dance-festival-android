@@ -10,8 +10,8 @@ import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,7 +20,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -55,7 +54,7 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
 
                         activeArticlesDbRef = databaseReference;
                         activeChildEventListener = new ChildEventListener() {
-                            private List<NewsArticleModel> newsArticles = new ArrayList<NewsArticleModel>();
+                            private LinkedList<NewsArticleModel> newsArticles = new LinkedList<>();
 
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -95,7 +94,7 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
                                                 : "No text. Problem with the database!"
                                 );
 
-                                newsArticles.add(article);
+                                newsArticles.push(article);
                                 e.onNext(newsArticles);
                             }
 
@@ -120,7 +119,7 @@ public class NewsArticlesFirebaseData implements DataInterfaces.INewsArticlesDat
                             }
                         };
 
-                        activeArticlesDbRef.orderByKey().addChildEventListener(activeChildEventListener);
+                        activeArticlesDbRef.orderByChild("postedOn").addChildEventListener(activeChildEventListener);
                     });
 
             }
