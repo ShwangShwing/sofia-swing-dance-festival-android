@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
@@ -102,10 +103,13 @@ public class InstructorsView extends Fragment implements InstructorsInterfaces.I
     }
 
     @Override
-    public void navigateToInstructor(String instructorId) {
-        Intent intent = new Intent(this.getContext(), InstructorDetailsActivity.class);
-        intent.putExtra(InstructorDetailsActivity.INSTRUCTOR_ID_KEY, instructorId);
-        this.startActivity(intent);
+    public void navigateToInstructor(String descriptionUrl) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(descriptionUrl));
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(getContext(), "Description not found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void inject() {

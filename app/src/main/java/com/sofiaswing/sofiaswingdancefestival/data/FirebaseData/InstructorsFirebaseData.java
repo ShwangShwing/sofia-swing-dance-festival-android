@@ -60,6 +60,7 @@ public class InstructorsFirebaseData implements DataInterfaces.IInstructorsData 
                                     DataSnapshot nameSnapshot = dataSnapshot.child("name");
                                     DataSnapshot imageUrlSnapshot = dataSnapshot.child("imageUrl");
                                     DataSnapshot typeSnapshot = dataSnapshot.child("type");
+                                    DataSnapshot descriptionSnapshot = dataSnapshot.child("description");
 
                                     InstructorModel instructor = new InstructorModel(
                                             instructorPath,
@@ -68,7 +69,9 @@ public class InstructorsFirebaseData implements DataInterfaces.IInstructorsData 
                                             imageUrlSnapshot.exists() ? imageUrlSnapshot.getValue().toString()
                                                     : "No image url! Problem with the database!",
                                             typeSnapshot.exists() ? typeSnapshot.getValue().toString()
-                                                    : "No instructor type! Problem with the database!"
+                                                    : "No instructor type! Problem with the database!",
+                                            descriptionSnapshot.exists() ? descriptionSnapshot.getValue().toString()
+                                                    : "No description! Problem with the database!"
                                     );
 
                                     instructors.add(instructor);

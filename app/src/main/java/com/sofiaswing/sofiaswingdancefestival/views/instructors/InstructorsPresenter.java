@@ -56,6 +56,6 @@ public class InstructorsPresenter implements InstructorsInterfaces.IPresenter{
 
     @Override
     public void selectInstructor(int index) {
-        this.view.navigateToInstructor(instructors.get(index).getId());
+        this.view.navigateToInstructor(instructors.get(index).getDescription());
     }
 }

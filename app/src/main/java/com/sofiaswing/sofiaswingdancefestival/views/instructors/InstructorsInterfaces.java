@@ -12,7 +12,7 @@ import java.util.List;
 public class InstructorsInterfaces {
     public interface IView {
         void setInstructors(List<InstructorModel> newsArticles);
-        void navigateToInstructor(String instructorId);
+        void navigateToInstructor(String descriptionUrl);
     }
 
     public interface IPresenter {
