@@ -124,8 +124,8 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
             drawer.setSelectionAtPosition(0);
         }
         else if (intent.hasExtra(EventSubscriptionAlarmReceiver.EVENT_ID_KEY)) {
-            setContentView(ClassesView.newInstance(), getString(R.string.classes));
-            drawer.setSelectionAtPosition(2);
+            setContentView(MyEventsView.newInstance(), getString(R.string.my_events));
+            drawer.setSelectionAtPosition(4);
         }
         // delete extras, because they are already handled
         intent.replaceExtras(new Bundle());
