@@ -66,4 +66,12 @@ public class ProvidersModule {
     ProvidersInterfaces.IPushNotificationsProvider providePushNotificationProvider() {
         return new FirebaseCloudMessagingProvider();
     }
+
+    @Provides
+    ProvidersInterfaces.IEventSubscriptionRefresher provideEventSubscriptionRefresher(
+            DataInterfaces.IEventsData eventsData,
+            ProvidersInterfaces.ISettingsProvider settingsProvider
+    ) {
+        return new EventSubscriptionRefresher(eventsData, settingsProvider);
+    }
 }

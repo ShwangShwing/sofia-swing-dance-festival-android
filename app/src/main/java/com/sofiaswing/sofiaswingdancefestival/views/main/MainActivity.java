@@ -56,7 +56,10 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
     public ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider;
 
     @Inject
-    ProvidersInterfaces.ISettingsProvider settingsProvider;
+    public ProvidersInterfaces.ISettingsProvider settingsProvider;
+
+    @Inject
+    public ProvidersInterfaces.IEventSubscriptionRefresher eventSubscriptionRefresher;
 
     private Drawer drawer;
 
@@ -93,6 +96,12 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
         }
 
         this.handleIntent(getIntent());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.eventSubscriptionRefresher.refreshEventSubscriptions();
     }
 
     @Override

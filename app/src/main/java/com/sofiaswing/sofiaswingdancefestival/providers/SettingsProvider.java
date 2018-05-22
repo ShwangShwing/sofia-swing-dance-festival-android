@@ -117,6 +117,49 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
     }
 
     @Override
+    public synchronized void updateEventSubscription(String eventId, String eventName, long startTimestamp, long notifyTimestamp) {
+        if (this.isSubscribedForEvent(eventId)) {
+            while (this.database == null) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+
+            String[] projection = {
+                    SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_START_TIME,
+            };
+
+            String[] selArgs = { eventId };
+            Cursor cursor = this.database.query(
+                    SettingsContract.EventSubscriptions.TABLE_NAME,                     // The table to query
+                    projection,                               // The columns to return
+                    String.format("%s = ?", SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_ID),                                // The columns for the WHERE clause
+                    selArgs ,                            // The values for the WHERE clause
+                    null,                                     // don't group the rows
+                    null,                                     // don't filter by row groups
+                    null                                 // The sort order
+            );
+
+            int dbStartTimestamp = 0;
+            if (cursor.moveToNext()) {
+                dbStartTimestamp = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                                SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_START_TIME));
+            }
+
+            cursor.close();
+
+
+            if (dbStartTimestamp != startTimestamp) {
+                this.unsubscribeFromEvent(eventId);
+                this.subscribeForEvent(eventId, eventName, startTimestamp, notifyTimestamp);
+            }
+        }
+    }
+
+    @Override
     public void unsubscribeFromEvent(String eventId) {
         // Define 'where' part of query.
         String selection = SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_ID + " = ?";

@@ -29,6 +29,7 @@ public class ProvidersInterfaces {
     public interface ISettingsProvider {
         boolean isSubscribedForEvent(String eventId);
         void subscribeForEvent(String eventId, String eventName, long startTimestamp, long notifyTimestamp);
+        void updateEventSubscription(String eventId, String eventName, long startTimestamp, long notifyTimestamp);
         void unsubscribeFromEvent(String eventId);
 
         long getEventsNotificationAdvanceTimeSeconds();
@@ -65,5 +66,9 @@ public class ProvidersInterfaces {
     public interface IPushNotificationsProvider {
         void subscribeForNews();
         void unsubscribeFromNews();
+    }
+
+    public interface IEventSubscriptionRefresher {
+        void refreshEventSubscriptions();
     }
 }
