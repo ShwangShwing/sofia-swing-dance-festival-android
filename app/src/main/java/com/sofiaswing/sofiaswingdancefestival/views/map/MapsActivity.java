@@ -135,6 +135,10 @@ public class MapsActivity extends FragmentActivity implements MapsInterfaces.IVi
     this.mVenues.addAll(venues);
     this.mAdapter.notifyDataSetChanged();
 
+    if (mMap == null) {
+      return;
+    }
+
     for (int i = 0; i < venues.size(); i++) {
       VenueModel venue = venues.get(i);
       Location location = venue.getLocation();
