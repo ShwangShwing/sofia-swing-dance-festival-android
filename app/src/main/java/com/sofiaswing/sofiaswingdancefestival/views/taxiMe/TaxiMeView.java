@@ -47,6 +47,10 @@ public class TaxiMeView extends Fragment {
         intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("market://details?id=" + packageName));
       }
+      if (intent.resolveActivity(getActivity().getPackageManager()) == null) {
+        Toast.makeText(getContext(), "Unable to complete this action", Toast.LENGTH_SHORT).show();
+        return;
+      }
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       startActivity(intent);
     });

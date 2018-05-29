@@ -69,7 +69,7 @@ public class ContactUsView extends Fragment implements ContactUsInterfaces.IView
         ListView lvContacts = root.findViewById(R.id.lvContacts);
         lvContacts.setAdapter(this.contactsAdapter);
 
-        View footer = inflater.inflate(R.layout.contacts_footer_links, container, false);
+        View footer = inflater.inflate(R.layout.contacts_footer_links, lvContacts, false);
         TextView tvLinkSSDF = footer.findViewById(R.id.link_ssdf);
         tvLinkSSDF.setClickable(true);
         tvLinkSSDF.setText(Html.fromHtml("<a href=\"http://sofiaswing.com\">Sofia swing dance festival</a>"));
