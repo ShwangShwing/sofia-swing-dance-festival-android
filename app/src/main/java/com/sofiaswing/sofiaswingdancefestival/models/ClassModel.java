@@ -11,8 +11,8 @@ public class ClassModel extends EventModel {
     private final String level;
     private final List<String> instructorIds;
 
-    public ClassModel(String id, Date startTime, Date endTime, String level, String name, String venueId, List<String> instructorIds) {
-        super(id, startTime, endTime, name, venueId, "class_" + level);
+    public ClassModel(String id, Date startTime, Date endTime, String level, String name, String description, String venueId, List<String> instructorIds) {
+        super(id, startTime, endTime, name, description, venueId, "class_" + level);
         this.level = level;
         this.instructorIds = instructorIds;
     }

@@ -7,7 +7,7 @@ import java.util.Date;
  */
 
 public class PartyModel extends EventModel {
-    public PartyModel(String id, Date startTime, Date endTime, String name, String venueId) {
-        super(id, startTime, endTime, name, venueId, "party");
+    public PartyModel(String id, Date startTime, Date endTime, String name, String description, String venueId) {
+        super(id, startTime, endTime, name, description, venueId, "party");
     }
 }

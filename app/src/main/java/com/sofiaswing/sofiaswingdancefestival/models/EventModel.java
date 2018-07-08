@@ -11,14 +11,16 @@ public class EventModel {
     private final Date startTime;
     private final Date endTime;
     private final String name;
+    private final String description;
     private final String venueId;
     private final String eventType;
 
-    public EventModel(String id, Date startTime, Date endTime, String name, String venueId, String eventType) {
+    public EventModel(String id, Date startTime, Date endTime, String name, String description, String venueId, String eventType) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.name = name;
+        this.description = description;
         this.venueId = venueId;
         this.eventType = eventType;
     }
@@ -37,6 +39,10 @@ public class EventModel {
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getVenueId() {

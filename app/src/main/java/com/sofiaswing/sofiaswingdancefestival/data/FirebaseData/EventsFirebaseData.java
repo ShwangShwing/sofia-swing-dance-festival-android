@@ -9,6 +9,7 @@ import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
 import com.sofiaswing.sofiaswingdancefestival.models.EventModel;
 import com.sofiaswing.sofiaswingdancefestival.models.PartyModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
+import com.sofiaswing.sofiaswingdancefestival.utils.LanguageHelpers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,6 +69,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                         Date startTime = null;
                                         Date endTime = null;
                                         String name = "";
+                                        String description = "";
                                         String venueId = "";
 
                                         try {
@@ -76,7 +78,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                             startTime = new Date(Long.parseLong(partySnapshot.child("start").getValue().toString()) * 1000);
                                             endTime = new Date(Long.parseLong(partySnapshot.child("end").getValue().toString()) * 1000);
                                             name = partySnapshot.child("name").getValue().toString();
-
+                                            description = LanguageHelpers.toStringWithDefault(partySnapshot.child("description").getValue(), "");
                                             venueId = partySnapshot.child("venueId").getValue().toString();
                                         }
                                         catch (Exception e1) {
@@ -88,6 +90,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                                 startTime,
                                                 endTime,
                                                 name,
+                                                description,
                                                 venueId
                                         );
 
@@ -95,14 +98,24 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                     }
 
                                     Collections.sort(parties, (o1, o2) -> {
-                                        if (o1.getStartTime() == null) {
+                                        Long startTime1 = o1.getStartTime().getTime();
+                                        Long startTime2 = o2.getStartTime().getTime();
+
+                                        if (startTime1 == null) {
                                             return -1;
                                         }
-                                        else if (o2.getStartTime() == null) {
+                                        else if (startTime2 == null) {
                                             return 1;
                                         }
-
-                                        return (int)(o1.getStartTime().getTime() - o2.getStartTime().getTime());
+                                        else if (startTime1 > startTime2) {
+                                            return 1;
+                                        }
+                                        else if (startTime1 < startTime2) {
+                                            return -1;
+                                        }
+                                        else {
+                                            return 0;
+                                        }
                                     });
 
                                     e.onNext(parties);
@@ -165,6 +178,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                         Date startTime = null;
                                         Date endTime = null;
                                         String name = "";
+                                        String description = "";
                                         String venueId = "";
                                         String eventType = "";
 
@@ -176,6 +190,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                                 startTime = new Date(Long.parseLong(eventSnapshot.child("start").getValue().toString()) * 1000);
                                                 endTime = new Date(Long.parseLong(eventSnapshot.child("end").getValue().toString()) * 1000);
                                                 name = eventSnapshot.child("name").getValue().toString();
+                                                description = LanguageHelpers.toStringWithDefault(eventSnapshot.child("description").getValue(), "");
                                                 eventType = eventSnapshot.child("type").getValue().toString();
 
                                                 venueId = eventSnapshot.child("venueId").getValue().toString();
@@ -185,6 +200,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                                         startTime,
                                                         endTime,
                                                         name,
+                                                        description,
                                                         venueId,
                                                         eventType
                                                 );
@@ -257,6 +273,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                         Date startTime = null;
                                         Date endTime = null;
                                         String name = "";
+                                        String description = "";
                                         String venueId = "";
                                         List<String> instructorIds = new ArrayList();
 
@@ -266,6 +283,8 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                             startTime = new Date(Long.parseLong(classSnapshot.child("start").getValue().toString()) * 1000);
                                             endTime = new Date(Long.parseLong(classSnapshot.child("end").getValue().toString()) * 1000);
                                             name = classSnapshot.child("name").getValue().toString();
+                                            description = LanguageHelpers.toStringWithDefault(classSnapshot.child("description").getValue(), "");
+
                                             if (classSnapshot.child("venueId").exists())
                                             {
                                                 venueId = classSnapshot.child("venueId").getValue().toString();
@@ -288,6 +307,7 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
                                                 endTime,
                                                 level,
                                                 name,
+                                                description,
                                                 venueId,
                                                 instructorIds
                                         );
