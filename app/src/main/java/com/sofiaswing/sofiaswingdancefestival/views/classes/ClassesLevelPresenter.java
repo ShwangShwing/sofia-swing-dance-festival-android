@@ -43,11 +43,7 @@ public class ClassesLevelPresenter implements ClassesInterfaces.IClassesLevelPre
   @Override
   public void start() {
     Observable<List<ClassModel>> observable;
-    if (!this.view.isTaster()) {
-      observable = eventsData.getClassesByLevel(view.getClassLevel());
-    } else {
-      observable = eventsData.getTasterClasses();
-    }
+    observable = eventsData.getClassesByLevel(view.getClassLevel());
     this.subscriptions.add(observable
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

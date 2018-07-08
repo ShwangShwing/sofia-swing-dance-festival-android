@@ -1,14 +1,8 @@
 package com.sofiaswing.sofiaswingdancefestival.views.classes;
 
 import com.sofiaswing.sofiaswingdancefestival.models.ClassLevelModel;
-import com.sofiaswing.sofiaswingdancefestival.models.ClassModel;
-import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
-import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
-import java.io.Serializable;
 import java.util.List;
-
-import io.reactivex.Observable;
 
 /**
  * Created by shwangshwing on 10/10/17.
@@ -20,7 +14,6 @@ public class ClassesInterfaces {
     }
 
     public interface IClassesLevelView {
-        boolean isTaster();
         String getClassLevel();
         void setClasses(List<ClassPresenterModel> classes);
     }

@@ -12,7 +12,6 @@ import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -131,11 +130,6 @@ public class EventsFirebaseData implements DataInterfaces.IEventsData {
         String eventTypeFullString = String.format("class_%s", level);
 
         return this.getClass(eventTypeFullString, level);
-    }
-
-    @Override
-    public Observable<List<ClassModel>> getTasterClasses() {
-        return this.getClass("taster_class", "");
     }
 
     @Override

@@ -19,7 +19,6 @@ import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -180,10 +179,7 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
 
             String eventTypeStr = getString(R.string.misc_event);
             String eventType = eventItem.getEventType();
-            if (eventType.equals("taster_class")) {
-                eventTypeStr = getString(R.string.taster_class);
-            }
-            else if (eventType.startsWith("class_")) {
+            if (eventType.startsWith("class_")) {
                 String classLevel = classLevelStrings.get(eventType.substring("class_".length()));
                 if (classLevel == null) {
                     classLevel = "";

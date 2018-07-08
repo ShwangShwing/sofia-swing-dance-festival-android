@@ -252,9 +252,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
 
         String eventTypeStr = getString(R.string.misc_event);
         String eventType = event.getEventType();
-        if (eventType.equals("taster_class")) {
-            eventTypeStr = getString(R.string.taster_class);
-        } else if (eventType.startsWith("class_")) {
+        if (eventType.startsWith("class_")) {
             String classLevel = classLevelStrings.get(eventType.substring("class_".length()));
             if (classLevel == null) {
                 classLevel = "";

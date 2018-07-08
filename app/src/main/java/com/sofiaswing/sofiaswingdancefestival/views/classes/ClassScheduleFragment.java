@@ -22,7 +22,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,7 +37,6 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 
 public class ClassScheduleFragment extends Fragment implements ClassesInterfaces.IClassesLevelView {
-    private static final String IS_TASTER_KEY = "is_taster";
     private static final String CLASS_LEVEL_KEY = "class_level";
     @Inject
     public ClassesInterfaces.IClassesLevelPresenter presenter;
@@ -46,16 +44,14 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
     public ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
     private String classLevel;
     private SectionedRecyclerViewAdapter classScheduleAdapter;
-    private boolean isTaster;
 
     public ClassScheduleFragment() {
         // Required empty public constructor
     }
 
-    public static ClassScheduleFragment newInstance(String classLevel, boolean isTaster) {
+    public static ClassScheduleFragment newInstance(String classLevel) {
         ClassScheduleFragment fragment = new ClassScheduleFragment();
         Bundle args = new Bundle();
-        args.putBoolean(IS_TASTER_KEY, isTaster);
         args.putString(CLASS_LEVEL_KEY, classLevel);
         fragment.setArguments(args);
         return fragment;
@@ -67,7 +63,6 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
         inject();
         presenter.setView(this);
 
-        this.isTaster = getArguments().getBoolean(IS_TASTER_KEY);
         this.classLevel = getArguments().getString(CLASS_LEVEL_KEY);
     }
 
@@ -108,11 +103,6 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
         ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
                 .getComponent()
                 .inject(this);
-    }
-
-    @Override
-    public boolean isTaster() {
-        return this.isTaster;
     }
 
     @Override

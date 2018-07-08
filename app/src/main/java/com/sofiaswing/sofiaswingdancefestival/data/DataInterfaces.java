@@ -42,7 +42,6 @@ public class DataInterfaces {
     public interface IEventsData {
         Observable<List<PartyModel>> getParties();
         Observable<List<ClassModel>> getClassesByLevel(String level);
-        Observable<List<ClassModel>> getTasterClasses();
         Observable<List<EventModel>> getEvents(List<String> eventIds);
     }
 

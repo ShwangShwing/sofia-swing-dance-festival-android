@@ -10,9 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.sofiaswing.sofiaswingdancefestival.R;
@@ -23,9 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,7 +77,7 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
         ViewPager pager = rootView.findViewById(R.id.tabsPager);
         pager.setAdapter(new TabsNavigationAdapter(
                 getChildFragmentManager(),
-                classLevels, getString(R.string.taster)));
+                classLevels));
 
         PagerSlidingTabStrip tabs = rootView.findViewById(R.id.tabs);
         tabs.setTextColor(getResources().getColor(R.color.md_white_1000));
@@ -98,32 +92,22 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
 
     private class TabsNavigationAdapter extends FragmentStatePagerAdapter {
         private final List<ClassLevelModel> classLevels;
-        private final String tasterTitle;
         private final ArrayList<Fragment> fragments;
-        private final Fragment tasterFramgent;
 
-        public TabsNavigationAdapter(FragmentManager fm, List<ClassLevelModel> classLevels, String tasterTitle) {
+        public TabsNavigationAdapter(FragmentManager fm, List<ClassLevelModel> classLevels) {
             super(fm);
             this.classLevels = new ArrayList<ClassLevelModel>(classLevels);
-            this.tasterTitle = tasterTitle;
 
             this.fragments = new ArrayList<>();
             for (ClassLevelModel classLevel : this.classLevels) {
-                Fragment fragment = ClassScheduleFragment.newInstance(classLevel.getId(), false);
+                Fragment fragment = ClassScheduleFragment.newInstance(classLevel.getId());
                 this.fragments.add(fragment);
             }
-
-            this.tasterFramgent = ClassScheduleFragment.newInstance("", true);
         }
 
         @Override
         public Fragment getItem(int position) {
-            if (position < this.fragments.size()) {
-                return this.fragments.get(position);
-            }
-            else {
-                return this.tasterFramgent;
-            }
+            return this.fragments.get(position);
         }
 
         @Override
@@ -132,13 +116,13 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
                 return this.classLevels.get(position).getName();
             }
             else {
-                return tasterTitle;
+                return "unknown";
             }
         }
 
         @Override
         public int getCount() {
-            return classLevels.size() + 1;
+            return classLevels.size();
         }
     }
 }
