@@ -43,6 +43,8 @@ public class ProvidersModule {
     synchronized ProvidersInterfaces.ISettingsProvider provideSettingsProvider(Context context) {
         if (this.settingsProvider == null) {
             this.settingsProvider = new SettingsProvider(context);
+            //not ready yet! don't use!
+            //this.settingsProvider = new SharedPreferencesSettingsProvider(context);
         }
 
         return this.settingsProvider;

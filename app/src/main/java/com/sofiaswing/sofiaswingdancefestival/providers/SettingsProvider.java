@@ -21,8 +21,6 @@ import java.util.List;
  */
 
 public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
-    private final int DEFAULT_EVENT_NOTIFICATION_TIME_S = 45 * 60;
-
     private final String SETTING_ID_NOTIFICATION_ADVANCE_TIME_SECONDS = "notification_advance_time_seconds";
     private final String SETTING_ID_ARE_NEWS_NOTIFICATIONS_DISABLED = "news_notifications_enabled";
 
@@ -93,7 +91,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
         values.put(SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_NAME, eventName);
         values.put(SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_START_TIME, startTimestamp);
         values.put(SettingsContract.EventSubscriptions.COLUMN_NAME_EVENT_NOTIFY_TIME,
-                startTimestamp - DEFAULT_EVENT_NOTIFICATION_TIME_S);
+                startTimestamp - DefaultSettingValues.EVENT_NOTIFICATION_TIME_S);
 
         synchronized (this) {
             while (this.database == null) {
@@ -184,7 +182,7 @@ public class SettingsProvider implements ProvidersInterfaces.ISettingsProvider {
 
     @Override
     public long getEventsNotificationAdvanceTimeSeconds() {
-        long result = DEFAULT_EVENT_NOTIFICATION_TIME_S;
+        long result = DefaultSettingValues.EVENT_NOTIFICATION_TIME_S;
 
         try {
             result = Integer.parseInt(getSettingValueById(SETTING_ID_NOTIFICATION_ADVANCE_TIME_SECONDS));
