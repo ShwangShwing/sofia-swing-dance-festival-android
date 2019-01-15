@@ -29,12 +29,12 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
     }
 
     @Override
-    public void updateEventSubscription(String eventId, String eventName, long startTimestamp, long notifyTimestamp) {
+    public void unsubscribeFromEvent(String eventId) {
 
     }
 
     @Override
-    public void unsubscribeFromEvent(String eventId) {
+    public void updateEventSubscription(String eventId, String eventName, long startTimestamp, long notifyTimestamp) {
 
     }
 
