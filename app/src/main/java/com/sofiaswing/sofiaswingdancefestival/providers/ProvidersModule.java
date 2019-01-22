@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.providers.Firebase.FirebaseCloudMessagingProvider;
+import com.sofiaswing.sofiaswingdancefestival.providers.SharedPreferences.SharedPreferencesSettingsProvider;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,11 +41,14 @@ public class ProvidersModule {
     }
 
     @Provides
-    synchronized ProvidersInterfaces.ISettingsProvider provideSettingsProvider(Context context) {
+    synchronized ProvidersInterfaces.ISettingsProvider provideSettingsProvider(
+            Context context,
+            ProvidersInterfaces.ISerializer serializer,
+            ProvidersInterfaces.IEventAlarmManager eventAlarmManager) {
         if (this.settingsProvider == null) {
-            this.settingsProvider = new SettingsProvider(context);
+            //this.settingsProvider = new SettingsProvider(context);
             //not ready yet! don't use!
-            //this.settingsProvider = new SharedPreferencesSettingsProvider(context);
+            this.settingsProvider = new SharedPreferencesSettingsProvider(context, serializer, eventAlarmManager);
         }
 
         return this.settingsProvider;
@@ -75,5 +79,22 @@ public class ProvidersModule {
             ProvidersInterfaces.ISettingsProvider settingsProvider
     ) {
         return new EventSubscriptionRefresher(eventsData, settingsProvider);
+    }
+
+    @Provides
+    ProvidersInterfaces.ISerializer provideSerializer() {
+        return new GsonSerializer();
+    }
+
+    @Provides
+    ProvidersInterfaces.ITimeProvider provideTimeProvider() {
+        return new TimeProvider();
+    }
+
+    @Provides
+    ProvidersInterfaces.IEventAlarmManager provideEventAlarmManager(
+            Context context,
+            ProvidersInterfaces.ITimeProvider timeProvider) {
+        return new EventAlarmManager(context, timeProvider);
     }
 }

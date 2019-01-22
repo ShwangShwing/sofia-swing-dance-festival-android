@@ -3,6 +3,7 @@ package com.sofiaswing.sofiaswingdancefestival.providers;
 import android.location.Location;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 
@@ -70,5 +71,23 @@ public class ProvidersInterfaces {
 
     public interface IEventSubscriptionRefresher {
         void refreshEventSubscriptions();
+    }
+
+    public interface ISerializer {
+        String serialize(Map<String, String> inMap);
+        Map<String, String> deserializeToMap(String inString);
+    }
+
+    public interface IEventAlarmManager {
+        void setNotificationAlarmForFutureEvent(
+                String eventId,
+                String eventName,
+                long startTimestamp,
+                long notifyTimestamp);
+        void cancelNotificationAlarm(String eventId);
+    }
+
+    public interface ITimeProvider {
+        long getCurrentTimeMilliseconds();
     }
 }

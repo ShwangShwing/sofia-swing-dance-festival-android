@@ -5,37 +5,104 @@ import android.content.SharedPreferences;
 
 import com.sofiaswing.sofiaswingdancefestival.providers.DefaultSettingValues;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
+import com.sofiaswing.sofiaswingdancefestival.providers.providerModels.EventSubscriptionModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.ISettingsProvider {
     private static final String NOT_TIME_SECS_SETTING_NAME = "NOTIFICATION_TIME_SETTING";
     private static final String NEWS_NOTIF_ENABL_SETTING_NAME = "NEWS_NOTIFICATION_SETTING";
+    private static final String EVENT_NOTIFS_SETTING_NAME = "EVENT_NOTIFICATIONS_SETTING";
 
     private final Context context;
+    private final ProvidersInterfaces.ISerializer serializer;
+    private final ProvidersInterfaces.IEventAlarmManager eventAlarmManager;
 
-    public SharedPreferencesSettingsProvider(Context context) {
+    public SharedPreferencesSettingsProvider(Context context, ProvidersInterfaces.ISerializer serializer, ProvidersInterfaces.IEventAlarmManager eventAlarmManager) {
         this.context = context;
+        this.serializer = serializer;
+        this.eventAlarmManager = eventAlarmManager;
     }
 
     @Override
     public boolean isSubscribedForEvent(String eventId) {
-        return false;
+        final SharedPreferences eventNotifRef =
+                this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
+
+        return eventNotifRef.contains(eventId);
     }
 
     @Override
     public void subscribeForEvent(String eventId, String eventName, long startTimestamp, long notifyTimestamp) {
+        final EventSubscriptionModel newSubscrEvent =
+                new EventSubscriptionModel(eventId, eventName, startTimestamp, notifyTimestamp);
 
+        final SharedPreferences eventNotifRef =
+                this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
+        final SharedPreferences.Editor eventNotifEditor = eventNotifRef.edit();
+
+        eventNotifEditor.putString(
+                newSubscrEvent.getEventId(),
+                this.serializer.serialize(newSubscrEvent.toMap())
+        );
+        eventNotifEditor.commit();
+
+        this.eventAlarmManager.setNotificationAlarmForFutureEvent(
+                newSubscrEvent.getEventId(),
+                newSubscrEvent.getEventName(),
+                newSubscrEvent.getEventTimestamp(),
+                newSubscrEvent.getNotifyTimestamp());
     }
 
     @Override
     public void unsubscribeFromEvent(String eventId) {
+        final SharedPreferences eventNotifRef =
+                this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
+        final SharedPreferences.Editor eventNotifEditor = eventNotifRef.edit();
 
+        eventNotifEditor.remove(eventId);
+        eventNotifEditor.commit();
+
+        this.eventAlarmManager.cancelNotificationAlarm(eventId);
     }
 
     @Override
     public void updateEventSubscription(String eventId, String eventName, long startTimestamp, long notifyTimestamp) {
+        final EventSubscriptionModel newSubscrEvent =
+                new EventSubscriptionModel(eventId, eventName, startTimestamp, notifyTimestamp);
 
+        final SharedPreferences eventNotifRef =
+                this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
+
+        final String oldNotifStr = eventNotifRef.getString(eventId, null);
+        boolean isNotifTimeChanged = false;
+        if (eventId != null) {
+            final EventSubscriptionModel oldSubscrEvent =
+                    new EventSubscriptionModel(this.serializer.deserializeToMap(oldNotifStr));
+            if (oldSubscrEvent.getNotifyTimestamp() != newSubscrEvent.getNotifyTimestamp()) {
+                isNotifTimeChanged = true;
+            }
+        }
+
+        {
+            final SharedPreferences.Editor eventNotifEditor = eventNotifRef.edit();
+
+            eventNotifEditor.putString(
+                    newSubscrEvent.getEventId(),
+                    this.serializer.serialize(newSubscrEvent.toMap())
+            );
+            eventNotifEditor.commit();
+        }
+
+        // Update the alarm only if the notification time has changed
+        if (isNotifTimeChanged) {
+            this.eventAlarmManager.setNotificationAlarmForFutureEvent(
+                    newSubscrEvent.getEventId(),
+                    newSubscrEvent.getEventName(),
+                    newSubscrEvent.getEventTimestamp(),
+                    newSubscrEvent.getNotifyTimestamp());
+        }
     }
 
     @Override
@@ -57,12 +124,15 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
 
     @Override
     public void setupAllNotificationAlarms() {
-
+        // TODO: many alarms!
     }
 
     @Override
     public List<String> getSubscribedEventsIds() {
-        return null;
+        final SharedPreferences eventNotifRef =
+                this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
+
+        return new ArrayList<String>(eventNotifRef.getAll().keySet());
     }
 
     @Override
