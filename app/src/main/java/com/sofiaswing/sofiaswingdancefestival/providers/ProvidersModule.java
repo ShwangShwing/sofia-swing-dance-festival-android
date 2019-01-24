@@ -87,14 +87,9 @@ public class ProvidersModule {
     }
 
     @Provides
-    ProvidersInterfaces.ITimeProvider provideTimeProvider() {
-        return new TimeProvider();
-    }
-
-    @Provides
     ProvidersInterfaces.IEventAlarmManager provideEventAlarmManager(
             Context context,
-            ProvidersInterfaces.ITimeProvider timeProvider) {
+            ProvidersInterfaces.ICurrentTimeProvider timeProvider) {
         return new EventAlarmManager(context, timeProvider);
     }
 }

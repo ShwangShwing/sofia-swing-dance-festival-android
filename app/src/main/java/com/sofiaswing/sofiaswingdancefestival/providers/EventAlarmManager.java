@@ -9,9 +9,9 @@ import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiv
 
 public final class EventAlarmManager implements ProvidersInterfaces.IEventAlarmManager {
     private final Context context;
-    private final ProvidersInterfaces.ITimeProvider timeProvider;
+    private final ProvidersInterfaces.ICurrentTimeProvider timeProvider;
 
-    public EventAlarmManager(Context context, ProvidersInterfaces.ITimeProvider timeProvider) {
+    public EventAlarmManager(Context context, ProvidersInterfaces.ICurrentTimeProvider timeProvider) {
         this.context = context;
         this.timeProvider = timeProvider;
     }
@@ -19,7 +19,7 @@ public final class EventAlarmManager implements ProvidersInterfaces.IEventAlarmM
     @Override
     public void setNotificationAlarmForFutureEvent(String eventId, String eventName, long startTimestamp, long notifyTimestamp) {
         this.cancelNotificationAlarm(eventId);
-        if (this.timeProvider.getCurrentTimeMilliseconds() / 1000 > startTimestamp) {
+        if (this.timeProvider.getCurrentTimeMs() / 1000 > startTimestamp) {
             // The event has already started. Don't notify.
             return;
         }

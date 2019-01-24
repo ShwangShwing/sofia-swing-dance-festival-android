@@ -86,8 +86,4 @@ public class ProvidersInterfaces {
                 long notifyTimestamp);
         void cancelNotificationAlarm(String eventId);
     }
-
-    public interface ITimeProvider {
-        long getCurrentTimeMilliseconds();
-    }
 }
