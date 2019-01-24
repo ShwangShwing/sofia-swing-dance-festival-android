@@ -22,12 +22,25 @@ public final class EventSubscriptionModel {
     }
 
     public EventSubscriptionModel(Map<String, String> eventInMap) {
-        this.eventId = eventInMap.get(EVENT_ID_MAP_KEY);
-        if (this.eventId == null) throw new NullPointerException("No event id in map!");
-        this.eventName = eventInMap.get(EVENT_NAME_MAP_KEY);
-        if (this.eventName == null) throw new NullPointerException("No event name in map!");
-        this.eventTimestamp = Long.parseLong(eventInMap.get(EVENT_TIMESTAMP_MAP_KEY));
-        this.notifyTimestamp = Long.parseLong(eventInMap.get(EVENT_NOTIFY_TIMESTAMP_MAP_KEY));
+        // Important! Don't throw any exceptions here because a possible bug
+        // where an invalid user settings are saved may cause the application to
+        // always crash on startup, attempting to load the invalid settings.
+        String inEventId = eventInMap.get(EVENT_ID_MAP_KEY);
+        if (inEventId == null) inEventId = "error-event-id-not-set";
+        this.eventId = inEventId;
+        String inEventName = eventInMap.get(EVENT_NAME_MAP_KEY);
+        if (inEventName == null) inEventName = "error-event-name-not-set";
+        this.eventName = inEventName;
+        long inEventTimestamp = 0;
+        long inNotifyTimestamp = 0;
+        try {
+            inEventTimestamp = Long.parseLong(eventInMap.get(EVENT_TIMESTAMP_MAP_KEY));
+            inNotifyTimestamp = Long.parseLong(eventInMap.get(EVENT_NOTIFY_TIMESTAMP_MAP_KEY));
+        }
+        catch (NumberFormatException e) {}
+        this.eventTimestamp = inEventTimestamp;
+        this.notifyTimestamp = inNotifyTimestamp;
+        // TODO: log an error in any of these cases.
     }
 
     public String getEventId() {
