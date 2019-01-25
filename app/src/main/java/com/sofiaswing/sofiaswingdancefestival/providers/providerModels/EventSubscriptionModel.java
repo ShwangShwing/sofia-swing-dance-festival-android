@@ -40,7 +40,7 @@ public final class EventSubscriptionModel {
         catch (NumberFormatException e) {}
         this.eventTimestamp = inEventTimestamp;
         this.notifyTimestamp = inNotifyTimestamp;
-        // TODO: log an error in any of these cases.
+        // TODO: report an error in any of these cases.
     }
 
     public String getEventId() {

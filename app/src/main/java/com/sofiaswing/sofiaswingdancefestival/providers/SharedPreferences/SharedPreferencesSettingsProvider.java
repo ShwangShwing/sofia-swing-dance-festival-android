@@ -124,7 +124,19 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
 
     @Override
     public void setupAllNotificationAlarms() {
-        // TODO: many alarms!
+        final SharedPreferences eventNotifRef =
+                this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
+
+        for (String eventId: eventNotifRef.getAll().keySet()) {
+            EventSubscriptionModel event = new EventSubscriptionModel(
+                    this.serializer.deserializeToMap(eventNotifRef.getString(eventId, "{}"))
+            );
+            this.eventAlarmManager.setNotificationAlarmForFutureEvent(
+                    event.getEventId(),
+                    event.getEventName(),
+                    event.getEventTimestamp(),
+                    event.getNotifyTimestamp());
+        }
     }
 
     @Override
