@@ -5,14 +5,10 @@ import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -22,13 +18,13 @@ import io.reactivex.schedulers.Schedulers;
 public class NewsPresenter implements NewsInterfaces.IPresenter {
     public NewsInterfaces.IView view;
     private final DataInterfaces.INewsArticlesData newsArticlesData;
-    private final ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
+    private final ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider;
     private List<NewsArticleModel> newsArticles;
 
     private final CompositeDisposable subscriptions;
 
     public NewsPresenter(DataInterfaces.INewsArticlesData newsArticlesData,
-                         ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
+                         ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider) {
         this.newsArticlesData = newsArticlesData;
         this.volatileSettingsProvider = volatileSettingsProvider;
         this.newsArticles = new ArrayList<>();

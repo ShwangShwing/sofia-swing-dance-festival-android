@@ -7,18 +7,18 @@ public final class EventSubscriptionModel {
     private static final String EVENT_ID_MAP_KEY = "event_id";
     private static final String EVENT_NAME_MAP_KEY = "event_name";
     private static final String EVENT_TIMESTAMP_MAP_KEY = "event_timestamp";
-    private static final String EVENT_NOTIFY_TIMESTAMP_MAP_KEY = "event_notify_timestamp";
+    private static final String EVENT_NOTIFY_ADVANCE_TIME_SECONDS_MAP_KEY = "event_notify_timestamp";
 
     private final String eventId;
     private final String eventName;
     private final long eventTimestamp;
-    private final long notifyTimestamp;
+    private final long notifAdvanceTimeSeconds;
 
-    public EventSubscriptionModel(String eventId, String eventName, long eventTimestamp, long notifyTimestamp) {
+    public EventSubscriptionModel(String eventId, String eventName, long eventTimestamp, long notifAdvanceTimeSeconds) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventTimestamp = eventTimestamp;
-        this.notifyTimestamp = notifyTimestamp;
+        this.notifAdvanceTimeSeconds = notifAdvanceTimeSeconds;
     }
 
     public EventSubscriptionModel(Map<String, String> eventInMap) {
@@ -32,14 +32,14 @@ public final class EventSubscriptionModel {
         if (inEventName == null) inEventName = "error-event-name-not-set";
         this.eventName = inEventName;
         long inEventTimestamp = 0;
-        long inNotifyTimestamp = 0;
+        long inNotifyAdvanceTimeSeconds = 0;
         try {
             inEventTimestamp = Long.parseLong(eventInMap.get(EVENT_TIMESTAMP_MAP_KEY));
-            inNotifyTimestamp = Long.parseLong(eventInMap.get(EVENT_NOTIFY_TIMESTAMP_MAP_KEY));
+            inNotifyAdvanceTimeSeconds = Long.parseLong(eventInMap.get(EVENT_NOTIFY_ADVANCE_TIME_SECONDS_MAP_KEY));
         }
         catch (NumberFormatException e) {}
         this.eventTimestamp = inEventTimestamp;
-        this.notifyTimestamp = inNotifyTimestamp;
+        this.notifAdvanceTimeSeconds = inNotifyAdvanceTimeSeconds;
         // TODO: report an error in any of these cases.
     }
 
@@ -55,8 +55,8 @@ public final class EventSubscriptionModel {
         return eventTimestamp;
     }
 
-    public long getNotifyTimestamp() {
-        return notifyTimestamp;
+    public long getNotifAdvanceTimeSeconds() {
+        return notifAdvanceTimeSeconds;
     }
 
     public Map<String, String> toMap() {
@@ -64,7 +64,7 @@ public final class EventSubscriptionModel {
         result.put(EVENT_ID_MAP_KEY, eventId);
         result.put(EVENT_NAME_MAP_KEY, eventName);
         result.put(EVENT_TIMESTAMP_MAP_KEY, String.valueOf(eventTimestamp));
-        result.put(EVENT_NOTIFY_TIMESTAMP_MAP_KEY, String.valueOf(notifyTimestamp));
+        result.put(EVENT_NOTIFY_ADVANCE_TIME_SECONDS_MAP_KEY, String.valueOf(notifAdvanceTimeSeconds));
 
         return result;
     }

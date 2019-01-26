@@ -18,7 +18,7 @@ public class ProvidersModule {
     private ProvidersInterfaces.ILocationProvider locationProvider;
     private ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
     private ProvidersInterfaces.ISettingsProvider settingsProvider;
-    private ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
+    private ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider;
 
     @Provides
     synchronized ProvidersInterfaces.ILocationProvider provideLocationProvider(Context context) {
@@ -46,8 +46,6 @@ public class ProvidersModule {
             ProvidersInterfaces.ISerializer serializer,
             ProvidersInterfaces.IEventAlarmManager eventAlarmManager) {
         if (this.settingsProvider == null) {
-            //this.settingsProvider = new SettingsProvider(context);
-            //not ready yet! don't use!
             this.settingsProvider = new SharedPreferencesSettingsProvider(context, serializer, eventAlarmManager);
         }
 
@@ -55,16 +53,16 @@ public class ProvidersModule {
     }
 
     @Provides
-    synchronized ProvidersInterfaces.IVolatileSettingsProvider provideVolatileSettingsProvider(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
+    synchronized ProvidersInterfaces.IHackerSettingsProvider provideVolatileSettingsProvider(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
         if (this.volatileSettingsProvider == null) {
-            this.volatileSettingsProvider = new VolatileSettingsProvider(currentSsdfYearProvider);
+            this.volatileSettingsProvider = new HackerSettingsProvider(currentSsdfYearProvider);
         }
 
         return this.volatileSettingsProvider;
     }
 
     @Provides
-    ProvidersInterfaces.ICurrentTimeProvider provideCurrentTimeProvider(ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
+    ProvidersInterfaces.ICurrentTimeProvider provideCurrentTimeProvider(ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider) {
         return new CurrentTimeProvider(volatileSettingsProvider);
     }
 

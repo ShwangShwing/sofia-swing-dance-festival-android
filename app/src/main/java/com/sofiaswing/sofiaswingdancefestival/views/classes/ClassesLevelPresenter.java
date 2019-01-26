@@ -57,7 +57,7 @@ public class ClassesLevelPresenter implements ClassesInterfaces.IClassesLevelPre
 
   @Override
   public void subscribeForEvent(String eventId, String eventName, int startTimestamp) {
-    this.settingsProvider.subscribeForEvent(eventId, eventName, startTimestamp, 0);
+    this.settingsProvider.subscribeForEvent(eventId, eventName, startTimestamp);
   }
 
   @Override

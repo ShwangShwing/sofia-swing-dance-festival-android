@@ -30,7 +30,7 @@ public class EventSubscriptionRefresher implements ProvidersInterfaces.IEventSub
                                 eventModel.getId(),
                                 eventModel.getName(),
                                 eventModel.getStartTime().getTime() / 1000,
-                                0
+                                false
                         );
                     }
                 }));

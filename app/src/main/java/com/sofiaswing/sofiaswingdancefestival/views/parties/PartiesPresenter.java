@@ -99,7 +99,7 @@ public class PartiesPresenter implements PartiesInterfaces.IPresenter {
                 this.settingsProvider.subscribeForEvent(
                         party.getId(),
                         party.getName(),
-                        party.getStartTime().getTime() / 1000, 0);
+                        party.getStartTime().getTime() / 1000);
             }
         }
         else {

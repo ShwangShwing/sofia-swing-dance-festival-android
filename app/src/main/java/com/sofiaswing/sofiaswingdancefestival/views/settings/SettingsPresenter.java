@@ -14,14 +14,14 @@ import io.reactivex.schedulers.Schedulers;
 public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     private SettingsInterfaces.IView view;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
-    private final ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
+    private final ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider;
     private final DataInterfaces.ISsdfYearsData ssdfYearsData;
     private final ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
     private final ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider;
     private Disposable ssdfYearsObs;
 
     public SettingsPresenter(ProvidersInterfaces.ISettingsProvider settingsProvider,
-                             ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider,
+                             ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider,
                              DataInterfaces.ISsdfYearsData ssdfYearsData, ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider, ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider) {
         this.settingsProvider = settingsProvider;
         this.volatileSettingsProvider = volatileSettingsProvider;
@@ -54,7 +54,7 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     @Override
     public void setEventsNotificationAdvanceTimeSeconds(long seconds) {
         settingsProvider.setEventsNotificationAdvanceTimeSeconds(seconds);
-        settingsProvider.setupAllNotificationAlarms(); // to reacalculate the alarm times
+        settingsProvider.setDefaultNotificationTimeToAllEvents(); // to reacalculate the alarm times
     }
 
     @Override
@@ -89,15 +89,12 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     }
 
     @Override
-    public void createTestNotification(String id, String name, long startTime, long notifyTime) {
-        if (startTime == 0) startTime = notifyTime;
-        if (notifyTime == 0) notifyTime = startTime;
-
+    public void createTestNotification(String id, String name, long startTime, long notifyAdvanceSeconds) {
         this.settingsProvider.subscribeForEvent(
                 id,
                 name,
                 startTime,
-                notifyTime);
+                notifyAdvanceSeconds);
     }
 
     @Override

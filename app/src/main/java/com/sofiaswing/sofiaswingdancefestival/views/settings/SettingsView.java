@@ -4,10 +4,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.settings;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GestureDetectorCompat;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -52,18 +49,9 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     private CheckBox cbEnableNewsNotifications;
     private boolean ignoreNextNotificationTimeCallback;
     //the following variables are for enabling some features for debugging
-    private GestureDetectorCompat hackerModeGestureDetector;
-    private int hackerModeCorrectGestureCount;
+    private int hackerModeEnablerClickCount;
     // combination for enabling the hacker mode
-    private static final String[] hackerModeCorrectGestureCombination = {
-            "up",
-            "up",
-            "down",
-            "down",
-            "left",
-            "right",
-            "left",
-            "right"};
+    private static final int HACKER_MODE_CLICKS_REQUIRED = 10;
     private ArrayAdapter<String> ssdfYearsAdapter;
 
     public static SettingsView newInstance() {
@@ -108,15 +96,10 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     public void setEventNotificationTimeSelection(long seconds) {
         this.ignoreNextNotificationTimeCallback = true;
         boolean foundSelection = false;
-        if (seconds >= SIGNIFICANTLY_LARGE_TIME_INTERVAL_SECONDS) {
-            this.spinner.setSelection(0);
-            foundSelection = true;
-        } else {
-            for (int i = 0; i < eventNotifyTimesSeconds.size(); i++) {
-                if (eventNotifyTimesSeconds.get(i) == seconds) {
-                    this.spinner.setSelection(i);
-                    foundSelection = true;
-                }
+        for (int i = 0; i < eventNotifyTimesSeconds.size(); i++) {
+            if (eventNotifyTimesSeconds.get(i) == seconds) {
+                this.spinner.setSelection(i);
+                foundSelection = true;
             }
         }
 
@@ -212,7 +195,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
         this.spinner.setAdapter(this.eventNotifyTimeAdapter);
 
         eventNotifyTimesSeconds = new ArrayList<>();
-        eventNotifyTimesSeconds.add(SIGNIFICANTLY_LARGE_TIME_INTERVAL_SECONDS);
+        eventNotifyTimesSeconds.add(-SIGNIFICANTLY_LARGE_TIME_INTERVAL_SECONDS);
         this.eventNotifyTimeAdapter.add(this.getString(R.string.dont_notify));
         eventNotifyTimesSeconds.add(new Long(15 * 60));
         this.eventNotifyTimeAdapter.add(String.format("%d %s", 15, this.getString(R.string.minutes)));
@@ -246,67 +229,14 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
     }
 
     private void setupHackerModeEnablingGesture(View root) {
-        this.hackerModeCorrectGestureCount = 0;
-        this.hackerModeGestureDetector = new GestureDetectorCompat(getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent event) {
-                // don't return false here or else none of the other
-                // gestures will work
-                return true;
+        this.hackerModeEnablerClickCount = 0;
+
+        root.findViewById(R.id.ivSecretHackerModeEnabler).setOnTouchListener((v, event) -> {
+            this.hackerModeEnablerClickCount++;
+            if (this.hackerModeEnablerClickCount >= HACKER_MODE_CLICKS_REQUIRED) {
+                presenter.enableHackerMode();
             }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                String eventName = "";
-
-                float xDiff = e2.getX() - e1.getX();
-                float yDiff = e2.getY() - e1.getY();
-
-                if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                    // horizontal
-                    if (xDiff > 0) {
-                        eventName = "right";
-                    }
-                    else {
-                        eventName = "left";
-                    }
-                }
-                else {
-                    // vertical
-                    if (yDiff > 0) {
-                        eventName = "down";
-                    }
-                    else {
-                        eventName = "up";
-                    }
-                }
-
-                if (eventName == hackerModeCorrectGestureCombination[hackerModeCorrectGestureCount]) {
-                    hackerModeCorrectGestureCount++;
-                }
-                else {
-                    hackerModeCorrectGestureCount = 0;
-                    // handle the first gesture in the combination after reset
-                    if (eventName == hackerModeCorrectGestureCombination[hackerModeCorrectGestureCount]) {
-                        hackerModeCorrectGestureCount++;
-                    }
-                }
-
-                if (hackerModeCorrectGestureCount >= hackerModeCorrectGestureCombination.length) {
-                    presenter.enableHackerMode();
-                    hackerModeCorrectGestureCount = 0;
-                }
-
-
-                return true;
-            }
-        });
-
-        root.findViewById(R.id.ivSecretHackerModeEnabler).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return hackerModeGestureDetector.onTouchEvent(event);
-            }
+            return false;
         });
     }
 
@@ -359,14 +289,14 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
                 DatePicker datePicker = root.findViewById(R.id.notif_date_picker);
                 TimePicker timePicker = root.findViewById(R.id.notif_time_picker);
                 GregorianCalendar dateTime = new GregorianCalendar(TimeZone.getTimeZone("Europe/Sofia"));
+                dateTime.clear();
                 dateTime.set(datePicker.getYear(),
                         datePicker.getMonth(),
                         datePicker.getDayOfMonth(),
                         timePicker.getCurrentHour(),
                         timePicker.getCurrentMinute());
-                long startTime = 0;
-                long notifyTime = dateTime.getTimeInMillis() / 1000;
-                presenter.createTestNotification(id, name, startTime, notifyTime);
+                long startTime = dateTime.getTimeInMillis() / 1000;
+                presenter.createTestNotification(id, name, startTime, 0);
                 popupCreator.popup(root.getContext(), getString(R.string.test_notification_created));
             }
         });

@@ -34,9 +34,14 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
     }
 
     @Override
-    public void subscribeForEvent(String eventId, String eventName, long startTimestamp, long notifyTimestamp) {
+    public void subscribeForEvent(String eventId, String eventName, long startTimestamp) {
+        this.subscribeForEvent(eventId, eventName, startTimestamp, this.getEventsNotificationAdvanceTimeSeconds());
+    }
+
+    @Override
+    public void subscribeForEvent(String eventId, String eventName, long startTimestamp, long notifAdvanceTimeSeconds) {
         final EventSubscriptionModel newSubscrEvent =
-                new EventSubscriptionModel(eventId, eventName, startTimestamp, notifyTimestamp);
+                new EventSubscriptionModel(eventId, eventName, startTimestamp, notifAdvanceTimeSeconds);
 
         final SharedPreferences eventNotifRef =
                 this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
@@ -52,7 +57,7 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
                 newSubscrEvent.getEventId(),
                 newSubscrEvent.getEventName(),
                 newSubscrEvent.getEventTimestamp(),
-                newSubscrEvent.getNotifyTimestamp());
+                newSubscrEvent.getEventTimestamp() - newSubscrEvent.getNotifAdvanceTimeSeconds());
     }
 
     @Override
@@ -67,23 +72,31 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
         this.eventAlarmManager.cancelNotificationAlarm(eventId);
     }
 
-    @Override
-    public void updateEventSubscription(String eventId, String eventName, long startTimestamp, long notifyTimestamp) {
-        final EventSubscriptionModel newSubscrEvent =
-                new EventSubscriptionModel(eventId, eventName, startTimestamp, notifyTimestamp);
 
+    @Override
+    public void updateEventSubscription(String eventId, String eventName, long startTimestamp, boolean useDefaultNotifTime) {
         final SharedPreferences eventNotifRef =
                 this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
 
         final String oldNotifStr = eventNotifRef.getString(eventId, null);
-        boolean isNotifTimeChanged = false;
+        boolean shouldUpdateAlarm = false;
+        long eventNotifAdvanceTimeSeconds = this.getEventsNotificationAdvanceTimeSeconds();
         if (eventId != null) {
             final EventSubscriptionModel oldSubscrEvent =
                     new EventSubscriptionModel(this.serializer.deserializeToMap(oldNotifStr));
-            if (oldSubscrEvent.getNotifyTimestamp() != newSubscrEvent.getNotifyTimestamp()) {
-                isNotifTimeChanged = true;
+
+            if (!useDefaultNotifTime) {
+                eventNotifAdvanceTimeSeconds = oldSubscrEvent.getNotifAdvanceTimeSeconds();
+            }
+
+            if (oldSubscrEvent.getEventTimestamp() != startTimestamp
+                || oldSubscrEvent.getNotifAdvanceTimeSeconds() != eventNotifAdvanceTimeSeconds) {
+                shouldUpdateAlarm = true;
             }
         }
+
+        final EventSubscriptionModel newSubscrEvent =
+                new EventSubscriptionModel(eventId, eventName, startTimestamp, eventNotifAdvanceTimeSeconds);
 
         {
             final SharedPreferences.Editor eventNotifEditor = eventNotifRef.edit();
@@ -96,12 +109,12 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
         }
 
         // Update the alarm only if the notification time has changed
-        if (isNotifTimeChanged) {
+        if (shouldUpdateAlarm) {
             this.eventAlarmManager.setNotificationAlarmForFutureEvent(
                     newSubscrEvent.getEventId(),
                     newSubscrEvent.getEventName(),
                     newSubscrEvent.getEventTimestamp(),
-                    newSubscrEvent.getNotifyTimestamp());
+                    newSubscrEvent.getEventTimestamp() - newSubscrEvent.getNotifAdvanceTimeSeconds());
         }
     }
 
@@ -123,6 +136,28 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
     }
 
     @Override
+    public void setDefaultNotificationTimeToAllEvents() {
+        final SharedPreferences eventNotifRef =
+                this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
+
+        for (String eventId: eventNotifRef.getAll().keySet()) {
+            EventSubscriptionModel oldEvent = new EventSubscriptionModel(
+                    this.serializer.deserializeToMap(eventNotifRef.getString(eventId, "{}"))
+            );
+
+            long newEventNotifTimestamp =
+                    oldEvent.getEventTimestamp() - this.getEventsNotificationAdvanceTimeSeconds();
+
+            this.updateEventSubscription(
+                    oldEvent.getEventId(),
+                    oldEvent.getEventName(),
+                    oldEvent.getEventTimestamp(),
+                    true
+            );
+        }
+    }
+
+    @Override
     public void setupAllNotificationAlarms() {
         final SharedPreferences eventNotifRef =
                 this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
@@ -135,7 +170,7 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
                     event.getEventId(),
                     event.getEventName(),
                     event.getEventTimestamp(),
-                    event.getNotifyTimestamp());
+                    event.getEventTimestamp() - event.getNotifAdvanceTimeSeconds());
         }
     }
 

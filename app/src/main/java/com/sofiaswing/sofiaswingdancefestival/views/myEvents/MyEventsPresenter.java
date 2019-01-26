@@ -120,7 +120,7 @@ public class MyEventsPresenter implements MyEventsInterfaces.IPresenter {
             this.settingsProvider.subscribeForEvent(
                     event.getId(),
                     event.getName(),
-                    event.getStartTime().getTime() / 1000, 0);
+                    event.getStartTime().getTime() / 1000);
         }
         else {
             this.settingsProvider.unsubscribeFromEvent(event.getId());

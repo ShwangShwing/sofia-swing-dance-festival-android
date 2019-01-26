@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by shwangshwing on 2/1/18.
  */
 
-public class VolatileSettingsProvider implements ProvidersInterfaces.IVolatileSettingsProvider {
+public class HackerSettingsProvider implements ProvidersInterfaces.IHackerSettingsProvider {
     private final ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
 
     private boolean isHackerEnabled = false;
@@ -18,7 +18,7 @@ public class VolatileSettingsProvider implements ProvidersInterfaces.IVolatileSe
     private long timeOverridenAtMs;
     private String customSsdfYear = "";
 
-    VolatileSettingsProvider(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
+    HackerSettingsProvider(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
         this.currentSsdfYearProvider = currentSsdfYearProvider;
     }
 

@@ -29,13 +29,15 @@ public class ProvidersInterfaces {
 
     public interface ISettingsProvider {
         boolean isSubscribedForEvent(String eventId);
-        void subscribeForEvent(String eventId, String eventName, long startTimestamp, long notifyTimestamp);
-        void updateEventSubscription(String eventId, String eventName, long startTimestamp, long notifyTimestamp);
+        void subscribeForEvent(String eventId, String eventName, long startTimestamp);
+        void subscribeForEvent(String eventId, String eventName, long startTimestamp, long notifAdvanceTimeSeconds);
+        void updateEventSubscription(String eventId, String eventName, long startTimestamp, boolean useDefaultNotifTime);
         void unsubscribeFromEvent(String eventId);
 
         long getEventsNotificationAdvanceTimeSeconds();
         void setEventsNotificationAdvanceTimeSeconds(long seconds);
 
+        void setDefaultNotificationTimeToAllEvents();
         void setupAllNotificationAlarms();
 
         List<String> getSubscribedEventsIds();
@@ -49,7 +51,7 @@ public class ProvidersInterfaces {
         long getCurrentTimeMs();
     }
 
-    public interface IVolatileSettingsProvider {
+    public interface IHackerSettingsProvider {
         boolean isHackerModeEnabled();
         void enableHackerMode();
         void disableHackerMode();
