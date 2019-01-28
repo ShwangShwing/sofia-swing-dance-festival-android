@@ -1,8 +1,9 @@
 package com.sofiaswing.sofiaswingdancefestival.views.instructorDetails;
 
 
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
+import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
+
+import javax.inject.Inject;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,10 +32,21 @@ public class InstructorDetailsView extends Fragment
     implements InstructorDetailsInterfaces.IView {
     private InstructorDetailsInterfaces.IPresenter presenter;
 
+    private CompositeDisposable subscriptions;
+
+    @Inject
+    public ProvidersInterfaces.INetworkImageLoader netImageLoader;
+
     public InstructorDetailsView() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.subscriptions = new CompositeDisposable();
+        this.inject();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,7 +69,7 @@ public class InstructorDetailsView extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-
+        this.subscriptions.clear();
         this.presenter.stop();
     }
 
@@ -83,22 +103,38 @@ public class InstructorDetailsView extends Fragment
         final ProgressBar progressBar = this.getActivity().findViewById(R.id.pbInstructorImageLoading);
         progressBar.setVisibility(View.VISIBLE);
 
-        Picasso.with(getContext())
-                .load(Uri.parse(instructor.getImageUrl()))
-                .placeholder(R.drawable.sofia_swing_logo)
-                .error(R.drawable.sofia_swing_logo)
-                .into(image, new Callback() {
+        netImageLoader.getImage(instructor.getImageUrl())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Bitmap>() {
                     @Override
-                    public void onSuccess() {
+                    public void onSubscribe(Disposable d) {
+                        subscriptions.add(d);
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        image.setImageBitmap(bitmap);
                         image.setAlpha(1f);
                         progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
                         image.setAlpha(1f);
                         progressBar.setVisibility(View.GONE);
                     }
                 });
+    }
+
+    private void inject() {
+        ((SofiaSwingDanceFestivalApplication) this.getActivity().getApplication())
+                .getComponent()
+                .inject(this);
     }
 }

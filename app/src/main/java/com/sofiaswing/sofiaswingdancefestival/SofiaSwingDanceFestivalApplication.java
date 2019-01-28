@@ -16,11 +16,13 @@ import com.sofiaswing.sofiaswingdancefestival.views.contactUs.ContactUsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.contactUs.ContactUsView;
 import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsModule;
+import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsView;
 import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.instructors.InstructorsView;
 import com.sofiaswing.sofiaswingdancefestival.views.main.MainActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.map.MapsActivity;
 import com.sofiaswing.sofiaswingdancefestival.views.map.MapsModule;
+import com.sofiaswing.sofiaswingdancefestival.views.map.VenueFragment;
 import com.sofiaswing.sofiaswingdancefestival.views.myEvents.MyEventsModule;
 import com.sofiaswing.sofiaswingdancefestival.views.myEvents.MyEventsView;
 import com.sofiaswing.sofiaswingdancefestival.views.news.NewsModule;
@@ -99,6 +101,8 @@ public class SofiaSwingDanceFestivalApplication extends Application {
         void inject(MapsActivity mapsActivity);
         void inject(ClassScheduleFragment classScheduleFragment);
         void inject(NewsArticleView newsArticleView);
+        void inject(InstructorDetailsView instructorDetailsView);
+        void inject(VenueFragment venueFragment);
     }
 }
 

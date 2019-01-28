@@ -39,6 +39,7 @@ public class CachingNetworkImageLoader implements ProvidersInterfaces.INetworkIm
 
                 URL url = new URL(strUrl);
                 URLConnection connection = url.openConnection();
+                connection.setUseCaches(true);
                 Bitmap bmp = BitmapFactory.decodeStream(connection.getInputStream());
                 e.onNext(bmp);
 
