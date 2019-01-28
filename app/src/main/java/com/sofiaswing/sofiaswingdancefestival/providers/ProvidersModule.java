@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.providers.Firebase.FirebaseCloudMessagingProvider;
-import com.sofiaswing.sofiaswingdancefestival.providers.SharedPreferences.SharedPreferencesSettingsProvider;
 
 import dagger.Module;
 import dagger.Provides;
@@ -89,5 +88,10 @@ public class ProvidersModule {
             Context context,
             ProvidersInterfaces.ICurrentTimeProvider timeProvider) {
         return new EventAlarmManager(context, timeProvider);
+    }
+
+    @Provides
+    ProvidersInterfaces.INetworkImageLoader provideNetworkImageLoader(Context ctx) {
+        return new CachingNetworkImageLoader(ctx);
     }
 }

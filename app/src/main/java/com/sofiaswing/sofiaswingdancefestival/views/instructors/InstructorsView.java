@@ -3,6 +3,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.instructors;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -23,15 +24,17 @@ import android.widget.Toast;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.InstructorModel;
-import com.sofiaswing.sofiaswingdancefestival.views.instructorDetails.InstructorDetailsActivity;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +42,8 @@ import io.reactivex.disposables.CompositeDisposable;
 public class InstructorsView extends Fragment implements InstructorsInterfaces.IView {
     @Inject
     public InstructorsInterfaces.IPresenter presenter;
+    @Inject
+    public ProvidersInterfaces.INetworkImageLoader netImageLoader;
 
     private ArrayAdapter<InstructorModel> instructorsAdapter;
     private CompositeDisposable subscriptions;
@@ -161,23 +166,34 @@ public class InstructorsView extends Fragment implements InstructorsInterfaces.I
             final ProgressBar progressBar = instructorRow.findViewById(R.id.pbInstructorImageLoading);
             progressBar.setVisibility(View.VISIBLE);
 
-            Picasso.with(getContext())
-                    .load(Uri.parse(instructor.getImageUrl()))
-                    .placeholder(R.drawable.sofia_swing_logo)
-                    .error(R.drawable.sofia_swing_logo)
-                    .into(image, new Callback() {
+            netImageLoader.getImage(instructor.getImageUrl())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Bitmap>() {
                         @Override
-                        public void onSuccess() {
+                        public void onSubscribe(Disposable d) {
+                            subscriptions.add(d);
+                        }
+
+                        @Override
+                        public void onNext(Bitmap bitmap) {
+                            image.setImageBitmap(bitmap);
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
                         }
 
                         @Override
-                        public void onError() {
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
                         }
                     });
+
 
             return instructorRow;
         }

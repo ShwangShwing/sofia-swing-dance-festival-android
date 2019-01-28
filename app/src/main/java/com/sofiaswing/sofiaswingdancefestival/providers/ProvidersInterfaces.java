@@ -1,5 +1,6 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 
 import java.util.List;
@@ -87,5 +88,9 @@ public class ProvidersInterfaces {
                 long startTimestamp,
                 long notifyTimestamp);
         void cancelNotificationAlarm(String eventId);
+    }
+
+    public interface INetworkImageLoader {
+        Observable<Bitmap> getImage(String url);
     }
 }

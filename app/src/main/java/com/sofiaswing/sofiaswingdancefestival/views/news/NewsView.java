@@ -3,7 +3,7 @@ package com.sofiaswing.sofiaswingdancefestival.views.news;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -22,9 +22,8 @@ import android.widget.TextView;
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.NewsArticleModel;
+import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -33,7 +32,11 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +48,8 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
 
     @Inject
     public NewsInterfaces.IPresenter presenter;
+    @Inject
+    public ProvidersInterfaces.INetworkImageLoader netImageLoader;
 
     public static Fragment newInstance() {
         Fragment fragment = new NewsView();
@@ -153,19 +158,29 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
             final ProgressBar progressBar = newsArticleRow.findViewById(R.id.pbNewsArticleImageLoading);
             progressBar.setVisibility(View.VISIBLE);
 
-            Picasso.with(getContext())
-                    .load(Uri.parse(article.getImageUrl()))
-                    .placeholder(R.drawable.sofia_swing_logo)
-                    .error(R.drawable.sofia_swing_logo)
-                    .into(image, new Callback() {
+            netImageLoader.getImage(article.getImageUrl())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Bitmap>() {
                         @Override
-                        public void onSuccess() {
+                        public void onSubscribe(Disposable d) {
+                            subscriptions.add(d);
+                        }
+
+                        @Override
+                        public void onNext(Bitmap bitmap) {
+                            image.setImageBitmap(bitmap);
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
                         }
 
                         @Override
-                        public void onError() {
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
                         }

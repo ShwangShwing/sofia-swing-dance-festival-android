@@ -1,4 +1,4 @@
-package com.sofiaswing.sofiaswingdancefestival.providers.SharedPreferences;
+package com.sofiaswing.sofiaswingdancefestival.providers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
