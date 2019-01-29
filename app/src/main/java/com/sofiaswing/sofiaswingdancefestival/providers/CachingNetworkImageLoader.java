@@ -30,7 +30,9 @@ public class CachingNetworkImageLoader implements ProvidersInterfaces.INetworkIm
                     File inFile = new File(ctx.getCacheDir(), cacheFilename);
                     FileInputStream inFileStr = new FileInputStream(inFile);
                     Bitmap cacheBmp = BitmapFactory.decodeStream(inFileStr);
-                    e.onNext(cacheBmp);
+                    if (cacheBmp != null) {
+                        e.onNext(cacheBmp);
+                    }
                     inFileStr.close();
                 }
                 catch (IOException ex) {
@@ -41,17 +43,19 @@ public class CachingNetworkImageLoader implements ProvidersInterfaces.INetworkIm
                 URLConnection connection = url.openConnection();
                 connection.setUseCaches(true);
                 Bitmap bmp = BitmapFactory.decodeStream(connection.getInputStream());
-                e.onNext(bmp);
+                if (bmp != null) {
+                    e.onNext(bmp);
+                    try {
+                        File outFile = new File(ctx.getCacheDir(), cacheFilename);
+                        FileOutputStream outFileStr = new FileOutputStream(outFile, false);
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, outFileStr);
+                        outFileStr.close();
+                    }
+                    catch (IOException ex) {
 
-                try {
-                    File outFile = new File(ctx.getCacheDir(), cacheFilename);
-                    FileOutputStream outFileStr = new FileOutputStream(outFile, false);
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, outFileStr);
-                    outFileStr.close();
+                    }
                 }
-                catch (IOException ex) {
 
-                }
             } catch (IOException ex) {
 
             }
