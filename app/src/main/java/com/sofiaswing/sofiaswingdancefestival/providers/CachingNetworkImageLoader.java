@@ -10,13 +10,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
 
 import io.reactivex.Observable;
 
 
 public class CachingNetworkImageLoader implements ProvidersInterfaces.INetworkImageLoader {
-    private final int DOWNLOAD_CACHED_IMAGE_AFTER_SECONDS = 3666;
+    private final int DOWNLOAD_CACHED_IMAGE_AFTER_SECONDS = 8 * 3600; // 8 * 3600 seconds = 8 hours
     private final Context ctx;
     private final ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
 
