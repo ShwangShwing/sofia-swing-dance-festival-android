@@ -91,7 +91,7 @@ public class ProvidersModule {
     }
 
     @Provides
-    ProvidersInterfaces.INetworkImageLoader provideNetworkImageLoader(Context ctx) {
-        return new CachingNetworkImageLoader(ctx);
+    ProvidersInterfaces.INetworkImageLoader provideNetworkImageLoader(Context ctx, ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider) {
+        return new CachingNetworkImageLoader(ctx, currentTimeProvider);
     }
 }
