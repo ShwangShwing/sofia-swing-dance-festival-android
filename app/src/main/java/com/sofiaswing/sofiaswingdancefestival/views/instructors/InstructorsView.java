@@ -170,8 +170,10 @@ public class InstructorsView extends Fragment implements InstructorsInterfaces.I
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Bitmap>() {
+                        private Disposable thisObservable;
                         @Override
                         public void onSubscribe(Disposable d) {
+                            thisObservable = d;
                             subscriptions.add(d);
                         }
 
@@ -191,6 +193,8 @@ public class InstructorsView extends Fragment implements InstructorsInterfaces.I
                         public void onComplete() {
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
+                            // forgetting this causes memory leak after too much scrolling
+                            subscriptions.delete(thisObservable);
                         }
                     });
 

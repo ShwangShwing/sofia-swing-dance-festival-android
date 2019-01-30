@@ -162,8 +162,10 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Bitmap>() {
+                        private Disposable thisObservable;
                         @Override
                         public void onSubscribe(Disposable d) {
+                            this.thisObservable = d;
                             subscriptions.add(d);
                         }
 
@@ -183,6 +185,8 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
                         public void onComplete() {
                             image.setAlpha(1f);
                             progressBar.setVisibility(View.GONE);
+                            // forgetting this causes memory leak after too much scrolling
+                            subscriptions.delete(thisObservable);
                         }
                     });
 
