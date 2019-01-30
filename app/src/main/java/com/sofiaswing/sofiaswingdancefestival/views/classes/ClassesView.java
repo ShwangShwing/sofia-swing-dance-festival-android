@@ -59,16 +59,26 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         this.presenter.start();
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
-
+        // After the first classes load it is not necessary to load class levels again
+        // as they will probably never change during the festival.
+        // Since the presenter is started at onActivityCreated(), the tabs will stop loading
+        // after the first fragment pause. I want to avoid restarting the presneter in onResume()
+        // Restarting the presnenter in onResume causes the current tab to reset when the user
+        // switches to another app and then returns.
         this.presenter.stop();
     }
 
