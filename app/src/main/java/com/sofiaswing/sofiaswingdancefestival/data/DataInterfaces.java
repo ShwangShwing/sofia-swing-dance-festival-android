@@ -17,6 +17,12 @@ import io.reactivex.Observable;
  */
 
 public class DataInterfaces {
+    // This is a workaround for firebase connection that likes to stop working
+    // sometimes when switching networks.
+    public interface IBrokenDbConnectionFixer {
+        void fixBrokenDbConnection();
+    }
+
     public interface INewsArticlesData {
         default Observable<List<NewsArticleModel>> getAll() {
             return this.getAll(false);

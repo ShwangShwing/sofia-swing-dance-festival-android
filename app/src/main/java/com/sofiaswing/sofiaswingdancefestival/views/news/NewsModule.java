@@ -16,7 +16,8 @@ public class NewsModule {
     @Provides
     NewsInterfaces.IPresenter provideNewsPresenter(
             DataInterfaces.INewsArticlesData newsArticlesData,
-            ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider) {
-        return new NewsPresenter(newsArticlesData, volatileSettingsProvider);
+            ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider,
+            DataInterfaces.IBrokenDbConnectionFixer brokenDbConnectionFixer) {
+        return new NewsPresenter(newsArticlesData, volatileSettingsProvider, brokenDbConnectionFixer);
     }
 }

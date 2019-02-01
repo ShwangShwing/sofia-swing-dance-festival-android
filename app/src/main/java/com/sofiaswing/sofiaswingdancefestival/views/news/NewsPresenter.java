@@ -19,14 +19,17 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
     public NewsInterfaces.IView view;
     private final DataInterfaces.INewsArticlesData newsArticlesData;
     private final ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider;
+    private final DataInterfaces.IBrokenDbConnectionFixer brokenDbConnectionFixer;
     private List<NewsArticleModel> newsArticles;
 
     private final CompositeDisposable subscriptions;
 
     public NewsPresenter(DataInterfaces.INewsArticlesData newsArticlesData,
-                         ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider) {
+                         ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider,
+                         DataInterfaces.IBrokenDbConnectionFixer brokenDbConnectionFixer) {
         this.newsArticlesData = newsArticlesData;
         this.volatileSettingsProvider = volatileSettingsProvider;
+        this.brokenDbConnectionFixer = brokenDbConnectionFixer;
         this.newsArticles = new ArrayList<>();
         this.subscriptions = new CompositeDisposable();
     }
@@ -47,6 +50,9 @@ public class NewsPresenter implements NewsInterfaces.IPresenter {
                     view.setNews(newsArticles);
                 })
         );
+        // bug in firebase causes latest news not to be retrieved sometimes when the firebase
+        // connection doesn't reconnect automatically
+        brokenDbConnectionFixer.fixBrokenDbConnection();
     }
 
     @Override

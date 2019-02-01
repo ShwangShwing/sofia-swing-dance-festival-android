@@ -68,4 +68,9 @@ public class FirebaseDataModule {
     DataInterfaces.ISsdfYearsData provideSsdfYearsData() {
         return new SsdfYearsFirebaseData();
     }
+
+    @Provides
+    DataInterfaces.IBrokenDbConnectionFixer provideBrokenConnectionFixer() {
+        return new BrokenDbConnectionFixer();
+    }
 }
