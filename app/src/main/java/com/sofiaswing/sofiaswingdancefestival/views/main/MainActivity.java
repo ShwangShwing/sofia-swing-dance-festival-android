@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
     @Inject
     public ProvidersInterfaces.IEventSubscriptionRefresher eventSubscriptionRefresher;
 
+    @Inject
+    public DataInterfaces.IBrokenDbConnectionFixer brokenDbConnectionFixer;
+
     private Drawer drawer;
 
     private String currentTitle;
@@ -74,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
         setContentView(R.layout.activity_main);
 
         this.inject();
+
+        // bug in firebase causes latest news not to be retrieved sometimes when the firebase
+        // connection doesn't reconnect automatically
+        this.brokenDbConnectionFixer.fixBrokenDbConnection();
 
         if (this.settingsProvider.areNewsNotificationsEnabled()) {
             this.pushNotificationsProvider.subscribeForNews();
