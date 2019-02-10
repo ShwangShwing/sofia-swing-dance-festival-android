@@ -52,16 +52,12 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
 
     @Inject
     public UiInterfaces.IDrawerNavigationFactory drawerNavigationFactory;
-
     @Inject
     public ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider;
-
     @Inject
     public ProvidersInterfaces.ISettingsProvider settingsProvider;
-
     @Inject
     public ProvidersInterfaces.IEventSubscriptionRefresher eventSubscriptionRefresher;
-
     @Inject
     public DataInterfaces.IBrokenDbConnectionFixer brokenDbConnectionFixer;
 
@@ -144,7 +140,13 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
                 .beginTransaction()
                 .replace(R.id.content_container, fragment)
                 .commit();
-        setTitle(title);
+
+        String pageTitle = title;
+        if (!this.settingsProvider.isYearFromDatabase()) {
+            pageTitle = String.format("%s (![%s]!)", title, this.settingsProvider.getCurrentCustomSsdfYear());
+        }
+
+        setTitle(pageTitle);
         currentTitle = title;
     }
 

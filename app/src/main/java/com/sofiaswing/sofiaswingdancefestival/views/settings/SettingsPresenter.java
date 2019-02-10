@@ -14,14 +14,14 @@ import io.reactivex.schedulers.Schedulers;
 public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     private SettingsInterfaces.IView view;
     private final ProvidersInterfaces.ISettingsProvider settingsProvider;
-    private final ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider;
+    private final ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
     private final DataInterfaces.ISsdfYearsData ssdfYearsData;
     private final ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider;
     private final ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider;
     private Disposable ssdfYearsObs;
 
     public SettingsPresenter(ProvidersInterfaces.ISettingsProvider settingsProvider,
-                             ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider,
+                             ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider,
                              DataInterfaces.ISsdfYearsData ssdfYearsData, ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider, ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider) {
         this.settingsProvider = settingsProvider;
         this.volatileSettingsProvider = volatileSettingsProvider;
@@ -78,13 +78,13 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
 
     @Override
     public void setYearFromDatabase() {
-        this.volatileSettingsProvider.setCurrentSsdfYearFromData();
+        this.settingsProvider.setCurrentSsdfYearFromData();
         this.updateCustomYearFields();
     }
 
     @Override
     public void setCustomYear(String customYear) {
-        this.volatileSettingsProvider.setCurrentSsdfYear(customYear);
+        this.settingsProvider.setCurrentSsdfYear(customYear);
         this.updateCustomYearFields();
     }
 
@@ -135,13 +135,13 @@ public class SettingsPresenter implements SettingsInterfaces.IPresenter {
     }
 
     private void updateCustomYearFields() {
-        if (this.volatileSettingsProvider.isYearFromDatabase()) {
+        if (this.settingsProvider.isYearFromDatabase()) {
             this.view.setYearFromDatabase(true);
             this.view.setCustomYear("");
         }
         else {
             this.view.setYearFromDatabase(false);
-            this.view.setCustomYear(this.volatileSettingsProvider.getCurrentCustomSsdfYear());
+            this.view.setCustomYear(this.settingsProvider.getCurrentCustomSsdfYear());
         }
     }
 

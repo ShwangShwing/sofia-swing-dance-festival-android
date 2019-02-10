@@ -1,7 +1,9 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
+import android.arch.lifecycle.LiveData;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.util.Pair;
 
 import java.util.List;
 import java.util.Map;
@@ -24,8 +26,6 @@ public class ProvidersInterfaces {
 
     public interface ICurrentSsdfYearProvider {
         Observable<String> getCurrentSsdfYear();
-        void setCurrentSsdfYearFromData();
-        void setCurrentSsdfYear(String currentSsdfYear);
     }
 
     public interface ISettingsProvider {
@@ -46,20 +46,22 @@ public class ProvidersInterfaces {
         boolean areNewsNotificationsEnabled();
         void enableNewsNotifications();
         void disableNewsNotifications();
+
+        boolean isYearFromDatabase();
+        String getCurrentCustomSsdfYear();
+        void setCurrentSsdfYearFromData();
+        void setCurrentSsdfYear(String currentSsdfYear);
+        LiveData<Pair<Boolean, String>> obsCurrentSsdfYear();
     }
 
     public interface ICurrentTimeProvider {
         long getCurrentTimeMs();
     }
 
-    public interface IHackerSettingsProvider {
+    public interface IVolatileSettingsProvider {
         boolean isHackerModeEnabled();
         void enableHackerMode();
         void disableHackerMode();
-        boolean isYearFromDatabase();
-        String getCurrentCustomSsdfYear();
-        void setCurrentSsdfYearFromData();
-        void setCurrentSsdfYear(String currentSsdfYear);
         void setOverrideCurrentTime(boolean override, boolean freezeTime, long overridenTime);
         boolean isCurrentTimeOverriden();
         boolean isCurrentOverridenTimeFrozen();

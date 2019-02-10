@@ -3,9 +3,9 @@ package com.sofiaswing.sofiaswingdancefestival.providers;
 import java.util.Date;
 
 public class CurrentTimeProvider implements ProvidersInterfaces.ICurrentTimeProvider {
-    private final ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider;
+    private final ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
 
-    public CurrentTimeProvider(ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider) {
+    public CurrentTimeProvider(ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
         this.volatileSettingsProvider = volatileSettingsProvider;
     }
 

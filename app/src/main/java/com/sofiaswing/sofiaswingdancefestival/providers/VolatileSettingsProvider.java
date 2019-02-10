@@ -7,20 +7,12 @@ import java.util.Date;
  * Created by shwangshwing on 2/1/18.
  */
 
-public class HackerSettingsProvider implements ProvidersInterfaces.IHackerSettingsProvider {
-    private final ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
-
+public class VolatileSettingsProvider implements ProvidersInterfaces.IVolatileSettingsProvider {
     private boolean isHackerEnabled = false;
-    private boolean isSsdfYearFromDatabase = true;
     private boolean isCurrentTimeOverriden = false;
     private boolean isCurrentOverridenTimeFrozen = false;
     private long overridenTimeMs;
     private long timeOverridenAtMs;
-    private String customSsdfYear = "";
-
-    HackerSettingsProvider(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
-        this.currentSsdfYearProvider = currentSsdfYearProvider;
-    }
 
     @Override
     public boolean isHackerModeEnabled() {
@@ -35,29 +27,6 @@ public class HackerSettingsProvider implements ProvidersInterfaces.IHackerSettin
     @Override
     public void disableHackerMode() {
         this.isHackerEnabled = false;
-    }
-
-    @Override
-    public boolean isYearFromDatabase() {
-        return isSsdfYearFromDatabase;
-    }
-
-    @Override
-    public String getCurrentCustomSsdfYear() {
-        return isSsdfYearFromDatabase ? "" : customSsdfYear;
-    }
-
-    @Override
-    public void setCurrentSsdfYearFromData() {
-        this.isSsdfYearFromDatabase = true;
-        this.currentSsdfYearProvider.setCurrentSsdfYearFromData();
-    }
-
-    @Override
-    public void setCurrentSsdfYear(String currentSsdfYear) {
-        this.isSsdfYearFromDatabase = false;
-        this.customSsdfYear = currentSsdfYear;
-        this.currentSsdfYearProvider.setCurrentSsdfYear(currentSsdfYear);
     }
 
     @Override

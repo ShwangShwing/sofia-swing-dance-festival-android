@@ -18,13 +18,13 @@ import io.reactivex.schedulers.Schedulers;
 public class NewsPresenter implements NewsInterfaces.IPresenter {
     public NewsInterfaces.IView view;
     private final DataInterfaces.INewsArticlesData newsArticlesData;
-    private final ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider;
+    private final ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
     private List<NewsArticleModel> newsArticles;
 
     private final CompositeDisposable subscriptions;
 
     public NewsPresenter(DataInterfaces.INewsArticlesData newsArticlesData,
-                         ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider) {
+                         ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
         this.newsArticlesData = newsArticlesData;
         this.volatileSettingsProvider = volatileSettingsProvider;
         this.newsArticles = new ArrayList<>();
