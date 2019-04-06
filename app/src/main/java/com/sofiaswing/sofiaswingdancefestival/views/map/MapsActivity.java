@@ -147,7 +147,7 @@ public class MapsActivity extends FragmentActivity implements MapsInterfaces.IVi
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(position)
                 .title(venue.getName())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_ssdf_pin))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin))
         );
         marker.setTag(i);
         this.mMarkers.add(marker);

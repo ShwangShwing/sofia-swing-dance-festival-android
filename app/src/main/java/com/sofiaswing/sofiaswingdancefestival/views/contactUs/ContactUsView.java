@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.Dimension;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,17 +16,21 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
+import com.sofiaswing.sofiaswingdancefestival.utils.DimensionUtils;
 
 import java.util.List;
 
@@ -69,11 +74,21 @@ public class ContactUsView extends Fragment implements ContactUsInterfaces.IView
         ListView lvContacts = root.findViewById(R.id.lvContacts);
         lvContacts.setAdapter(this.contactsAdapter);
 
-        View footer = inflater.inflate(R.layout.contacts_footer_links, lvContacts, false);
-        TextView tvLinkSSDF = footer.findViewById(R.id.link_ssdf);
-        tvLinkSSDF.setClickable(true);
-        tvLinkSSDF.setText(Html.fromHtml("<a href=\"http://sofiaswing.com\">Sofia swing dance festival</a>"));
-        tvLinkSSDF.setMovementMethod(LinkMovementMethod.getInstance());
+        LinearLayout footer = new LinearLayout(getContext());
+        footer.setOrientation(LinearLayout.VERTICAL);
+        String[] contactLinks = getResources().getStringArray(R.array.contact_links);
+        for (String contactLink : contactLinks) {
+            TextView tvLink = new TextView(getContext());
+            tvLink.setClickable(true);
+            tvLink.setText(Html.fromHtml(contactLink));
+            tvLink.setMovementMethod(LinkMovementMethod.getInstance());
+            tvLink.setTextSize(Dimension.SP, 20);
+            int margin = DimensionUtils.dipToPixels(getContext(), 15);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(margin, margin, margin, margin);
+            tvLink.setLayoutParams(params);
+            footer.addView(tvLink);
+        }
 
         lvContacts.addFooterView(footer);
 

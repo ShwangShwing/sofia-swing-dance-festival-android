@@ -7,7 +7,7 @@
     <item>
 
         <bitmap
-            android:src="@drawable/sofia_swing_logo"
+            android:src="@drawable/app_logo"
             android:gravity="center"/>
 
     </item>

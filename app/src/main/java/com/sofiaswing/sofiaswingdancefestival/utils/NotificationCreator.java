@@ -30,7 +30,7 @@ public class NotificationCreator {
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.drawable.sofia_swing_logo)
+                        .setSmallIcon(R.drawable.app_logo)
                         .setContentTitle(notificationTitle)
                         .setContentText(notificationText)
                         .setVibrate(shaveAndHaircutVibPattern)

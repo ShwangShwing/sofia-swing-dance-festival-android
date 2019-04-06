@@ -12,4 +12,5 @@
     <color name="selectedDrawerBackground">#92fcb044</color>
     <color name="colorTime">#ffd8b3</color>
     <color name="taxiMeColor">#FFCA06</color>
+    <color name="colorDate">#FFFFFF</color>
 </resources>

@@ -13,7 +13,7 @@
             android:layout_width="117dp"
             android:layout_height="117dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/sofia_swing_logo" />
+            android:src="@drawable/app_logo" />
         <ProgressBar
             android:id="@+id/pbNewsArticleImageLoading"
             android:layout_width="wrap_content"

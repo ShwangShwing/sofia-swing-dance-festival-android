@@ -19,10 +19,6 @@
     <string name="notifyme">Notify me!</string>
     <string name="link_to_github"><a href="https://github.com/ShwangShwing">https://github.com/ShwangShwing</a></string>
     <string name="link_to_github_ivo"><a href="https://github.com/ivorcho">https://github.com/ivorcho</a></string>
-    <string name="link_to_lindyhop_bg"><a href="http://www.lindyhop.bg/">Lindyhop.bg</a></string>
-    <string name="link_to_lindyhop_bg_facebook"><a href="https://www.facebook.com/LindyHopBulgaria/">https://www.facebook.com/LindyHopBulgaria</a></string>
-    <string name="link_to_ssdf"><a href="http://sofiaswing.com">Sofia swing dance festival</a></string>
-    <string name="link_to_ssdf_facebook"><a href="https://www.facebook.com/SofiaSwing">https://www.facebook.com/SofiaSwing</a></string>
     <string name="saved_events_notifications">Saved events notifications:</string>
     <string name="minutes">minutes</string>
     <string name="hour">hour</string>
@@ -47,4 +43,11 @@
     <string name="set_time_override_settings">Set time override settings</string>
     <string name="misc_event">Miscalaneous event</string>
     <string name="news_notifications">News notifications</string>
+
+    <string-array name="contact_links">
+        <item><![CDATA[<a href="http://www.lindyhop.bg/">Lindyhop.bg</a>]]></item>
+        <item><![CDATA[<a href="https://www.facebook.com/LindyHopBulgaria/">https://www.facebook.com/LindyHopBulgaria</a>]]></item>
+        <item><![CDATA[<a href="http://sofiaswing.com">Sofia swing dance festival</a>]]></item>
+        <item><![CDATA[<a href="https://www.facebook.com/SofiaSwing">https://www.facebook.com/SofiaSwing</a>]]></item>
+    </string-array>
 </resources>

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.sofiaswing.sofiaswingdancefestival"
+        applicationId "com.sofiaswing"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 6
@@ -16,6 +16,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "events"
+    productFlavors {
+        ssdf {
+            // Assigns this product flavor to the "version" flavor dimension.
+            // This property is optional if you are using only one dimension.
+            dimension "events"
+            applicationIdSuffix ".sofiaswingdancefestival"
+        }
+        blhc {
+            dimension "events"
+            applicationIdSuffix ".blhc"
+        }
+    }
+
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8

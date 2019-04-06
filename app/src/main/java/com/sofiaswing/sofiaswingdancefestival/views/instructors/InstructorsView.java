@@ -171,6 +171,7 @@ public class InstructorsView extends Fragment implements InstructorsInterfaces.I
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Bitmap>() {
                         private Disposable thisObservable;
+
                         @Override
                         public void onSubscribe(Disposable d) {
                             thisObservable = d;

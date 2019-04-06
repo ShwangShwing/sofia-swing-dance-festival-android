@@ -100,7 +100,6 @@ public class NewsArticleView extends Fragment
         final ProgressBar progressBar = this.getActivity().findViewById(R.id.pbNewsArticleImageLoading);
         progressBar.setVisibility(View.VISIBLE);
 
-
         netImageLoader.getImage(newsArticle.getImageUrl())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
