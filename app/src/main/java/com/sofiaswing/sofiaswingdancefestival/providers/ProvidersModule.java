@@ -17,7 +17,7 @@ public class ProvidersModule {
     private ProvidersInterfaces.ILocationProvider locationProvider;
     private ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider;
     private ProvidersInterfaces.ISettingsProvider settingsProvider;
-    private ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider;
+    private ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider;
 
     @Provides
     synchronized ProvidersInterfaces.ILocationProvider provideLocationProvider(Context context) {
@@ -30,10 +30,11 @@ public class ProvidersModule {
 
     @Provides
     synchronized ProvidersInterfaces.ICurrentSsdfYearProvider provideCurrentSsdfYearProvider(
-            DataInterfaces.ICurrentSsdfYearData currentSsdfYearData
+            DataInterfaces.ICurrentSsdfYearData currentSsdfYearData,
+            ProvidersInterfaces.ISettingsProvider settingsProvider
     ) {
         if (this.currentSsdfYearProvider == null) {
-            this.currentSsdfYearProvider = new CurrentSsdfYearProvider(currentSsdfYearData);
+            this.currentSsdfYearProvider = new CurrentSsdfYearProvider(currentSsdfYearData, settingsProvider);
         }
 
         return this.currentSsdfYearProvider;
@@ -52,16 +53,16 @@ public class ProvidersModule {
     }
 
     @Provides
-    synchronized ProvidersInterfaces.IHackerSettingsProvider provideVolatileSettingsProvider(ProvidersInterfaces.ICurrentSsdfYearProvider currentSsdfYearProvider) {
+    synchronized ProvidersInterfaces.IVolatileSettingsProvider provideVolatileSettingsProvider() {
         if (this.volatileSettingsProvider == null) {
-            this.volatileSettingsProvider = new HackerSettingsProvider(currentSsdfYearProvider);
+            this.volatileSettingsProvider = new VolatileSettingsProvider();
         }
 
         return this.volatileSettingsProvider;
     }
 
     @Provides
-    ProvidersInterfaces.ICurrentTimeProvider provideCurrentTimeProvider(ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider) {
+    ProvidersInterfaces.ICurrentTimeProvider provideCurrentTimeProvider(ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider) {
         return new CurrentTimeProvider(volatileSettingsProvider);
     }
 

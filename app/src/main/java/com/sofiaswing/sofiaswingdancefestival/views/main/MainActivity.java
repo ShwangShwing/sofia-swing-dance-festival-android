@@ -52,15 +52,14 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
 
     @Inject
     public UiInterfaces.IDrawerNavigationFactory drawerNavigationFactory;
-
     @Inject
     public ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider;
-
     @Inject
     public ProvidersInterfaces.ISettingsProvider settingsProvider;
-
     @Inject
     public ProvidersInterfaces.IEventSubscriptionRefresher eventSubscriptionRefresher;
+    @Inject
+    public DataInterfaces.IBrokenDbConnectionFixer brokenDbConnectionFixer;
 
     private Drawer drawer;
 
@@ -74,6 +73,10 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
         setContentView(R.layout.activity_main);
 
         this.inject();
+
+        // bug in firebase causes latest news not to be retrieved sometimes when the firebase
+        // connection doesn't reconnect automatically
+        this.brokenDbConnectionFixer.fixBrokenDbConnection();
 
         if (this.settingsProvider.areNewsNotificationsEnabled()) {
             this.pushNotificationsProvider.subscribeForNews();
@@ -137,7 +140,13 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
                 .beginTransaction()
                 .replace(R.id.content_container, fragment)
                 .commit();
-        setTitle(title);
+
+        String pageTitle = title;
+        if (!this.settingsProvider.isYearFromDatabase()) {
+            pageTitle = String.format("%s (![%s]!)", title, this.settingsProvider.getCurrentCustomSsdfYear());
+        }
+
+        setTitle(pageTitle);
         currentTitle = title;
     }
 

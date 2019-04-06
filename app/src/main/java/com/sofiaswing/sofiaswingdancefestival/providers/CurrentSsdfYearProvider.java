@@ -1,17 +1,14 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
-import android.util.Log;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.BehaviorSubject;
 
 /**
@@ -20,59 +17,53 @@ import io.reactivex.subjects.BehaviorSubject;
 
 public class CurrentSsdfYearProvider implements ProvidersInterfaces.ICurrentSsdfYearProvider {
     private final DataInterfaces.ICurrentSsdfYearData currentSsdfYearData;
-
-    private String currentSsdfYearOverriden;
-    private boolean overrideYear;
+    private final ProvidersInterfaces.ISettingsProvider settingsProvider;
 
     private final BehaviorSubject<String> yearSubject;
-    Disposable ssdfYearDataSubscr;
+    private Disposable ssdfYearDataSubscr;
+    private final Observer<Pair<Boolean, String>> ssdfYearObs;
+    private final LiveData<Pair<Boolean, String>> ssdfYearLiveData;
 
-    public CurrentSsdfYearProvider(DataInterfaces.ICurrentSsdfYearData currentSsdfYearData) {
+    public CurrentSsdfYearProvider(DataInterfaces.ICurrentSsdfYearData currentSsdfYearData, ProvidersInterfaces.ISettingsProvider settingsProvider) {
         this.currentSsdfYearData = currentSsdfYearData;
-
-        this.currentSsdfYearOverriden = null;
-        this.overrideYear = false;
+        this.settingsProvider = settingsProvider;
 
         this.yearSubject = BehaviorSubject.create();
-        this.setupProperSsdfYear();
+
+        this.ssdfYearObs = booleanStringPair -> {
+            final boolean isYearFromDb = booleanStringPair.first;
+            final String customSsdfYear = booleanStringPair.second;
+
+            if (isYearFromDb) {
+                if (ssdfYearDataSubscr == null) {
+                    ssdfYearDataSubscr = currentSsdfYearData.getCurrentSsdfYear()
+                            .subscribe(s -> yearSubject.onNext(s));
+                }
+            } else {
+                if (ssdfYearDataSubscr != null) {
+                    ssdfYearDataSubscr.dispose();
+                    ssdfYearDataSubscr = null;
+                }
+
+                yearSubject.onNext(customSsdfYear);
+            }
+        };
+
+        ssdfYearLiveData = this.settingsProvider.obsCurrentSsdfYear();
+        this.ssdfYearLiveData.observeForever(this.ssdfYearObs);
+    }
+
+    @Override
+    public void finalize() {
+        if (ssdfYearDataSubscr != null) {
+            ssdfYearDataSubscr.dispose();
+            ssdfYearDataSubscr = null;
+        }
+        this.ssdfYearLiveData.removeObserver(this.ssdfYearObs);
     }
 
     @Override
     public synchronized Observable<String> getCurrentSsdfYear() {
         return this.yearSubject;
-    }
-
-    @Override
-    public synchronized void setCurrentSsdfYearFromData() {
-        if (this.overrideYear) {
-            this.overrideYear = false;
-        }
-
-        this.setupProperSsdfYear();
-    }
-
-    @Override
-    public synchronized void setCurrentSsdfYear(String currentSsdfYear) {
-        this.overrideYear = true;
-        this.currentSsdfYearOverriden = currentSsdfYear;
-
-        this.setupProperSsdfYear();
-    }
-
-    private synchronized void setupProperSsdfYear() {
-        if (!this.overrideYear) {
-            if (ssdfYearDataSubscr == null) {
-                ssdfYearDataSubscr = this.currentSsdfYearData.getCurrentSsdfYear()
-                        .subscribe(s -> yearSubject.onNext(s));
-            }
-        } else {
-            if (ssdfYearDataSubscr != null) {
-                ssdfYearDataSubscr.dispose();
-                ssdfYearDataSubscr = null;
-            }
-
-            yearSubject.onNext(this.currentSsdfYearOverriden);
-        }
-
     }
 }

@@ -15,7 +15,7 @@ public class SettingsModule {
     @Provides
     SettingsInterfaces.IPresenter providePresenter(
             ProvidersInterfaces.ISettingsProvider settingsProvider,
-            ProvidersInterfaces.IHackerSettingsProvider volatileSettingsProvider,
+            ProvidersInterfaces.IVolatileSettingsProvider volatileSettingsProvider,
             DataInterfaces.ISsdfYearsData ssdfYearsData,
             ProvidersInterfaces.ICurrentTimeProvider currentTimeProvider,
             ProvidersInterfaces.IPushNotificationsProvider pushNotificationsProvider) {

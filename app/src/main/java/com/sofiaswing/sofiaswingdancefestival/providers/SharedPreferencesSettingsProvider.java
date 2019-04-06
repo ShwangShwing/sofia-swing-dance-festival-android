@@ -1,28 +1,37 @@
 package com.sofiaswing.sofiaswingdancefestival.providers;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Pair;
 
-import com.sofiaswing.sofiaswingdancefestival.providers.DefaultSettingValues;
-import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.providers.providerModels.EventSubscriptionModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.subjects.BehaviorSubject;
+
 public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.ISettingsProvider {
     private static final String NOT_TIME_SECS_SETTING_NAME = "NOTIFICATION_TIME_SETTING";
     private static final String NEWS_NOTIF_ENABL_SETTING_NAME = "NEWS_NOTIFICATION_SETTING";
     private static final String EVENT_NOTIFS_SETTING_NAME = "EVENT_NOTIFICATIONS_SETTING";
+    private static final String YEAR_FROM_DB_SETTING_NAME = "YEAR_FROM_DB_SETTING";
+    private static final String CUSTOM_YEAR_SETTING_NAME = "CUSTOM_YEAR_SETTING";
 
     private final Context context;
     private final ProvidersInterfaces.ISerializer serializer;
     private final ProvidersInterfaces.IEventAlarmManager eventAlarmManager;
 
+    private final MutableLiveData<Pair<Boolean, String>> ssdfYearLiveData = new MutableLiveData<>();
+
     public SharedPreferencesSettingsProvider(Context context, ProvidersInterfaces.ISerializer serializer, ProvidersInterfaces.IEventAlarmManager eventAlarmManager) {
         this.context = context;
         this.serializer = serializer;
         this.eventAlarmManager = eventAlarmManager;
+
+        emmitSsdfYear();
     }
 
     @Override
@@ -206,5 +215,59 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
 
         notTimeEditor.putBoolean(NEWS_NOTIF_ENABL_SETTING_NAME, areNewsNotificationsEnabled);
         notTimeEditor.commit();
+    }
+
+    @Override
+    public boolean isYearFromDatabase() {
+        final SharedPreferences yearFromDbRef =
+                this.context.getSharedPreferences(YEAR_FROM_DB_SETTING_NAME,0);
+        return yearFromDbRef.getBoolean(YEAR_FROM_DB_SETTING_NAME, true);
+    }
+
+    @Override
+    public String getCurrentCustomSsdfYear() {
+        final SharedPreferences customYearRef =
+                this.context.getSharedPreferences(CUSTOM_YEAR_SETTING_NAME,0);
+        return customYearRef.getString(CUSTOM_YEAR_SETTING_NAME, "");
+    }
+
+    @Override
+    public void setCurrentSsdfYearFromData() {
+        final SharedPreferences yearFromDbRef =
+                this.context.getSharedPreferences(YEAR_FROM_DB_SETTING_NAME,0);
+        final SharedPreferences.Editor yearFromDbEditor = yearFromDbRef.edit();
+
+        yearFromDbEditor.putBoolean(YEAR_FROM_DB_SETTING_NAME, true);
+        yearFromDbEditor.commit();
+        emmitSsdfYear();
+    }
+
+    @Override
+    public void setCurrentSsdfYear(String currentSsdfYear) {
+        final SharedPreferences customYearRef =
+                this.context.getSharedPreferences(CUSTOM_YEAR_SETTING_NAME,0);
+        final SharedPreferences.Editor customYearEditor = customYearRef.edit();
+
+        customYearEditor.putString(CUSTOM_YEAR_SETTING_NAME, currentSsdfYear);
+        customYearEditor.commit();
+
+        final SharedPreferences yearFromDbRef =
+                this.context.getSharedPreferences(YEAR_FROM_DB_SETTING_NAME,0);
+        final SharedPreferences.Editor yearFromDbEditor = yearFromDbRef.edit();
+
+        yearFromDbEditor.putBoolean(YEAR_FROM_DB_SETTING_NAME, false);
+        yearFromDbEditor.commit();
+        emmitSsdfYear();
+    }
+
+    @Override
+    public LiveData<Pair<Boolean, String>> obsCurrentSsdfYear() {
+        return this.ssdfYearLiveData;
+    }
+
+    private void emmitSsdfYear() {
+        this.ssdfYearLiveData.postValue(
+            new Pair<>(this.isYearFromDatabase(), this.getCurrentCustomSsdfYear())
+        );
     }
 }
