@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.providers.Firebase.FirebaseCloudMessagingProvider;
+import com.sofiaswing.sofiaswingdancefestival.ui.UiInterfaces;
 
 import dagger.Module;
 import dagger.Provides;
@@ -43,10 +44,16 @@ public class ProvidersModule {
     @Provides
     synchronized ProvidersInterfaces.ISettingsProvider provideSettingsProvider(
             Context context,
+            UiInterfaces.IPopupCreator popupCreator,
             ProvidersInterfaces.ISerializer serializer,
             ProvidersInterfaces.IEventAlarmManager eventAlarmManager) {
         if (this.settingsProvider == null) {
-            this.settingsProvider = new SharedPreferencesSettingsProvider(context, serializer, eventAlarmManager);
+            ProvidersInterfaces.ISettingsProvider sharedSettingsProvider =
+                    new SharedPreferencesSettingsProvider(context, serializer, eventAlarmManager);
+            this.settingsProvider = new SettingsProviderPopupOnSubscribeDecorator(
+                    sharedSettingsProvider,
+                    popupCreator,
+                    context);
         }
 
         return this.settingsProvider;

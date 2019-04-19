@@ -3,15 +3,19 @@ package com.sofiaswing.sofiaswingdancefestival.ui;
 import android.content.Context;
 import android.widget.Toast;
 
-import javax.inject.Inject;
-
 /**
  * Created by shwangshwing on 10/17/17.
  */
 
 public class ToastPopupCreator implements UiInterfaces.IPopupCreator {
+    private final Context context;
+
+    public ToastPopupCreator(Context context) {
+        this.context = context;
+    }
+
     @Override
-    public void popup(Context ctx, String text) {
-        Toast.makeText(ctx, text, Toast.LENGTH_SHORT).show();
+    public void popup(String text) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }
 }

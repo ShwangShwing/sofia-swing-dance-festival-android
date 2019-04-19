@@ -73,9 +73,6 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PartyViewModel partyItem = partiesAdapter.getItem(position);
                 Date endTime = partyItem.getEndTime();
-                if (endTime != null && endTime.getTime() <= currentTimestampMs) {
-                    return;
-                }
 
                 if (partyItem.isSubscribed()) {
                     presenter.setPartySubscription(position, false);
@@ -158,12 +155,11 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             boolean isPastEvent = endTime != null && endTime.getTime() <= currentTimestampMs;
             if (isPastEvent) {
                 llEventContainer.setBackgroundResource(R.color.pastEventBackground);
-                notifyView.setVisibility(View.VISIBLE);
-                notifyView.setText("Past event");
-            } else if (partyItem.isSubscribed()) {
+            }
+
+            if (partyItem.isSubscribed()) {
                 llEventContainer.setBackgroundResource(android.R.color.transparent);
                 notifyView.setVisibility(View.VISIBLE);
-                notifyView.setText("Notify me!");
             } else {
                 llEventContainer.setBackgroundResource(android.R.color.transparent);
                 notifyView.setVisibility(View.GONE);

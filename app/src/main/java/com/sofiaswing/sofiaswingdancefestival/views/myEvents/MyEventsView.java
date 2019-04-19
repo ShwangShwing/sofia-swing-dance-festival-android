@@ -155,12 +155,11 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
             boolean isPastEvent = endTime != null && endTime.getTime() <= currentTimestampMs;
             if (isPastEvent) {
                 llEventContainer.setBackgroundResource(R.color.pastEventBackground);
-                notifyView.setVisibility(View.VISIBLE);
-                notifyView.setText("Past event");
-            } else if (eventItem.isSubscribed()) {
+            }
+
+            if (eventItem.isSubscribed()) {
                 llEventContainer.setBackgroundResource(android.R.color.transparent);
                 notifyView.setVisibility(View.VISIBLE);
-                notifyView.setText("Notify me!");
             } else {
                 llEventContainer.setBackgroundResource(android.R.color.transparent);
                 notifyView.setVisibility(View.GONE);

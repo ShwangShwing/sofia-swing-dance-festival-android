@@ -117,7 +117,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
 
     @Override
     public void notifyHackerModeEnabled() {
-        popupCreator.popup(getContext(), "Hacker mode enabled");
+        popupCreator.popup("Hacker mode enabled");
     }
 
     @Override
@@ -172,7 +172,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
         DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.getDefault());
         dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
         Date curDateTime = new Date(currentTimeMs);
-        this.popupCreator.popup(this.getContext(), dateFormatter.format(curDateTime));
+        this.popupCreator.popup(dateFormatter.format(curDateTime));
     }
 
     @Override
@@ -297,7 +297,7 @@ public class SettingsView extends Fragment implements SettingsInterfaces.IView {
                         timePicker.getCurrentMinute());
                 long startTime = dateTime.getTimeInMillis() / 1000;
                 presenter.createTestNotification(id, name, startTime, 0);
-                popupCreator.popup(root.getContext(), getString(R.string.test_notification_created));
+                popupCreator.popup(getString(R.string.test_notification_created));
             }
         });
     }

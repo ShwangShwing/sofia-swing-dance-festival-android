@@ -1,5 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.ui;
 
+import android.content.Context;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -15,7 +17,7 @@ public class UiModule {
     }
 
     @Provides
-    UiInterfaces.IPopupCreator providePopupCreator() {
-        return new ToastPopupCreator();
+    UiInterfaces.IPopupCreator providePopupCreator(Context context) {
+        return new ToastPopupCreator(context);
     }
 }

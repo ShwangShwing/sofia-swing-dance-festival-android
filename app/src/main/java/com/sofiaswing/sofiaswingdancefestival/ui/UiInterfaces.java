@@ -19,7 +19,7 @@ public class UiInterfaces {
     }
 
     public interface IPopupCreator {
-        void popup(Context ctx, String text);
+        void popup(String text);
     }
 
     public interface INavigationActivity {
