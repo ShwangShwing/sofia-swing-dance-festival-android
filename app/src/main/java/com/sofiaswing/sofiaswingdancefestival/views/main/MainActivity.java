@@ -1,6 +1,7 @@
 package com.sofiaswing.sofiaswingdancefestival.views.main;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
     private static final int MENU_ITEM_CONTACTS_ID = 9;
     private static final int MENU_ITEM_SETTINGS_ID = 10;
     private static final int MENU_ITEM_ABOUT_ID = 11;
+    private static final int MENU_ITEM_PRIVACY_POLICY_ABOUT_ID = 12;
 
     private static final int BACK_PRESS_AGAIN_TO_EXIT_TIME_MS = 2000;
 
@@ -187,9 +189,10 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
         items.add(new DrawerItemInfo(MENU_ITEM_SCHEDULE_ID, getString(R.string.schedule)));
         items.add(new DrawerItemInfo(MENU_ITEM_VENUES_ID, getString(R.string.venues)));
         items.add(new DrawerItemInfo(MENU_ITEM_CONTACTS_ID, getString(R.string.contacts)));
-        items.add(new DrawerItemInfo(MENU_ITEM_TAXI_ME_ID, getString(R.string.taxi_me)));
+        //items.add(new DrawerItemInfo(MENU_ITEM_TAXI_ME_ID, getString(R.string.taxi_me)));
         items.add(new DrawerItemInfo(MENU_ITEM_SETTINGS_ID, getString(R.string.settings)));
         items.add(new DrawerItemInfo(MENU_ITEM_ABOUT_ID, getString(R.string.about)));
+        items.add(new DrawerItemInfo(MENU_ITEM_PRIVACY_POLICY_ABOUT_ID, "Privacy policy"));
 
         return items;
     }
@@ -232,6 +235,16 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
                         break;
                     case MENU_ITEM_ABOUT_ID:
                         setContentView(AboutView.newInstance(), getString(R.string.about));
+                        break;
+                    case MENU_ITEM_PRIVACY_POLICY_ABOUT_ID:
+                        Intent browserIntent = new Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://github.com/ShwangShwing/sofia-swing-dance-festival-android/blob/master/PRIVACY_POLICY.md"));
+                        startActivity(browserIntent);
+                        // Since this only redirects, and as it is hard to make the stupid drawer
+                        // not move the selection, I just decided to fuck it and just deselect
+                        // with inconvenience of not having the current menu selected afterwareds
+                        drawer.deselect();
                         break;
                     default:
                         return false;
