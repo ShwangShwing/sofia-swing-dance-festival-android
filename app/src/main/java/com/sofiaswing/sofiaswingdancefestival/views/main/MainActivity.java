@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
     private static final int MENU_ITEM_SETTINGS_ID = 10;
     private static final int MENU_ITEM_ABOUT_ID = 11;
 
+    private static final int BACK_PRESS_AGAIN_TO_EXIT_TIME_MS = 2000;
 
     @Inject
     public UiInterfaces.IDrawerNavigationFactory drawerNavigationFactory;
@@ -60,11 +61,16 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
     public ProvidersInterfaces.IEventSubscriptionRefresher eventSubscriptionRefresher;
     @Inject
     public DataInterfaces.IBrokenDbConnectionFixer brokenDbConnectionFixer;
+    @Inject
+    public UiInterfaces.IPopupCreator popupCreator;
+    @Inject
+    public ProvidersInterfaces.ICurrentTimeProvider timeProvider;
 
     private Drawer drawer;
 
     private String currentTitle;
 
+    private long lastBackPressedTimeMs = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +106,19 @@ public class MainActivity extends AppCompatActivity implements UiInterfaces.INav
         }
 
         this.handleIntent(getIntent());
+    }
+
+    @Override
+    public void onBackPressed() {
+        long currentTimeMs = this.timeProvider.getCurrentTimeMs();
+        if (lastBackPressedTimeMs + BACK_PRESS_AGAIN_TO_EXIT_TIME_MS > currentTimeMs) {
+            super.onBackPressed();
+            lastBackPressedTimeMs = 0;
+        }
+        else {
+            lastBackPressedTimeMs = currentTimeMs;
+            this.popupCreator.popup(getString(R.string.press_back_again_to_exit));
+        }
     }
 
     @Override

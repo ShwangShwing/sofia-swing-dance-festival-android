@@ -45,6 +45,7 @@
     <string name="news_notifications">News notifications</string>
     <string name="you_will_be_notified_before_event">You will now be notified before event \"%s\".</string>
     <string name="you_wont_be_notified_about_event">Now you won\'t be notified about this event.</string>
+    <string name="press_back_again_to_exit">Press \"back\" again to exit.</string>
 
     <string-array name="contact_links">
         <item><![CDATA[<a href="http://www.lindyhop.bg/">Lindyhop.bg</a>]]></item>
