@@ -7,6 +7,7 @@ import com.sofiaswing.sofiaswingdancefestival.data.FirebaseData.FirebaseDataModu
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersModule;
 import com.sofiaswing.sofiaswingdancefestival.ui.UiModule;
 import com.sofiaswing.sofiaswingdancefestival.utils.EventSubscriptionAlarmReceiver;
+import com.sofiaswing.sofiaswingdancefestival.utils.NewsReceiver;
 import com.sofiaswing.sofiaswingdancefestival.views.about.AboutModule;
 import com.sofiaswing.sofiaswingdancefestival.views.about.AboutView;
 import com.sofiaswing.sofiaswingdancefestival.views.classes.ClassScheduleFragment;
@@ -92,6 +93,7 @@ public class SofiaSwingDanceFestivalApplication extends Application {
         void inject(VenuesView venuesView);
         void inject(ClassesView classesView);
         void inject(EventSubscriptionAlarmReceiver eventSubscriptionAlarmReceiver);
+        void inject(NewsReceiver newsReceiver);
         void inject(PartiesView partiesView);
         void inject(MyEventsView myEventsView);
         void inject(ScheduleView shceduleView);

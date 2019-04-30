@@ -49,7 +49,7 @@ public class CurrentSsdfYearProvider implements ProvidersInterfaces.ICurrentSsdf
             }
         };
 
-        ssdfYearLiveData = this.settingsProvider.obsCurrentSsdfYear();
+        this.ssdfYearLiveData = this.settingsProvider.obsCurrentSsdfYear();
         this.ssdfYearLiveData.observeForever(this.ssdfYearObs);
     }
 

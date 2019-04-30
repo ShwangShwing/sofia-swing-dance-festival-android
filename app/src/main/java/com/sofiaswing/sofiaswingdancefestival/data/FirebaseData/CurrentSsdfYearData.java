@@ -5,6 +5,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sofiaswing.sofiaswingdancefestival.BuildConfig;
 import com.sofiaswing.sofiaswingdancefestival.data.DataInterfaces;
 
 import javax.inject.Inject;
@@ -27,7 +28,7 @@ public class CurrentSsdfYearData  implements DataInterfaces.ICurrentSsdfYearData
     public Observable<String> getCurrentSsdfYear() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        final DatabaseReference activeSsdfYearRef = database.getReference("activeSsdfYear");
+        final DatabaseReference activeSsdfYearRef = database.getReference(BuildConfig.ACTIVE_COLLECTION_NAME);
 
         Observable<String> observable = Observable.create(e -> activeSsdfYearRef.addValueEventListener(new ValueEventListener() {
             @Override

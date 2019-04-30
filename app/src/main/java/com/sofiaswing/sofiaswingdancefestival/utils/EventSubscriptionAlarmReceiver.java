@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.views.main.MainActivity;
@@ -29,8 +30,7 @@ public class EventSubscriptionAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())
-                || "android.intent.action.QUICKBOOT_POWERON".equals(intent.getAction())) {
+        if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
             this.inject(context);
 
             // Reset alarms on reboot
@@ -59,7 +59,7 @@ public class EventSubscriptionAlarmReceiver extends BroadcastReceiver {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Notification notification = NotificationCreator.getNotification(
-                context, EVENT_REMINDER_CHANNEL_NAME, eventName, eventStartTime, pendingIntent);
+                context, EVENT_REMINDER_CHANNEL_NAME, context.getString(R.string.event_is_comming), eventName, eventStartTime, pendingIntent);
 
         notificationManager.notify(eventId.hashCode(), notification);
     }

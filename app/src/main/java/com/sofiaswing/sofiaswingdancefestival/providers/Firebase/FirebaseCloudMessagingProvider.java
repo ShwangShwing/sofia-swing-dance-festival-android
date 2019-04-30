@@ -4,7 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 
 public class FirebaseCloudMessagingProvider implements ProvidersInterfaces.IPushNotificationsProvider {
-    private static final String NEWS_TOPIC = "news";
+    private static final String NEWS_TOPIC = "ssdf-news";
 
     @Override
     public void subscribeForNews() {
