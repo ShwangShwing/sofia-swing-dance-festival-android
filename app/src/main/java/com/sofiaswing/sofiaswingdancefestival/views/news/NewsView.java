@@ -26,6 +26,7 @@ import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.views.newsArticle.NewsArticleActivity;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -145,7 +146,10 @@ public class NewsView extends Fragment implements NewsInterfaces.IView {
 
             NewsArticleModel article = this.getItem(position);
 
-            DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale.getDefault());
+            String dateFmtString = android.text.format.DateFormat.getBestDateTimePattern(
+                    Locale.getDefault(),
+                    "yyyy-MM-dd EEEE jj:mm");
+            DateFormat dateFormatter = new SimpleDateFormat(dateFmtString);
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
             ((TextView) newsArticleRow.findViewById(R.id.tvNewsArticleDate))
                     .setText(dateFormatter.format(article.getPostedOn()));

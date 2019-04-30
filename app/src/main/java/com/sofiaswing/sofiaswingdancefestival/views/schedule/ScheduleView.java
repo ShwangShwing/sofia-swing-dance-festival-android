@@ -19,6 +19,7 @@ import com.sofiaswing.sofiaswingdancefestival.providers.ProvidersInterfaces;
 import com.sofiaswing.sofiaswingdancefestival.utils.DimensionUtils;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -164,7 +165,10 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
              curDayStartTimestamp < this.maxScheduleTimestampMs; ) {
             View dayView = getLayoutInflater().inflate(R.layout.layout_schedule_date, null);
             TextView tvScheduleView = dayView.findViewById(R.id.tvScheduleDate);
-            DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+            String dateFmtString = android.text.format.DateFormat.getBestDateTimePattern(
+                    Locale.getDefault(),
+                    "yyyy-MM-dd EEEE");
+            DateFormat dateFormatter = new SimpleDateFormat(dateFmtString);
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
             String dateAsString = dateFormatter.format(curDayStartTimestamp);
             tvScheduleView.setText(dateAsString);

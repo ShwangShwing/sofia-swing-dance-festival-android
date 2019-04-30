@@ -19,6 +19,7 @@ import com.sofiaswing.sofiaswingdancefestival.R;
 import com.sofiaswing.sofiaswingdancefestival.SofiaSwingDanceFestivalApplication;
 import com.sofiaswing.sofiaswingdancefestival.models.VenueModel;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -165,7 +166,10 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
                 notifyView.setVisibility(View.GONE);
             }
 
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM d, HH:mm", Locale.getDefault());
+            String dateFmtString = android.text.format.DateFormat.getBestDateTimePattern(
+                    Locale.getDefault(),
+                    "MM-dd jj:mm");
+            DateFormat dateFormatter = new SimpleDateFormat(dateFmtString);
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
             ((TextView) eventRow.findViewById(R.id.tvTime))

@@ -116,7 +116,10 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
         // This will automatically sort days in the map in ascending order.
         SortedMap<Long, Pair<String, List<ClassPresenterModel>>> sectionsMap = new TreeMap<>();
         for (ClassPresenterModel classModel : classes) {
-            SimpleDateFormat fmt = new SimpleDateFormat("d MMM yyyy");
+            String dateFmtString = android.text.format.DateFormat.getBestDateTimePattern(
+                    Locale.getDefault(),
+                    "yyyy-MMMM-dd EEEE");
+            DateFormat fmt = new SimpleDateFormat(dateFmtString);
             fmt.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
             String startDate = fmt.format(classModel.getClassModel().getStartTime());
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Sofia"));

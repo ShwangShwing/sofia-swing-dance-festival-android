@@ -165,7 +165,10 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
                 notifyView.setVisibility(View.GONE);
             }
 
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM d, HH:mm", Locale.getDefault());
+            String dateFmtString = android.text.format.DateFormat.getBestDateTimePattern(
+                    Locale.getDefault(),
+                    "MM-dd jj:mm");
+            DateFormat dateFormatter = new SimpleDateFormat(dateFmtString);
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
             Date startTime = partyItem.getStartTime();
