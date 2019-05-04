@@ -270,8 +270,15 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
         ((TextView) eventView.findViewById(R.id.tvEventType))
                 .setText(eventTypeStr);
 
+        View notifyView = eventView.findViewById(R.id.ivIsSubscribed);
+        View dontNotifyView = eventView.findViewById(R.id.ivIsNotSubscribed);
         if (event.isSubscribed()) {
-            eventView.findViewById(R.id.tvIsSubscribed).setVisibility(View.VISIBLE);
+            notifyView.setVisibility(View.VISIBLE);
+            dontNotifyView.setVisibility(View.GONE);
+        }
+        else {
+            notifyView.setVisibility(View.GONE);
+            dontNotifyView.setVisibility(View.GONE);
         }
 
         int eventLengthInMinutes = (int) (event.getEndTime().getTime() - event.getStartTime().getTime()) / (60 * 1000);

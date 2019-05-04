@@ -90,7 +90,7 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
                 classLevels));
 
         PagerSlidingTabStrip tabs = rootView.findViewById(R.id.tabs);
-        tabs.setTextColor(getResources().getColor(R.color.md_white_1000));
+        tabs.setTextColor(getResources().getColor(R.color.colorTabTitles));
         tabs.setViewPager(pager);
     }
 

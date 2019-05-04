@@ -151,7 +151,8 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
             EventViewModel eventItem = getItem(position);
 
             LinearLayout llEventContainer = eventRow.findViewById(R.id.ll_event_container);
-            TextView notifyView = eventRow.findViewById(R.id.tvIsSubscribed);
+            View notifyView = eventRow.findViewById(R.id.ivIsSubscribed);
+            View dontNotifyView = eventRow.findViewById(R.id.ivIsNotSubscribed);
             Date endTime = eventItem.getEndTime();
             boolean isPastEvent = endTime != null && endTime.getTime() <= currentTimestampMs;
             if (isPastEvent) {
@@ -159,17 +160,18 @@ public class MyEventsView extends Fragment implements MyEventsInterfaces.IView {
             }
 
             if (eventItem.isSubscribed()) {
-                llEventContainer.setBackgroundResource(android.R.color.transparent);
                 notifyView.setVisibility(View.VISIBLE);
-            } else {
-                llEventContainer.setBackgroundResource(android.R.color.transparent);
+                dontNotifyView.setVisibility(View.GONE);
+            }
+            else {
                 notifyView.setVisibility(View.GONE);
+                dontNotifyView.setVisibility(View.VISIBLE);
             }
 
             String dateFmtString = android.text.format.DateFormat.getBestDateTimePattern(
                     Locale.getDefault(),
                     "MM-dd jj:mm");
-            DateFormat dateFormatter = new SimpleDateFormat(dateFmtString);
+            DateFormat dateFormatter = new SimpleDateFormat(dateFmtString, Locale.getDefault());
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
             ((TextView) eventRow.findViewById(R.id.tvTime))

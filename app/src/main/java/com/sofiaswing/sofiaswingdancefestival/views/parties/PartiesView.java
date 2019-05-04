@@ -150,7 +150,8 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             PartyViewModel partyItem = getItem(position);
 
             LinearLayout llEventContainer = partyRow.findViewById(R.id.ll_event_container);
-            TextView notifyView = partyRow.findViewById(R.id.tvIsSubscribed);
+            View notifyView = partyRow.findViewById(R.id.ivIsSubscribed);
+            View dontNotifyView = partyRow.findViewById(R.id.ivIsNotSubscribed);
             Date endTime = partyItem.getEndTime();
             boolean isPastEvent = endTime != null && endTime.getTime() <= currentTimestampMs;
             if (isPastEvent) {
@@ -158,17 +159,18 @@ public class PartiesView extends Fragment implements PartiesInterfaces.IView {
             }
 
             if (partyItem.isSubscribed()) {
-                llEventContainer.setBackgroundResource(android.R.color.transparent);
                 notifyView.setVisibility(View.VISIBLE);
-            } else {
-                llEventContainer.setBackgroundResource(android.R.color.transparent);
+                dontNotifyView.setVisibility(View.GONE);
+            }
+            else {
                 notifyView.setVisibility(View.GONE);
+                dontNotifyView.setVisibility(View.VISIBLE);
             }
 
             String dateFmtString = android.text.format.DateFormat.getBestDateTimePattern(
                     Locale.getDefault(),
                     "MM-dd jj:mm");
-            DateFormat dateFormatter = new SimpleDateFormat(dateFmtString);
+            DateFormat dateFormatter = new SimpleDateFormat(dateFmtString, Locale.getDefault());
             dateFormatter.setTimeZone(TimeZone.getTimeZone("Europe/Sofia"));
 
             Date startTime = partyItem.getStartTime();

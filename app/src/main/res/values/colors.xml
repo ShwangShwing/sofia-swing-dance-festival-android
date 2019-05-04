@@ -13,4 +13,5 @@
     <color name="colorTime">#ffd8b3</color>
     <color name="taxiMeColor">#FFCA06</color>
     <color name="colorDate">#FFFFFF</color>
+    <color name="colorTabTitles">#FFFFFF</color>
 </resources>

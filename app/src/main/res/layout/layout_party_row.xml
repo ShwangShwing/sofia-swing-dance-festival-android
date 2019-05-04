@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_event_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,14 +22,23 @@
                 android:textSize="20sp"
                 android:textColor="@color/md_white_1000"/>
 
-            <TextView
-                android:id="@+id/tvIsSubscribed"
+            <ImageView
+                android:id="@+id/ivIsSubscribed"
+                android:src="@drawable/ic_trompet_yellow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="@string/notifyme"
-                android:textColor="@color/colorNotifyMe"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+            <ImageView
+                android:id="@+id/ivIsNotSubscribed"
+                android:src="@drawable/ic_trompet_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                tools:ignore="ContentDescription,RtlHardcoded" />
         </RelativeLayout>
 
         <TextView

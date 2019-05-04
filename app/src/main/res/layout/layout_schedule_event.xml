@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="2dp">
 
@@ -21,17 +22,28 @@
             <TextView
                 android:id="@+id/tvTime"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDate"/>
 
-            <TextView
-                android:id="@+id/tvIsSubscribed"
+            <ImageView
+                android:paddingLeft="2dp"
+                android:id="@+id/ivIsSubscribed"
+                android:src="@drawable/ic_trompet_yellow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="10dp"
-                android:text="@string/notifyMeShort"
-                android:textColor="@color/colorNotifyMe"
-                android:visibility="gone" />
+                android:maxHeight="15dp"
+                android:visibility="gone"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+            <ImageView
+                android:paddingLeft="2dp"
+                android:id="@+id/ivIsNotSubscribed"
+                android:src="@drawable/ic_trompet_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxHeight="15dp"
+                android:visibility="gone"
+                tools:ignore="ContentDescription,RtlHardcoded" />
         </LinearLayout>
 
         <TextView

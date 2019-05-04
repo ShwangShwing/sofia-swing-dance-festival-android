@@ -203,10 +203,12 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
                 }
                 instructorsNames += instructor.getName();
             }
+
             itemHolder.tvInstructors.setText(instructorsNames);
             itemHolder.tvVenue.setText(classPresenterModel.getVenue().getName());
-            itemHolder.tvIsSubscribed.setVisibility(classPresenterModel.isSubscribed() ? View.VISIBLE : View.GONE);
-
+            final boolean isSubscribed = classPresenterModel.isSubscribed();
+            itemHolder.vIsSubscribed.setVisibility(isSubscribed ? View.VISIBLE : View.GONE);
+            itemHolder.vIsNotSubscribed.setVisibility(isSubscribed ? View.GONE : View.VISIBLE);
 
             itemHolder.rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -272,7 +274,8 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
         private final TextView tvTime;
         private final TextView tvVenue;
         private final TextView tvInstructors;
-        private final TextView tvIsSubscribed;
+        private final View vIsSubscribed;
+        private final View vIsNotSubscribed;
 
         ItemViewHolder(View view) {
             super(view);
@@ -282,7 +285,8 @@ public class ClassScheduleFragment extends Fragment implements ClassesInterfaces
             tvTime = view.findViewById(R.id.tvTime);
             tvVenue = view.findViewById(R.id.tvVenue);
             tvInstructors = view.findViewById(R.id.tvInstructors);
-            tvIsSubscribed = view.findViewById(R.id.tvIsSubscribed);
+            vIsSubscribed = view.findViewById(R.id.ivIsSubscribed);
+            vIsNotSubscribed = view.findViewById(R.id.ivIsNotSubscribed);
         }
     }
 }
