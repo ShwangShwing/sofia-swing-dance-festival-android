@@ -277,6 +277,7 @@ public class ScheduleView extends Fragment implements ScheduleInterfaces.IView {
             dontNotifyView.setVisibility(View.GONE);
         }
         else {
+            // Currently you cannot subscribe from this screen, so let's keep the dontnotify view also invisible
             notifyView.setVisibility(View.GONE);
             dontNotifyView.setVisibility(View.GONE);
         }

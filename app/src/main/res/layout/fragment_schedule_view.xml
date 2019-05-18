@@ -11,11 +11,14 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/rl_venues_container"
-                android:orientation="vertical"></RelativeLayout>
+                android:orientation="vertical"
+                android:paddingLeft="5dip"
+                tools:ignore="RtlHardcoded,RtlSymmetry" />
             <HorizontalScrollView
                 android:id="@+id/hsv_schedule_container"
                 android:layout_width="match_parent"
