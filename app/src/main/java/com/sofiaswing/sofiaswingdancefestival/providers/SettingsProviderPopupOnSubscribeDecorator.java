@@ -81,6 +81,16 @@ public class SettingsProviderPopupOnSubscribeDecorator implements ProvidersInter
     }
 
     @Override
+    public String getDefaultClassLevel() {
+        return this.settingsProvider.getDefaultClassLevel();
+    }
+
+    @Override
+    public void setDefaultClassLevel(String classLevel) {
+        this.settingsProvider.setDefaultClassLevel(classLevel);
+    }
+
+    @Override
     public boolean areNewsNotificationsEnabled() {
         return this.settingsProvider.areNewsNotificationsEnabled();
     }

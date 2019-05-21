@@ -17,6 +17,7 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
     private static final String NOT_TIME_SECS_SETTING_NAME = "NOTIFICATION_TIME_SETTING";
     private static final String NEWS_NOTIF_ENABL_SETTING_NAME = "NEWS_NOTIFICATION_SETTING";
     private static final String EVENT_NOTIFS_SETTING_NAME = "EVENT_NOTIFICATIONS_SETTING";
+    private static final String EVENT_NOTIFS_DEFAULT_CLASS_LEVEL_NAME = "EVENT_NOTIFS_DEFAULT_CLASS_LEVEL";
     private static final String YEAR_FROM_DB_SETTING_NAME = "YEAR_FROM_DB_SETTING";
     private static final String CUSTOM_YEAR_SETTING_NAME = "CUSTOM_YEAR_SETTING";
 
@@ -189,6 +190,23 @@ public class SharedPreferencesSettingsProvider implements ProvidersInterfaces.IS
                 this.context.getSharedPreferences(EVENT_NOTIFS_SETTING_NAME,0);
 
         return new ArrayList<String>(eventNotifRef.getAll().keySet());
+    }
+
+    @Override
+    public String getDefaultClassLevel() {
+        final SharedPreferences defaultClassLevelRef =
+                this.context.getSharedPreferences(EVENT_NOTIFS_DEFAULT_CLASS_LEVEL_NAME,0);
+        return defaultClassLevelRef.getString(EVENT_NOTIFS_DEFAULT_CLASS_LEVEL_NAME, "");
+    }
+
+    @Override
+    public void setDefaultClassLevel(String classLevel) {
+        final SharedPreferences defaultClassLevelRef =
+                this.context.getSharedPreferences(EVENT_NOTIFS_DEFAULT_CLASS_LEVEL_NAME,0);
+        final SharedPreferences.Editor defaultClassLevelEditor = defaultClassLevelRef.edit();
+
+        defaultClassLevelEditor.putString(EVENT_NOTIFS_DEFAULT_CLASS_LEVEL_NAME, classLevel);
+        defaultClassLevelEditor.commit();
     }
 
     @Override

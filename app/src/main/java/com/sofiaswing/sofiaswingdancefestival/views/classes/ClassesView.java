@@ -25,6 +25,7 @@ import javax.inject.Inject;
  * A simple {@link Fragment} subclass.
  */
 public class ClassesView extends Fragment implements ClassesInterfaces.IView {
+    private int resumeCount = 0;
 
     @Inject
     public ClassesInterfaces.IPresenter presenter;
@@ -61,29 +62,27 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        this.presenter.start();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        if (resumeCount <= 0) {
+            this.presenter.start();
+        }
+        resumeCount++;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        // After the first classes load it is not necessary to load class levels again
-        // as they will probably never change during the festival.
-        // Since the presenter is started at onActivityCreated(), the tabs will stop loading
-        // after the first fragment pause. I want to avoid restarting the presneter in onResume()
-        // Restarting the presnenter in onResume causes the current tab to reset when the user
-        // switches to another app and then returns.
+
         this.presenter.stop();
     }
 
     @Override
-    public void setClassesTabs(List<ClassLevelModel> classLevels) {
+    public void setClassesTabs(final List<ClassLevelModel> classLevels, String defaultClassLevel) {
         ViewPager pager = rootView.findViewById(R.id.tabsPager);
         pager.setAdapter(new TabsNavigationAdapter(
                 getChildFragmentManager(),
@@ -92,6 +91,24 @@ public class ClassesView extends Fragment implements ClassesInterfaces.IView {
         PagerSlidingTabStrip tabs = rootView.findViewById(R.id.tabs);
         tabs.setTextColor(getResources().getColor(R.color.colorTabTitles));
         tabs.setViewPager(pager);
+
+        // select the class level
+        int defaultClassIndex = 0;
+        for (int i = 0; i < classLevels.size(); i++) {
+            if (classLevels.get(i).getId().equals(defaultClassLevel)) {
+                defaultClassIndex = i;
+                break;
+            }
+        }
+        pager.setCurrentItem(defaultClassIndex);
+
+        pager.clearOnPageChangeListeners();
+        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                presenter.setDefaultClassLevel(classLevels.get(position).getId());
+            }
+        });
     }
 
     private void inject() {

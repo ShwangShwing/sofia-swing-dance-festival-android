@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ClassesInterfaces {
     public interface IView {
-        void setClassesTabs(List<ClassLevelModel> classLevels);
+        void setClassesTabs(List<ClassLevelModel> classLevels, String defaultClassLevel);
     }
 
     public interface IClassesLevelView {
@@ -20,6 +20,7 @@ public class ClassesInterfaces {
 
     public interface IPresenter {
         void setView(IView view);
+        void setDefaultClassLevel(String classLevel);
         void start();
         void stop();
     }

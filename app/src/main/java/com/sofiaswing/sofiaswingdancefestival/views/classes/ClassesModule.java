@@ -14,8 +14,8 @@ import dagger.Provides;
 public class ClassesModule {
 
     @Provides
-    ClassesInterfaces.IPresenter provideClassesPresenter(DataInterfaces.IClassLevelsData classLevelsFirebaseData) {
-        return new ClassesPresenter(classLevelsFirebaseData);
+    ClassesInterfaces.IPresenter provideClassesPresenter(DataInterfaces.IClassLevelsData classLevelsFirebaseData, ProvidersInterfaces.ISettingsProvider settingsProvider) {
+        return new ClassesPresenter(classLevelsFirebaseData, settingsProvider);
     }
 
     @Provides

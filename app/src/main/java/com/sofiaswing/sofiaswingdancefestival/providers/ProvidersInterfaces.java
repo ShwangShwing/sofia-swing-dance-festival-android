@@ -43,6 +43,9 @@ public class ProvidersInterfaces {
 
         List<String> getSubscribedEventsIds();
 
+        String getDefaultClassLevel();
+        void setDefaultClassLevel(String classLevel);
+
         boolean areNewsNotificationsEnabled();
         void enableNewsNotifications();
         void disableNewsNotifications();
