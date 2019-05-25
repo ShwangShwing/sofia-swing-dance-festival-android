@@ -50,6 +50,8 @@ public class NewsReceiver extends BroadcastReceiver {
             return;
         }
 
+        final PendingResult pendingResult = goAsync();
+
         this.currentSsdfYearProvider
                 .getCurrentSsdfYear()
                 .subscribeOn(Schedulers.io())
@@ -87,6 +89,8 @@ public class NewsReceiver extends BroadcastReceiver {
                         // Make sure that the news article is actually downloaded
                         this.newsArticlesData.getById(newsArticleId).firstOrError().subscribe();
                     }
+
+                    pendingResult.finish();
                 });
     }
 
